@@ -16,7 +16,7 @@ RUN apk update && apk upgrade && apk add --no-cache git \
     && go get -u \
     && GOOS=linux GOARCH=amd64 go build -o app .
 
-FROM golang:1.14.2-alpine
+FROM alpine
 WORKDIR /go/src/app
 COPY --from=build /go/src/app/app .
 
