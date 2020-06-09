@@ -7,7 +7,6 @@ RUN apk update && apk upgrade && apk add --no-cache git \
     && go get github.com/cosmtrek/air
 
 ENV SERVER_PORT=3000
-
 CMD air -d
 
 FROM golang:1.14.2-alpine AS build
@@ -20,4 +19,6 @@ RUN apk update && apk upgrade && apk add --no-cache git \
 FROM golang:1.14.2-alpine
 WORKDIR /go/src/app
 COPY --from=build /go/src/app/app .
+
+ENV SERVER_PORT=3000
 CMD ["./app"]
