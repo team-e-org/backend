@@ -221,23 +221,6 @@ paths:
                 - name
       security:
         - x-auth-token: []
-    get:
-      summary: ''
-      operationId: get-boards
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Board'
-      tags:
-        - Board
-      parameters: []
-      security:
-        - x-auth-token: []
   '/users/{id}/boards':
     parameters:
       - schema:
@@ -363,7 +346,7 @@ paths:
                   type: boolean
       security:
         - x-auth-token: []
-  /users:
+  /users/sign-up:
     post:
       summary: ''
       operationId: post-users
@@ -374,6 +357,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                required:
+                  - token
       requestBody:
         content:
           application/json:
@@ -394,15 +387,23 @@ paths:
                 - password
       tags:
         - User
+    parameters: []
   /users/sign-in:
-    get:
-      summary: Your GET endpoint
-      tags:
-        - User
+    post:
+      summary: ''
+      operationId: post-users-sign-in
       responses:
         '200':
           description: OK
-      operationId: get-users-sign-in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                required:
+                  - token
       requestBody:
         content:
           application/json:
@@ -418,6 +419,8 @@ paths:
               required:
                 - email
                 - password
+      tags:
+        - User
 components:
   schemas:
     User:
