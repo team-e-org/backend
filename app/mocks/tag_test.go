@@ -7,44 +7,40 @@ import (
 	"time"
 )
 
-func TestUserMock(t *testing.T) {
+func TestTagMock(t *testing.T) {
 	ID := 0
-	users := &UserMock{}
-	user := &db.User{
+	tags := &TagMock{}
+	tag := &db.Tag{
 		ID:        ID,
-		Name:      "test user",
-		Email:     "test@test.com",
-		Icon:      "testicon",
+		Tag:       "test tag",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	users.AddUser(user)
-	got, err := users.GetUser(ID)
+	tags.AddTag(tag)
+	got, err := tags.GetTag(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
-	if !reflect.DeepEqual(*user, *got) {
-		t.Fatalf("Not equal user")
+	if !reflect.DeepEqual(*tag, *got) {
+		t.Fatalf("Not equal tag")
 	}
 }
 
-func TestUserMockRepository(t *testing.T) {
-	users := NewUserRepository()
+func TestTagMockRepository(t *testing.T) {
+	tags := NewTagRepository()
 	ID := 0
-	user := &db.User{
+	tag := &db.Tag{
 		ID:        ID,
-		Name:      "test user",
-		Email:     "test@test.com",
-		Icon:      "testicon",
+		Tag:       "test tag",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	users.AddUser(user)
-	got, err := users.GetUser(ID)
+	tags.AddTag(tag)
+	got, err := tags.GetTag(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
-	if !reflect.DeepEqual(*user, *got) {
-		t.Fatalf("Not equal user")
+	if !reflect.DeepEqual(*tag, *got) {
+		t.Fatalf("Not equal tag")
 	}
 }

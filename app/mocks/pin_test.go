@@ -7,44 +7,50 @@ import (
 	"time"
 )
 
-func TestUserMock(t *testing.T) {
+func TestPinMock(t *testing.T) {
 	ID := 0
-	users := &UserMock{}
-	user := &db.User{
-		ID:        ID,
-		Name:      "test user",
-		Email:     "test@test.com",
-		Icon:      "testicon",
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+	UserID := 0
+	pins := &PinMock{}
+	pin := &db.Pin{
+		ID:         ID,
+		UserID:     UserID,
+		Title:      "test title",
+		Descrition: "test description",
+		URL:        "test url",
+		ImageURL:   "test image url",
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
 	}
-	users.AddUser(user)
-	got, err := users.GetUser(ID)
+	pins.AddPin(pin)
+	got, err := pins.GetPin(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
-	if !reflect.DeepEqual(*user, *got) {
-		t.Fatalf("Not equal user")
+	if !reflect.DeepEqual(*pin, *got) {
+		t.Fatalf("Not equal pin")
 	}
 }
 
-func TestUserMockRepository(t *testing.T) {
-	users := NewUserRepository()
+func TestPinMockRepository(t *testing.T) {
+	pins := NewPinRepository()
 	ID := 0
-	user := &db.User{
-		ID:        ID,
-		Name:      "test user",
-		Email:     "test@test.com",
-		Icon:      "testicon",
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+	UserID := 0
+	pin := &db.Pin{
+		ID:         ID,
+		UserID:     UserID,
+		Title:      "test title",
+		Descrition: "test description",
+		URL:        "test url",
+		ImageURL:   "test image url",
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
 	}
-	users.AddUser(user)
-	got, err := users.GetUser(ID)
+	pins.AddPin(pin)
+	got, err := pins.GetPin(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
-	if !reflect.DeepEqual(*user, *got) {
-		t.Fatalf("Not equal user")
+	if !reflect.DeepEqual(*pin, *got) {
+		t.Fatalf("Not equal pin")
 	}
 }
