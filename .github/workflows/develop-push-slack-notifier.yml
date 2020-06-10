@@ -1,4 +1,4 @@
-name: develop-pull-request-slack-notifier
+name: develop-push-slack-notifier
 
 on:
   push:
