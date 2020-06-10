@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/bootcamp-tpa/course.summarist-service_go/logs"
+	"app/logs"
 )
 
 const (
