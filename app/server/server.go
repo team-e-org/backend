@@ -20,5 +20,9 @@ func Start(port int) error {
 }
 
 func attachHandlers(mux *mux.Router) {
+	mux.HandleFunc("/", Hello)
+}
 
+func Hello(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello World")
 }
