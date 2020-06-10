@@ -28,7 +28,7 @@ paths:
       operationId: get-users-id
       description: ''
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
     put:
       summary: ''
       operationId: put-users-id
@@ -55,7 +55,7 @@ paths:
       tags:
         - User
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
     delete:
       summary: ''
       operationId: delete-users-id
@@ -65,7 +65,7 @@ paths:
       tags:
         - User
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
   /pins:
     parameters: []
     post:
@@ -101,7 +101,7 @@ paths:
       tags:
         - Pin
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
     get:
       summary: ''
       operationId: get-pins
@@ -123,7 +123,7 @@ paths:
       tags:
         - Pin
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
   '/pins/{id}':
     parameters:
       - schema:
@@ -144,7 +144,7 @@ paths:
                 $ref: '#/components/schemas/Pin'
       operationId: get-pins-id
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
     delete:
       summary: ''
       operationId: delete-pins-id
@@ -154,7 +154,7 @@ paths:
       tags:
         - Pin
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
     put:
       summary: ''
       operationId: put-pins-id
@@ -188,7 +188,7 @@ paths:
                 - title
                 - image
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
   /boards:
     post:
       summary: ''
@@ -220,7 +220,7 @@ paths:
               required:
                 - name
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
   '/users/{id}/boards':
     parameters:
       - schema:
@@ -243,7 +243,7 @@ paths:
                   $ref: '#/components/schemas/Board'
       operationId: get-users-id-boards
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
   '/users/{id}/pins':
     parameters:
       - schema:
@@ -266,7 +266,7 @@ paths:
                   $ref: '#/components/schemas/Pin'
       operationId: get-users-id-pins
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
   '/boards/{:id}/pins':
     parameters:
       - schema:
@@ -300,7 +300,7 @@ paths:
           name: page
           required: true
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
   '/boards/{id}':
     parameters:
       - schema:
@@ -317,7 +317,7 @@ paths:
       tags:
         - Board
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
     put:
       summary: ''
       operationId: put-boards-id
@@ -345,7 +345,7 @@ paths:
                 isArchive:
                   type: boolean
       security:
-        - x-auth-token: []
+        - X-Auth-Token: []
   /users/sign-up:
     post:
       summary: ''
@@ -497,7 +497,7 @@ components:
         - isPrivate
         - userId
   securitySchemes:
-    x-auth-token:
-      name: x-auth-token
+    X-Auth-Token:
+      name: X-Auth-Token
       type: apiKey
       in: header
