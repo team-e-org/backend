@@ -1,14 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"app/config"
+	"app/logs"
+	"app/server"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello World")
-	})
+	c, err := config.ReadConfig()
+	if err != nil {
+		logs.Error("Invalid config: %s", err)
+		panic(err)
+	}
 
-	http.ListenAndServe(":3000", nil)
+	if err = server.Start(c.Server.Port); err != nil {
+		logs.Error("Failed to start server: %s", err)
+		panic(err)
+	}
 }
