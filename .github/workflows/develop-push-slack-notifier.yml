@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: send a notification for develop branch to slack
-      uses: pullreminders/slack-action@v1
+      uses: pullreminders/slack-action@master
       with:
         args: '{\"channel\":\"C0150PHDQF7\", \"text\":\"developにpushされました\"}'
       env:
