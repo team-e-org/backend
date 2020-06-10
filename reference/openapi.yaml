@@ -1,0 +1,503 @@
+openapi: 3.0.0
+info:
+  title: openapi.yml
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+  - url: 'http://localhost:3100'
+    description: mock
+paths:
+  '/users/{id}':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      operationId: get-users-id
+      description: ''
+      security:
+        - x-auth-token: []
+    put:
+      summary: ''
+      operationId: put-users-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                icon:
+                  type: string
+      tags:
+        - User
+      security:
+        - x-auth-token: []
+    delete:
+      summary: ''
+      operationId: delete-users-id
+      responses:
+        '204':
+          description: No Content
+      tags:
+        - User
+      security:
+        - x-auth-token: []
+  /pins:
+    parameters: []
+    post:
+      summary: ''
+      operationId: post-pins
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pin'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                url:
+                  type: string
+                isPirvate:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+              required:
+                - title
+                - image
+      tags:
+        - Pin
+      security:
+        - x-auth-token: []
+    get:
+      summary: ''
+      operationId: get-pins
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pin'
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+          required: true
+      tags:
+        - Pin
+      security:
+        - x-auth-token: []
+  '/pins/{id}':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Pin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pin'
+      operationId: get-pins-id
+      security:
+        - x-auth-token: []
+    delete:
+      summary: ''
+      operationId: delete-pins-id
+      responses:
+        '204':
+          description: No Content
+      tags:
+        - Pin
+      security:
+        - x-auth-token: []
+    put:
+      summary: ''
+      operationId: put-pins-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pin'
+      tags:
+        - Pin
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                url:
+                  type: string
+                isPrivate:
+                  type: boolean
+                image:
+                  type: string
+                  format: binary
+              required:
+                - title
+                - image
+      security:
+        - x-auth-token: []
+  /boards:
+    post:
+      summary: ''
+      operationId: post-boards
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Board'
+      tags:
+        - Board
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                isPrivate:
+                  type: boolean
+              required:
+                - name
+      security:
+        - x-auth-token: []
+  '/users/{id}/boards':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Board
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Board'
+      operationId: get-users-id-boards
+      security:
+        - x-auth-token: []
+  '/users/{id}/pins':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Pin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pin'
+      operationId: get-users-id-pins
+      security:
+        - x-auth-token: []
+  '/boards/{:id}/pins':
+    parameters:
+      - schema:
+          type: integer
+        name: ':id'
+        in: path
+        required: true
+      - schema:
+          type: integer
+        name: page
+        in: query
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Pin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pin'
+      operationId: 'get-boards-:id-pins'
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+          required: true
+      security:
+        - x-auth-token: []
+  '/boards/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    delete:
+      summary: ''
+      operationId: delete-boards-id
+      responses:
+        '204':
+          description: No Content
+      tags:
+        - Board
+      security:
+        - x-auth-token: []
+    put:
+      summary: ''
+      operationId: put-boards-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
+      tags:
+        - Board
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                isPrivate:
+                  type: boolean
+                isArchive:
+                  type: boolean
+      security:
+        - x-auth-token: []
+  /users/sign-up:
+    post:
+      summary: ''
+      operationId: post-users
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                required:
+                  - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - name
+                - email
+                - password
+      tags:
+        - User
+    parameters: []
+  /users/sign-in:
+    post:
+      summary: ''
+      operationId: post-users-sign-in
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                required:
+                  - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+      tags:
+        - User
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        icon:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - email
+    Board:
+      title: Board
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        isPrivate:
+          type: boolean
+        isArchive:
+          type: boolean
+      required:
+        - id
+        - userId
+        - name
+        - isPrivate
+        - isArchive
+    Pin:
+      title: Pin
+      type: object
+      description: ''
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+          format: uri
+        imageUrl:
+          type: string
+          format: uri
+        isPrivate:
+          type: boolean
+        userId:
+          type: integer
+      required:
+        - id
+        - title
+        - imageUrl
+        - isPrivate
+        - userId
+  securitySchemes:
+    x-auth-token:
+      name: x-auth-token
+      type: apiKey
+      in: header
