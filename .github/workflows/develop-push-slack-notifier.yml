@@ -16,4 +16,4 @@ jobs:
       with:
         args: '{\"channel\":\"C0150PHDQF7\", \"text\":\"developにpushされました\"}'
       env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
