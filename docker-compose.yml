@@ -3,9 +3,26 @@ version: "3.7"
 services:
   app:
     build:
-      context: ./
+      context: ./app
       target: dev
     ports:
       - 3000:3000
     volumes:
-      - ./:/go/src/app
+      - ./app:/go/src/app
+  db:
+    build:
+      context: ./db/mysql
+    ports:
+      - 3306:3306
+    restart:
+      always
+    environment:
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+      TZ: "Asia/Tokyo"
+    volumes:
+      - ./db/mysql/migrations:/docker-entrypoint-initdb.d
+      - ./db/mysql/log:/var/log/mysql
+      - ./db/mysql/conf.d:/etc/mysql/conf.d
