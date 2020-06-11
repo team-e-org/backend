@@ -14,6 +14,8 @@ services:
       MYSQL_USER: test_user
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: password
+      MYSQL_PORT: 3306
+      MYSQL_HOST: db
       TZ: "Asia/Tokyo"
   db:
     build:
