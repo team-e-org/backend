@@ -1,20 +1,17 @@
-package registry
+package db
 
 import (
-	"app/models/db"
+	"app/models"
 	"reflect"
 	"testing"
 	"time"
 )
 
 func TestRepository(t *testing.T) {
-	repository, err := NewRepositoryMock()
-	if err != nil {
-		t.Fatalf("An error occurred: %v", err)
-	}
+	repository := NewRepositoryMock()
 
 	userID := 0
-	user := &db.User{
+	user := &models.User{
 		ID:        userID,
 		Name:      "test user",
 		Email:     "test@test.com",
@@ -32,7 +29,7 @@ func TestRepository(t *testing.T) {
 	}
 
 	boardID := 0
-	board := &db.Board{
+	board := &models.Board{
 		ID:          boardID,
 		UserID:      userID,
 		Name:        "test board",
@@ -50,7 +47,7 @@ func TestRepository(t *testing.T) {
 	}
 
 	pinID := 0
-	pin := &db.Pin{
+	pin := &models.Pin{
 		ID:         pinID,
 		UserID:     userID,
 		Title:      "test title",
@@ -70,7 +67,7 @@ func TestRepository(t *testing.T) {
 	}
 
 	tagID := 0
-	tag := &db.Tag{
+	tag := &models.Tag{
 		ID:        tagID,
 		Tag:       "test tag",
 		CreatedAt: time.Now(),

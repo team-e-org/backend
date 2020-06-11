@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"app/models/db"
+	"app/models"
 	"reflect"
 	"testing"
 	"time"
@@ -10,7 +10,7 @@ import (
 func TestUserMock(t *testing.T) {
 	ID := 0
 	users := &UserMock{}
-	user := &db.User{
+	user := &models.User{
 		ID:        ID,
 		Name:      "test user",
 		Email:     "test@test.com",
@@ -31,7 +31,7 @@ func TestUserMock(t *testing.T) {
 func TestUserMockRepository(t *testing.T) {
 	users := NewUserRepository()
 	ID := 0
-	user := &db.User{
+	user := &models.User{
 		ID:        ID,
 		Name:      "test user",
 		Email:     "test@test.com",

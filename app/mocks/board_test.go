@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"app/models/db"
+	"app/models"
 	"reflect"
 	"testing"
 	"time"
@@ -11,7 +11,7 @@ func TestBoardMock(t *testing.T) {
 	ID := 0
 	UserID := 0
 	boards := &BoardMock{}
-	board := &db.Board{
+	board := &models.Board{
 		ID:          ID,
 		UserID:      UserID,
 		Name:        "test board",
@@ -33,7 +33,7 @@ func TestBoardMockRepository(t *testing.T) {
 	boards := NewBoardRepository()
 	ID := 0
 	UserID := 0
-	board := &db.Board{
+	board := &models.Board{
 		ID:          ID,
 		UserID:      UserID,
 		Name:        "test board",

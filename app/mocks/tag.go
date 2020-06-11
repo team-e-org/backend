@@ -1,23 +1,23 @@
 package mocks
 
 import (
-	"app/models/db"
+	"app/models"
 	"app/repository"
 )
 
 type TagMock struct {
-	ExpectedTag *db.Tag
+	ExpectedTag *models.Tag
 }
 
 func NewTagRepository() repository.TagRepository {
 	return &TagMock{}
 }
 
-func (m *TagMock) CreateTag(tag *db.Tag) error {
+func (m *TagMock) CreateTag(tag *models.Tag) error {
 	m.ExpectedTag = tag
 	return nil
 }
 
-func (m *TagMock) GetTag(tagID int) (*db.Tag, error) {
+func (m *TagMock) GetTag(tagID int) (*models.Tag, error) {
 	return m.ExpectedTag, nil
 }

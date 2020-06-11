@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"app/models/db"
+	"app/models"
 	"app/repository"
 	"database/sql"
 )
@@ -16,10 +16,10 @@ func NewBoardRepository(db *sql.DB) repository.BoardRepository {
 	}
 }
 
-func (u *Board) CreateBoard(board *db.Board) error {
+func (u *Board) CreateBoard(board *models.Board) error {
 	return nil
 }
 
-func (u *Board) GetBoard(boardID int) (*db.Board, error) {
+func (u *Board) GetBoard(boardID int) (*models.Board, error) {
 	return nil, nil
 }

@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"app/models/db"
+	"app/models"
 	"app/repository"
 	"database/sql"
 )
@@ -16,10 +16,10 @@ func NewUserRepository(db *sql.DB) repository.UserRepository {
 	}
 }
 
-func (u *User) CreateUser(user *db.User) error {
+func (u *User) CreateUser(user *models.User) error {
 	return nil
 }
 
-func (u *User) GetUser(userID int) (*db.User, error) {
+func (u *User) GetUser(userID int) (*models.User, error) {
 	return nil, nil
 }

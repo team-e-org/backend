@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"app/models/db"
+	"app/models"
 	"app/repository"
 	"database/sql"
 )
@@ -16,10 +16,10 @@ func NewTagRepository(db *sql.DB) repository.TagRepository {
 	}
 }
 
-func (u *Tag) CreateTag(tag *db.Tag) error {
+func (u *Tag) CreateTag(tag *models.Tag) error {
 	return nil
 }
 
-func (u *Tag) GetTag(tagID int) (*db.Tag, error) {
+func (u *Tag) GetTag(tagID int) (*models.Tag, error) {
 	return nil, nil
 }

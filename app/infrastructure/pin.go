@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"app/models/db"
+	"app/models"
 	"app/repository"
 	"database/sql"
 )
@@ -16,10 +16,10 @@ func NewPinRepository(db *sql.DB) repository.PinRepository {
 	}
 }
 
-func (u *Pin) CreatePin(pin *db.Pin) error {
+func (u *Pin) CreatePin(pin *models.Pin) error {
 	return nil
 }
 
-func (u *Pin) GetPin(pinID int) (*db.Pin, error) {
+func (u *Pin) GetPin(pinID int) (*models.Pin, error) {
 	return nil, nil
 }
