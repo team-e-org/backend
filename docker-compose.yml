@@ -33,3 +33,11 @@ services:
       - ./db/mysql/migrations:/docker-entrypoint-initdb.d
       - ./db/mysql/log:/var/log/mysql
       - ./db/mysql/conf.d:/etc/mysql/conf.d
+  api:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./reference/openapi.yaml:/openapi.yaml
+    environment:
+      SWAGGER_JSON: /openapi.yaml
