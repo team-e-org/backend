@@ -4,6 +4,7 @@ import (
 	"app/config"
 	"app/logs"
 	"app/server"
+	"fmt"
 )
 
 func main() {
@@ -17,4 +18,8 @@ func main() {
 		logs.Error("Failed to start server: %s", err)
 		panic(err)
 	}
+}
+
+func tMain() {
+	fmt.Printf("tMain")
 }

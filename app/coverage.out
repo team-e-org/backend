@@ -1,5 +1,0 @@
-mode: atomic
-app/main.go:9.13,11.16 2 0
-app/main.go:16.2,16.51 1 0
-app/main.go:11.16,13.13 2 0
-app/main.go:16.51,18.13 2 0
