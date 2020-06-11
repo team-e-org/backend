@@ -2,6 +2,7 @@ package main
 
 import (
 	"app/config"
+	"app/db"
 	"app/logs"
 	"app/server"
 )
@@ -13,7 +14,7 @@ func main() {
 		panic(err)
 	}
 
-	sqlDB, err := connectToDb(c.DB.Host, c.DB.Port, c.DB.User, c.DB.Password, c.DB.DBName)
+	sqlDB, err := db.ConnectToMySql(c.DB.Host, c.DB.Port, c.DB.User, c.DB.Password, c.DB.DBName)
 	if sqlDB != nil {
 		defer sqlDB.Close()
 	}
