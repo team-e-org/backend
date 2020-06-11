@@ -1,15 +1,18 @@
 package server
 
 import (
+	"app/models/db"
+	"database/sql"
 	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-func Start(port int) error {
+func Start(port int, dbConn *sql.DB) error {
 	router := mux.NewRouter()
-	attachHandlers(router)
+	data := db.NewSQLDataStorage(dbConn)
+	attachHandlers(router, data)
 
 	s := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
@@ -19,7 +22,7 @@ func Start(port int) error {
 	return s.ListenAndServe()
 }
 
-func attachHandlers(mux *mux.Router) {
+func attachHandlers(mux *mux.Router, data db.DataStorage) {
 	mux.HandleFunc("/", Hello)
 }
 

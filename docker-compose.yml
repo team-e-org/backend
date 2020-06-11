@@ -9,13 +9,20 @@ services:
       - 3000:3000
     volumes:
       - ./app:/go/src/app
+    environment:
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_PORT: 3306
+      MYSQL_HOST: db
+      TZ: "Asia/Tokyo"
   db:
     build:
       context: ./db/mysql
     ports:
       - 3306:3306
-    restart:
-      always
+    restart: always
     environment:
       MYSQL_DATABASE: test_db
       MYSQL_USER: test_user
