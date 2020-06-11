@@ -264,11 +264,11 @@ paths:
       operationId: get-users-id-pins
       security:
         - X-Auth-Token: []
-  '/boards/{:id}/pins':
+  '/boards/{id}/pins':
     parameters:
       - schema:
-          type: integer
-        name: ':id'
+          type: string
+        name: id
         in: path
         required: true
       - schema:
