@@ -177,16 +177,8 @@ paths:
                   type: string
                 description:
                   type: string
-                url:
-                  type: string
                 isPrivate:
                   type: boolean
-                image:
-                  type: string
-                  format: binary
-              required:
-                - title
-                - image
       security:
         - X-Auth-Token: []
   /boards:
