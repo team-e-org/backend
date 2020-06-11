@@ -2,12 +2,11 @@ name: go_test
 on:
   pull_request:
     types: [opened, synchronize]
-defaults:
-  run:
-    working-directory: app
 
 jobs:
   test:
+    env:
+      GOPATH: ${{ github.workspace }}
     runs-on: ubuntu-latest
     steps:
       - name: Install Go
@@ -16,5 +15,8 @@ jobs:
           go-version: 1.14.2
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          path: ./src/github.com/${{ github.repository }}
       - name: Test
         run: go test -race -v ./...
+        working-directory: ./src/github.com/${{ github.repository }}/app
