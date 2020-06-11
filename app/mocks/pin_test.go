@@ -21,7 +21,7 @@ func TestPinMock(t *testing.T) {
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
-	pins.AddPin(pin)
+	pins.CreatePin(pin)
 	got, err := pins.GetPin(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
@@ -45,7 +45,7 @@ func TestPinMockRepository(t *testing.T) {
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
-	pins.AddPin(pin)
+	pins.CreatePin(pin)
 	got, err := pins.GetPin(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)

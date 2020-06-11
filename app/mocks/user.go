@@ -13,7 +13,7 @@ func NewUserRepository() repository.UserRepository {
 	return &UserMock{}
 }
 
-func (m *UserMock) AddUser(user *db.User) error {
+func (m *UserMock) CreateUser(user *db.User) error {
 	m.ExpectedUser = user
 	return nil
 }

@@ -13,7 +13,7 @@ func NewPinRepository() repository.PinRepository {
 	return &PinMock{}
 }
 
-func (m *PinMock) AddPin(pin *db.Pin) error {
+func (m *PinMock) CreatePin(pin *db.Pin) error {
 	m.ExpectedPin = pin
 	return nil
 }

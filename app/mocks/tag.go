@@ -13,7 +13,7 @@ func NewTagRepository() repository.TagRepository {
 	return &TagMock{}
 }
 
-func (m *TagMock) AddTag(tag *db.Tag) error {
+func (m *TagMock) CreateTag(tag *db.Tag) error {
 	m.ExpectedTag = tag
 	return nil
 }

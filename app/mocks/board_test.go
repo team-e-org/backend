@@ -19,7 +19,7 @@ func TestBoardMock(t *testing.T) {
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-	boards.AddBoard(board)
+	boards.CreateBoard(board)
 	got, err := boards.GetBoard(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
@@ -41,7 +41,7 @@ func TestBoardMockRepository(t *testing.T) {
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-	boards.AddBoard(board)
+	boards.CreateBoard(board)
 	got, err := boards.GetBoard(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)

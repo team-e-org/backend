@@ -16,7 +16,7 @@ func TestTagMock(t *testing.T) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	tags.AddTag(tag)
+	tags.CreateTag(tag)
 	got, err := tags.GetTag(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
@@ -35,7 +35,7 @@ func TestTagMockRepository(t *testing.T) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	tags.AddTag(tag)
+	tags.CreateTag(tag)
 	got, err := tags.GetTag(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)

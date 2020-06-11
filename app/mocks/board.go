@@ -13,7 +13,7 @@ func NewBoardRepository() repository.BoardRepository {
 	return &BoardMock{}
 }
 
-func (m *BoardMock) AddBoard(board *db.Board) error {
+func (m *BoardMock) CreateBoard(board *db.Board) error {
 	m.ExpectedBoard = board
 	return nil
 }

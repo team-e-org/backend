@@ -18,7 +18,7 @@ func TestUserMock(t *testing.T) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	users.AddUser(user)
+	users.CreateUser(user)
 	got, err := users.GetUser(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
@@ -39,7 +39,7 @@ func TestUserMockRepository(t *testing.T) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	users.AddUser(user)
+	users.CreateUser(user)
 	got, err := users.GetUser(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
