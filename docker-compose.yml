@@ -9,7 +9,12 @@ services:
       - 3000:3000
     volumes:
       - ./app:/go/src/app
-    env_file: .env
+    environment:
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+      TZ: "Asia/Tokyo"
   db:
     build:
       context: ./db/mysql
@@ -17,8 +22,11 @@ services:
       - 3306:3306
     restart: always
     environment:
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
       TZ: "Asia/Tokyo"
-    env_file: .env
     volumes:
       - ./db/mysql/migrations:/docker-entrypoint-initdb.d
       - ./db/mysql/log:/var/log/mysql
