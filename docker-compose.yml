@@ -9,6 +9,8 @@ services:
       - 3000:3000
     volumes:
       - ./app:/go/src/app
+    depends_on:
+      - db
     environment:
       MYSQL_DATABASE: test_db
       MYSQL_USER: test_user
