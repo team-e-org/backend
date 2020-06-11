@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"app/models/db"
+	"app/models"
 	"reflect"
 	"testing"
 	"time"
@@ -10,7 +10,7 @@ import (
 func TestTagMock(t *testing.T) {
 	ID := 0
 	tags := &TagMock{}
-	tag := &db.Tag{
+	tag := &models.Tag{
 		ID:        ID,
 		Tag:       "test tag",
 		CreatedAt: time.Now(),
@@ -29,7 +29,7 @@ func TestTagMock(t *testing.T) {
 func TestTagMockRepository(t *testing.T) {
 	tags := NewTagRepository()
 	ID := 0
-	tag := &db.Tag{
+	tag := &models.Tag{
 		ID:        ID,
 		Tag:       "test tag",
 		CreatedAt: time.Now(),

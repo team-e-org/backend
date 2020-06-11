@@ -1,12 +1,12 @@
 package mocks
 
 import (
-	"app/models/db"
+	"app/models"
 	"app/repository"
 )
 
 type BoardMock struct {
-	ExpectedBoard *db.Board
+	Expectemodelsoard *models.Board
 }
 
 func NewBoardRepository() repository.BoardRepository {
@@ -18,6 +18,6 @@ func (m *BoardMock) AddBoard(board *db.Board) error {
 	return nil
 }
 
-func (m *BoardMock) GetBoard(boardID int) (*db.Board, error) {
-	return m.ExpectedBoard, nil
+func (m *BoardMock) GetBoard(boardID int) (*models.Board, error) {
+	return m.Expectemodelsoard, nil
 }

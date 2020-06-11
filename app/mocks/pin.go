@@ -1,12 +1,12 @@
 package mocks
 
 import (
-	"app/models/db"
+	"app/models"
 	"app/repository"
 )
 
 type PinMock struct {
-	ExpectedPin *db.Pin
+	ExpectedPin *models.Pin
 }
 
 func NewPinRepository() repository.PinRepository {
@@ -18,6 +18,6 @@ func (m *PinMock) AddPin(pin *db.Pin) error {
 	return nil
 }
 
-func (m *PinMock) GetPin(pinID int) (*db.Pin, error) {
+func (m *PinMock) GetPin(pinID int) (*models.Pin, error) {
 	return m.ExpectedPin, nil
 }
