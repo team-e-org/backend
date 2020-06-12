@@ -2,9 +2,13 @@ package db
 
 import (
 	"app/models"
+	"database/sql"
+	"os"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/DATA-DOG/go-sqlmock"
 )
 
 func TestRepository(t *testing.T) {
@@ -81,4 +85,30 @@ func TestRepository(t *testing.T) {
 	if !reflect.DeepEqual(*tag, *gotTag) {
 		t.Fatalf("Not equal tag")
 	}
+}
+
+var sqlDB *sql.DB
+var mock sqlmock.Sqlmock
+
+func mockDBHandlingWrapper(m *testing.M) int {
+	_sqlDB, _mock, err := sqlmock.New()
+	sqlDB = _sqlDB
+	mock = _mock
+	if err != nil {
+		panic(err)
+	}
+
+	if err := sqlDB.Ping(); err != nil {
+		panic(err)
+	}
+
+	return m.Run()
+}
+
+func TestMain(m *testing.M) {
+	os.Exit(mockDBHandlingWrapper(m))
+}
+
+func TestRepositoryMySQLMock(t *testing.T) {
+
 }
