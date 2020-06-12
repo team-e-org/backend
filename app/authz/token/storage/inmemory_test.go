@@ -23,19 +23,19 @@ func TestSetTokenDataConccurency(t *testing.T) {
 
 func TestInMemoryStorage_GetTokenData(t *testing.T) {
 	tests := []struct {
-		key       string
-		value     string
+		token     string
+		data      string
 		searchKey string
 		want      string
 		wantError bool
 	}{
-		{"key", "abc", "k", "", true},
-		{"key", "abc", "key", "abc", false},
+		{"token", "abc", "tockn", "", true},
+		{"token", "abc", "token", "abc", false},
 	}
 
 	for _, tt := range tests {
 		storage := NewInMemoryTokenStorage()
-		_ = storage.SetTokenData(tt.key, tt.value)
+		_ = storage.SetTokenData(tt.token, tt.data)
 		got, err := storage.GetTokenData(tt.searchKey)
 
 		if !tt.wantError && err != nil {
@@ -52,17 +52,17 @@ func TestInMemoryStorage_GetTokenData(t *testing.T) {
 	}
 }
 
-func TestInMemoryStorage_DeleteToken(t *testing.T) {
+func TestInMemoryStorage_SetTokenData(t *testing.T) {
 	storage := NewInMemoryTokenStorage()
-	err := storage.SetTokenData("key", "abc")
+	err := storage.DeleteToken("token")
 	if err != nil {
 		t.Fatalf("err should be nil: got %v", err)
 	}
 }
 
-func TestInMemoryStorage_SetTokenData(t *testing.T) {
+func TestInMemoryStorage_DeleteToken(t *testing.T) {
 	storage := NewInMemoryTokenStorage()
-	err := storage.DeleteToken("key")
+	err := storage.SetTokenData("token", "abc")
 	if err != nil {
 		t.Fatalf("err should be nil: got %v", err)
 	}
