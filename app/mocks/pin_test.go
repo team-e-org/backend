@@ -12,14 +12,14 @@ func TestPinMock(t *testing.T) {
 	UserID := 0
 	pins := &PinMock{}
 	pin := &models.Pin{
-		ID:         ID,
-		UserID:     UserID,
-		Title:      "test title",
-		Descrition: "test description",
-		URL:        "test url",
-		ImageURL:   "test image url",
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
+		ID:          ID,
+		UserID:      UserID,
+		Title:       "test title",
+		Description: "test description",
+		URL:         "test url",
+		ImageURL:    "test image url",
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 	pins.CreatePin(pin)
 	got, err := pins.GetPin(ID)
@@ -36,14 +36,14 @@ func TestPinMockRepository(t *testing.T) {
 	ID := 0
 	UserID := 0
 	pin := &models.Pin{
-		ID:         ID,
-		UserID:     UserID,
-		Title:      "test title",
-		Descrition: "test description",
-		URL:        "test url",
-		ImageURL:   "test image url",
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
+		ID:          ID,
+		UserID:      UserID,
+		Title:       "test title",
+		Description: "test description",
+		URL:         "test url",
+		ImageURL:    "test image url",
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 	pins.CreatePin(pin)
 	got, err := pins.GetPin(ID)

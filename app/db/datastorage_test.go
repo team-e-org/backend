@@ -48,14 +48,14 @@ func TestRepository(t *testing.T) {
 
 	pinID := 0
 	pin := &models.Pin{
-		ID:         pinID,
-		UserID:     userID,
-		Title:      "test title",
-		Descrition: "test description",
-		URL:        "test url",
-		ImageURL:   "test image url",
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
+		ID:          pinID,
+		UserID:      userID,
+		Title:       "test title",
+		Description: "test description",
+		URL:         "test url",
+		ImageURL:    "test image url",
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 	repository.Pins.CreatePin(pin)
 	gotPin, err := repository.Pins.GetPin(pinID)
