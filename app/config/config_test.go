@@ -6,6 +6,15 @@ import (
 	"testing"
 )
 
+func TestMain(m *testing.M) {
+	os.Unsetenv("SERVER_PORT")
+	os.Unsetenv("MYSQL_DATABASE")
+	os.Unsetenv("MYSQL_USER")
+	os.Unsetenv("MYSQL_PASSWORD")
+	os.Unsetenv("MYSQL_PORT")
+	os.Unsetenv("MYSQL_HOST")
+}
+
 func TestNoServerPort(t *testing.T) {
 	_, err := ReadConfig()
 	if err == nil {
