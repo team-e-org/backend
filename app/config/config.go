@@ -21,6 +21,7 @@ type DBConfig struct {
 	DBName   string
 	Host     string
 	Port     int
+	TimeZone string
 }
 
 func ReadDBConfig() (*DBConfig, error) {
@@ -35,6 +36,7 @@ func ReadDBConfig() (*DBConfig, error) {
 		DBName:   os.Getenv("MYSQL_DATABASE"),
 		Host:     os.Getenv("MYSQL_HOST"),
 		Port:     dbPort,
+		TimeZone: os.Getenv("TZ"),
 	}
 
 	return dbConfig, nil
