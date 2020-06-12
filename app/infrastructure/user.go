@@ -31,7 +31,7 @@ func (u *User) GetUserByEmail(email string) (*models.User, error) {
 	const query = `
 SELECT u.id, u.email, u.password, u.icon, u.created_at, u.updated_at
 FROM users u
-WHERE u.email = $1;
+WHERE u.email = ?;
 `
 	row := u.DB.QueryRow(query, email)
 
