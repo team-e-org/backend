@@ -2,4 +2,4 @@ coverage:
   notify:
     slack:
       default:
-        url: "https://hooks.slack.com/services/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"
+        url: "https://hooks.slack.com/services/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"
