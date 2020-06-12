@@ -20,3 +20,34 @@ func TestSetTokenDataConccurency(t *testing.T) {
 
 	wg.Wait()
 }
+
+func TestInMemoryStorage_GetTokenData(t *testing.T) {
+	tests := []struct {
+		key       string
+		value     string
+		searchKey string
+		want      string
+		wantError bool
+	}{
+		{"key", "abc", "k", "", true},
+		{"key", "abc", "key", "abc", false},
+	}
+
+	for _, tt := range tests {
+		storage := NewInMemoryTokenStorage()
+		_ = storage.SetTokenData(tt.key, tt.value)
+		got, err := storage.GetTokenData(tt.searchKey)
+
+		if !tt.wantError && err != nil {
+			t.Fatalf("want no err, but has error %v", err)
+		}
+
+		if tt.wantError && err == nil {
+			t.Fatalf("want err, but has no err")
+		}
+
+		if tt.want != got {
+			t.Fatalf("token data mismatch. want: %s, got: %s", tt.want, got)
+		}
+	}
+}
