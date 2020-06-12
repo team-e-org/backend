@@ -2,6 +2,10 @@ name: go_integration_test
 on:
   pull_request:
     types: [opened, synchronize]
+  push:
+    branches:
+      - master
+      - develop
 
 jobs:
   test:
