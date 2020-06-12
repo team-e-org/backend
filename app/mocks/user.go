@@ -21,3 +21,7 @@ func (m *UserMock) CreateUser(user *models.User) error {
 func (m *UserMock) GetUser(userID int) (*models.User, error) {
 	return m.ExpectedUser, nil
 }
+
+func (m *UserMock) GetUserByEmail(email string) (*models.User, error) {
+	return m.ExpectedUser, nil
+}
