@@ -7,8 +7,8 @@ type Board struct {
 	UserID      int
 	Name        string
 	Description string
-	isPrivate   bool
-	isArchive   bool
+	IsPrivate   bool
+	IsArchive   bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
