@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"app/models/db"
+	"app/models"
 	"reflect"
 	"testing"
 	"time"
@@ -11,7 +11,7 @@ func TestPinMock(t *testing.T) {
 	ID := 0
 	UserID := 0
 	pins := &PinMock{}
-	pin := &db.Pin{
+	pin := &models.Pin{
 		ID:         ID,
 		UserID:     UserID,
 		Title:      "test title",
@@ -21,7 +21,7 @@ func TestPinMock(t *testing.T) {
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
-	pins.AddPin(pin)
+	pins.CreatePin(pin)
 	got, err := pins.GetPin(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
@@ -35,7 +35,7 @@ func TestPinMockRepository(t *testing.T) {
 	pins := NewPinRepository()
 	ID := 0
 	UserID := 0
-	pin := &db.Pin{
+	pin := &models.Pin{
 		ID:         ID,
 		UserID:     UserID,
 		Title:      "test title",
@@ -45,7 +45,7 @@ func TestPinMockRepository(t *testing.T) {
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
-	pins.AddPin(pin)
+	pins.CreatePin(pin)
 	got, err := pins.GetPin(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)

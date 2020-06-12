@@ -1,23 +1,23 @@
 package mocks
 
 import (
-	"app/models/db"
+	"app/models"
 	"app/repository"
 )
 
 type UserMock struct {
-	ExpectedUser *db.User
+	ExpectedUser *models.User
 }
 
 func NewUserRepository() repository.UserRepository {
 	return &UserMock{}
 }
 
-func (m *UserMock) AddUser(user *db.User) error {
+func (m *UserMock) CreateUser(user *models.User) error {
 	m.ExpectedUser = user
 	return nil
 }
 
-func (m *UserMock) GetUser(userID int) (*db.User, error) {
+func (m *UserMock) GetUser(userID int) (*models.User, error) {
 	return m.ExpectedUser, nil
 }

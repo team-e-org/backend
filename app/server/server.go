@@ -1,7 +1,7 @@
 package server
 
 import (
-	"app/models/db"
+	"app/db"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 
 func Start(port int, dbConn *sql.DB) error {
 	router := mux.NewRouter()
-	data := db.NewSQLDataStorage(dbConn)
+	data := db.NewDataStorage(dbConn)
 	attachHandlers(router, data)
 
 	s := &http.Server{
@@ -22,7 +22,7 @@ func Start(port int, dbConn *sql.DB) error {
 	return s.ListenAndServe()
 }
 
-func attachHandlers(mux *mux.Router, data db.DataStorage) {
+func attachHandlers(mux *mux.Router, data *db.DataStorage) {
 	mux.HandleFunc("/", Hello)
 }
 

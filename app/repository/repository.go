@@ -1,23 +1,23 @@
 package repository
 
-import "app/models/db"
+import "app/models"
 
 type UserRepository interface {
-	AddUser(user *db.User) error
-	GetUser(userID int) (*db.User, error)
+	CreateUser(user *models.User) error
+	GetUser(userID int) (*models.User, error)
 }
 
 type BoardRepository interface {
-	AddBoard(board *db.Board) error
-	GetBoard(boardID int) (*db.Board, error)
+	CreateBoard(board *models.Board) error
+	GetBoard(boardID int) (*models.Board, error)
 }
 
 type PinRepository interface {
-	AddPin(pin *db.Pin) error
-	GetPin(pinID int) (*db.Pin, error)
+	CreatePin(pin *models.Pin) error
+	GetPin(pinID int) (*models.Pin, error)
 }
 
 type TagRepository interface {
-	AddTag(tag *db.Tag) error
-	GetTag(tagID int) (*db.Tag, error)
+	CreateTag(tag *models.Tag) error
+	GetTag(tagID int) (*models.Tag, error)
 }
