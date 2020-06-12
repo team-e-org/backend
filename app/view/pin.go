@@ -17,7 +17,7 @@ func NewPin(pin *models.Pin) *Pin {
 		ID:          pin.ID,
 		UserID:      pin.UserID,
 		Title:       pin.Title,
-		Description: pin.Descrition,
+		Description: pin.Description,
 		URL:         pin.URL,
 		ImageURL:    pin.ImageURL,
 		IsPrivate:   pin.IsPrivate,
