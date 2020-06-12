@@ -36,3 +36,7 @@ func TestMain(m *testing.M) {
 func TestDataStorage(t *testing.T) {
 
 }
+
+func TestDataStorage2(t *testing.T) {
+
+}
