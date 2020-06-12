@@ -10,7 +10,7 @@ import (
 )
 
 func ConnectToMySql(host string, port int, user string, password string, dbName string) (*sql.DB, error) {
-	psqlInfo := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, password, host, port, dbName)
+	psqlInfo := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true", user, password, host, port, dbName)
 	db, err := sql.Open("mysql", psqlInfo)
 	if err != nil {
 		return nil, err
