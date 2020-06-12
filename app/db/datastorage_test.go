@@ -3,7 +3,6 @@ package db
 import (
 	"app/models"
 	"database/sql"
-	"os"
 	"reflect"
 	"testing"
 	"time"
@@ -87,13 +86,8 @@ func TestRepository(t *testing.T) {
 	}
 }
 
-var sqlDB *sql.DB
-var mock sqlmock.Sqlmock
-
-func mockDBHandlingWrapper(m *testing.M) int {
-	_sqlDB, _mock, err := sqlmock.New()
-	sqlDB = _sqlDB
-	mock = _mock
+func mockDBHandlingWrapper() (*sql.DB, sqlmock.Sqlmock) {
+	sqlDB, mock, err := sqlmock.New()
 	if err != nil {
 		panic(err)
 	}
@@ -102,11 +96,7 @@ func mockDBHandlingWrapper(m *testing.M) int {
 		panic(err)
 	}
 
-	return m.Run()
-}
-
-func TestMain(m *testing.M) {
-	os.Exit(mockDBHandlingWrapper(m))
+	return sqlDB, mock
 }
 
 func TestRepositoryMySQLMock(t *testing.T) {
