@@ -7,9 +7,14 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
+
+func init() {
+	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
+}
 
 func Start(port int, dbConn *sql.DB) error {
 	router := mux.NewRouter()
