@@ -51,3 +51,19 @@ func TestInMemoryStorage_GetTokenData(t *testing.T) {
 		}
 	}
 }
+
+func TestInMemoryStorage_DeleteToken(t *testing.T) {
+	storage := NewInMemoryTokenStorage()
+	err := storage.SetTokenData("key", "abc")
+	if err != nil {
+		t.Fatalf("err should be nil: got %v", err)
+	}
+}
+
+func TestInMemoryStorage_SetTokenData(t *testing.T) {
+	storage := NewInMemoryTokenStorage()
+	err := storage.DeleteToken("key")
+	if err != nil {
+		t.Fatalf("err should be nil: got %v", err)
+	}
+}
