@@ -1,7 +1,6 @@
 name: go_test
 on:
-  pull_request:
-    types: [opened, synchronize]
+  push:
 
 jobs:
   test:
