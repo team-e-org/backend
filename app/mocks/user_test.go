@@ -1,24 +1,17 @@
 package mocks
 
 import (
-	"app/models"
 	"reflect"
 	"testing"
-	"time"
 )
 
 func TestUserMock(t *testing.T) {
 	ID := 0
 	users := &UserMock{}
-	user := &models.User{
-		ID:        ID,
-		Name:      "test user",
-		Email:     "test@test.com",
-		Icon:      "testicon",
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+	user, err := users.CreateUser("test user", "test@test.com", "testicon", "testpassword")
+	if err != nil {
+		t.Fatalf("An error occurred while creating user: %v", err)
 	}
-	users.CreateUser(user)
 	got, err := users.GetUser(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
@@ -31,15 +24,10 @@ func TestUserMock(t *testing.T) {
 func TestUserMockRepository(t *testing.T) {
 	users := NewUserRepository()
 	ID := 0
-	user := &models.User{
-		ID:        ID,
-		Name:      "test user",
-		Email:     "test@test.com",
-		Icon:      "testicon",
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+	user, err := users.CreateUser("test user", "test@test.com", "testicon", "testpassword")
+	if err != nil {
+		t.Fatalf("An error occurred while creating user: %v", err)
 	}
-	users.CreateUser(user)
 	got, err := users.GetUser(ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)

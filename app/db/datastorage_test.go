@@ -10,17 +10,11 @@ import (
 func TestRepository(t *testing.T) {
 	repository := NewRepositoryMock()
 
-	userID := 0
-	user := &models.User{
-		ID:        userID,
-		Name:      "test user",
-		Email:     "test@test.com",
-		Icon:      "test icon",
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+	user, err := repository.Users.CreateUser("test user", "test@test.com", "testicon", "testpassword")
+	if err != nil {
+		t.Fatalf("An error occurred while creating user: %v", err)
 	}
-	repository.Users.CreateUser(user)
-	gotUser, err := repository.Users.GetUser(userID)
+	gotUser, err := repository.Users.GetUser(user.ID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
@@ -31,7 +25,7 @@ func TestRepository(t *testing.T) {
 	boardID := 0
 	board := &models.Board{
 		ID:          boardID,
-		UserID:      userID,
+		UserID:      user.ID,
 		Name:        "test board",
 		Description: "test description",
 		CreatedAt:   time.Now(),
@@ -49,7 +43,7 @@ func TestRepository(t *testing.T) {
 	pinID := 0
 	pin := &models.Pin{
 		ID:          pinID,
-		UserID:      userID,
+		UserID:      user.ID,
 		Title:       "test title",
 		Description: "test description",
 		URL:         "test url",
