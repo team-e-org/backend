@@ -6,16 +6,16 @@ import (
 	"errors"
 )
 
-type PinID int
-type TagID int
-
 type TagMock struct {
 	ExpectedTags []*models.Tag
-	PinTagMapper map[PinID][]TagID // map[pinID][]tagID
+	PinTagMapper map[int][]int // map[pinID][]tagID
 }
 
 func NewTagRepository() repository.TagRepository {
-	return &TagMock{}
+	return &TagMock{
+		ExpectedTags: make([]*models.Tag, 0),
+		PinTagMapper: make(map[int][]int),
+	}
 }
 
 func (m *TagMock) CreateTag(tag *models.Tag) error {
@@ -33,15 +33,15 @@ func (m *TagMock) GetTag(tagID int) (*models.Tag, error) {
 }
 
 func (m *TagMock) AttachTagToPin(tagID int, pinID int) error {
-	m.PinTagMapper[PinID(pinID)] = append(m.PinTagMapper[PinID(pinID)], TagID(tagID))
+	m.PinTagMapper[pinID] = append(m.PinTagMapper[pinID], tagID)
 	return nil
 }
 
 func (m *TagMock) GetTagsByPinID(pinID int) ([]*models.Tag, error) {
 	tags := make([]*models.Tag, 0, len(m.PinTagMapper))
-	for _, id := range m.PinTagMapper[PinID(pinID)] {
+	for _, id := range m.PinTagMapper[pinID] {
 		for _, t := range m.ExpectedTags {
-			if TagID(t.ID) == id {
+			if t.ID == id {
 				tags = append(tags, t)
 			}
 		}

@@ -60,7 +60,7 @@ func TestRepository(t *testing.T) {
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-	repository.Pins.CreatePin(pin)
+	repository.Pins.CreatePin(pin, boardID)
 	gotPin, err := repository.Pins.GetPin(pinID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)

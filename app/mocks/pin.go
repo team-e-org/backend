@@ -12,7 +12,12 @@ type PinMock struct {
 }
 
 func NewPinRepository() repository.PinRepository {
-	return &PinMock{}
+	pins := make([]*models.Pin, 0)
+	mapper := make(map[int][]int)
+	return &PinMock{
+		ExpectedPins:   pins,
+		BoardPinMapper: mapper,
+	}
 }
 
 func (m *PinMock) CreatePin(pin *models.Pin, boardID int) error {
