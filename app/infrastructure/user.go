@@ -1,6 +1,8 @@
 package infrastructure
 
 import (
+	"app/helpers"
+	"app/logs"
 	"app/models"
 	"app/repository"
 	"database/sql"
@@ -20,6 +22,31 @@ func NewUserRepository(db *sql.DB) repository.UserRepository {
 }
 
 func (u *User) CreateUser(user *models.User) error {
+	const query = `
+    INSERT INTO "users" ("name", "email", "password", "icon") VALUES (?, ?, ?, ?)
+    `
+
+	stmt, err := u.DB.Prepare(query)
+	if err != nil {
+		logs.Error("An error occurred: %v", err)
+		return err
+	}
+
+	result, err := stmt.Exec(query, user.Name, user.Email, user.HashedPassword, user.Icon)
+	err = helpers.CheckDBExecError(result, err)
+	if err != nil {
+		logs.Error("An error occurred: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func (u *User) UpdateUser(user *models.User) error {
+	return nil
+}
+
+func (u *User) DeleteUser(userID int) error {
 	return nil
 }
 

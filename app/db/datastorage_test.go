@@ -2,9 +2,12 @@ package db
 
 import (
 	"app/models"
+	"database/sql"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/DATA-DOG/go-sqlmock"
 )
 
 func TestRepository(t *testing.T) {
@@ -57,7 +60,7 @@ func TestRepository(t *testing.T) {
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-	repository.Pins.CreatePin(pin)
+	repository.Pins.CreatePin(pin, boardID)
 	gotPin, err := repository.Pins.GetPin(pinID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
@@ -81,4 +84,21 @@ func TestRepository(t *testing.T) {
 	if !reflect.DeepEqual(*tag, *gotTag) {
 		t.Fatalf("Not equal tag")
 	}
+}
+
+func mockDBHandlingWrapper() (*sql.DB, sqlmock.Sqlmock) {
+	sqlDB, mock, err := sqlmock.New()
+	if err != nil {
+		panic(err)
+	}
+
+	if err := sqlDB.Ping(); err != nil {
+		panic(err)
+	}
+
+	return sqlDB, mock
+}
+
+func TestRepositoryMySQLMock(t *testing.T) {
+
 }

@@ -23,3 +23,11 @@ func (u *Tag) CreateTag(tag *models.Tag) error {
 func (u *Tag) GetTag(tagID int) (*models.Tag, error) {
 	return nil, nil
 }
+
+func (u *Tag) AttachTagToPin(tagID int, pinID int) error {
+	return nil
+}
+
+func (u *Tag) GetTagsByPinID(pinID int) ([]*models.Tag, error) {
+	return nil, nil
+}
