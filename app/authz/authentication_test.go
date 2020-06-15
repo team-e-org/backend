@@ -28,7 +28,6 @@ func TestAuthLayer_AuthenticateUser(t *testing.T) {
 	for _, tt := range tests {
 		user := &models.User{
 			ID:             0,
-			Name:           "user",
 			HashedPassword: tt.hashedPassword,
 		}
 		userRepo := mocks.NewUserRepository()
@@ -38,7 +37,7 @@ func TestAuthLayer_AuthenticateUser(t *testing.T) {
 		}
 		al := NewAuthLayer(*storage)
 
-		token, err := al.AuthenticateUser("user", tt.password)
+		token, err := al.AuthenticateUser("abc@example.com", tt.password)
 		if !tt.wantError && err != nil {
 			t.Fatalf("An error occured: %v", err)
 		}
@@ -47,7 +46,8 @@ func TestAuthLayer_AuthenticateUser(t *testing.T) {
 			t.Fatalf("Error should occur")
 		}
 
-		if !tt.wantError && len(token) != 36 {
+		const wantTokenLength = 36
+		if !tt.wantError && len(token) != wantTokenLength {
 			t.Fatalf("invalid token length: got %s", token)
 		}
 	}
