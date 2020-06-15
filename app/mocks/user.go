@@ -3,6 +3,7 @@ package mocks
 import (
 	"app/models"
 	"app/repository"
+	"errors"
 )
 
 type UserMock struct {
@@ -23,5 +24,8 @@ func (m *UserMock) GetUser(userID int) (*models.User, error) {
 }
 
 func (m *UserMock) GetUserByEmail(email string) (*models.User, error) {
+	if m.ExpectedUser.Email != email {
+		return nil, errors.New("user not found")
+	}
 	return m.ExpectedUser, nil
 }
