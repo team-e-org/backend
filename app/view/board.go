@@ -4,11 +4,11 @@ import "app/models"
 
 type Board struct {
 	ID          int    `json:"id"`
-	UserID      int    `json:"user_id"`
+	UserID      int    `json:"userId"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	IsPrivate   bool   `json:"is_private"`
-	IsArchive   bool   `json:"is_archive"`
+	IsPrivate   bool   `json:"isPrivate"`
+	IsArchive   bool   `json:"isArchive"`
 }
 
 func NewBoard(board *models.Board) *Board {

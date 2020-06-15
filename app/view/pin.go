@@ -4,13 +4,13 @@ import "app/models"
 
 type Pin struct {
 	ID          int    `json:"id"`
-	UserID      int    `json:"user_id"`
-	BoardID     int    `json:"board_id"`
+	UserID      int    `json:"userId"`
+	BoardID     int    `json:"boardId"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	URL         string `json:"url"`
-	ImageURL    string `json:"image_url"`
-	IsPrivate   bool   `json:"is_private"`
+	ImageURL    string `json:"imageUrl"`
+	IsPrivate   bool   `json:"isPrivate"`
 }
 
 func NewPin(pin *models.Pin) *Pin {
