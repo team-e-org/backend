@@ -20,6 +20,7 @@ type TokenData struct {
 
 type AuthLayerInterface interface {
 	AuthenticateUser(string, string) (string, error)
+	GetTokenData(string) (*TokenData, error)
 }
 
 type AuthLayer struct {
@@ -63,4 +64,21 @@ func (a *AuthLayer) AuthenticateUser(email string, password string) (string, err
 
 func checkUserPassword(password string, hashedPassword string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func (a *AuthLayer) GetTokenData(token string) (*TokenData, error) {
+	if len(token) == 0 {
+		return nil, ErrInvalidToken
+	}
+
+	tokenDataString, err := a.tokenStorage.GetTokenData(token)
+	if err == storage.ErrInvalidToken {
+		return nil, ErrInvalidToken
+	}
+
+	var tokenData TokenData
+	if err = json.Unmarshal([]byte(tokenDataString), &tokenData); err != nil {
+		return nil, err
+	}
+	return &tokenData, nil
 }

@@ -2,6 +2,7 @@ package server
 
 import (
 	"app/authz"
+	"app/authz/middleware"
 	"app/db"
 	"app/server/handlers"
 	"database/sql"
@@ -21,6 +22,7 @@ func Start(port int, dbConn *sql.DB) error {
 	data := db.NewDataStorage(dbConn)
 	authLayer := authz.NewAuthLayer(*data)
 	attachHandlers(router, data, authLayer)
+	attachReqAuth(router, data, authLayer)
 
 	s := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
@@ -33,6 +35,11 @@ func Start(port int, dbConn *sql.DB) error {
 func attachHandlers(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInterface) {
 	mux.HandleFunc("/", Hello)
 	mux.HandleFunc("/users/sign-in", handlers.SignIn(*data, al)).Methods(http.MethodPost)
+}
+
+func attachReqAuth(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInterface) {
+	muxAuth := mux.PathPrefix("").Subrouter()
+	muxAuth.Use(middleware.RequireAuthorization(al))
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {
