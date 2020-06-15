@@ -3,7 +3,7 @@ package repository
 import "app/models"
 
 type UserRepository interface {
-	CreateUser(user *models.User) error
+	CreateUser(name string, email string, icon string, password string) (*models.User, error)
 	GetUser(userID int) (*models.User, error)
 	GetUserByEmail(email string) (*models.User, error)
 }

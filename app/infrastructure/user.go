@@ -5,6 +5,9 @@ import (
 	"app/repository"
 	"database/sql"
 	"errors"
+	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var ErrEmailNotFound = errors.New("email doesn't exist in the database")
@@ -19,8 +22,47 @@ func NewUserRepository(db *sql.DB) repository.UserRepository {
 	}
 }
 
-func (u *User) CreateUser(user *models.User) error {
-	return nil
+func hashPassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(hashedPassword), err
+}
+
+func (u *User) CreateUser(name string, email string, icon string, password string) (*models.User, error) {
+	hashedPassword, err := hashPassword(password)
+	if err != nil {
+		return nil, err
+	}
+
+	const query = `
+INSERT INTO users (email, password, name, icon, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?)
+`
+	now := time.Now()
+
+	stmt, err := u.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := stmt.Exec(email, hashedPassword, name, icon, now, now)
+	if err != nil {
+		return nil, err
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	user := &models.User{
+		ID:             int(id),
+		Email:          email,
+		HashedPassword: hashedPassword,
+		Icon:           icon,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+	return user, nil
 }
 
 func (u *User) GetUser(userID int) (*models.User, error) {
