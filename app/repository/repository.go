@@ -18,7 +18,7 @@ type BoardRepository interface {
 }
 
 type PinRepository interface {
-	CreatePin(pin *models.Pin) error
+	CreatePin(pin *models.Pin, boardID int) error
 	UpdatePin(pin *models.Pin) error
 	DeletePin(pinID int) error
 	GetPin(pinID int) (*models.Pin, error)
@@ -29,5 +29,6 @@ type PinRepository interface {
 type TagRepository interface {
 	CreateTag(tag *models.Tag) error
 	GetTag(tagID int) (*models.Tag, error)
-	GetTagByPinID(pinID int) ([]*models.Tag, error)
+	AttachTagToPin(tagID int, pinID int) error
+	GetTagsByPinID(pinID int) ([]*models.Tag, error)
 }
