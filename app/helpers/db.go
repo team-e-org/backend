@@ -3,6 +3,8 @@ package helpers
 import (
 	"database/sql"
 	"errors"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func CheckDBExecError(result sql.Result, err error) error {
@@ -19,4 +21,9 @@ func CheckDBExecError(result sql.Result, err error) error {
 	}
 
 	return nil
+}
+
+func HashPassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(hashedPassword), err
 }
