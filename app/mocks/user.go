@@ -36,7 +36,7 @@ func (m *UserMock) DeleteUser(userID int) error {
 }
 
 func (m *UserMock) GetUser(userID int) (*models.User, error) {
-	if m.ExpectedUser.ID != userID {
+	if m.ExpectedUser == nil || m.ExpectedUser.ID != userID {
 		return nil, noUserError()
 	}
 	return m.ExpectedUser, nil
@@ -50,5 +50,5 @@ func (m *UserMock) GetUserByEmail(email string) (*models.User, error) {
 }
 
 func noUserError() error {
-	return errors.New("An error occurred, the user does not exist")
+	return errors.New("The user does not exist")
 }
