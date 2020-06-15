@@ -23,6 +23,14 @@ func (u *User) CreateUser(user *models.User) error {
 	return nil
 }
 
+func (u *User) UpdateUser(user *models.User) error {
+	return nil
+}
+
+func (u *User) DeleteUser(userID int) error {
+	return nil
+}
+
 func (u *User) GetUser(userID int) (*models.User, error) {
 	return nil, nil
 }
