@@ -95,9 +95,13 @@ paths:
                 image:
                   type: string
                   format: binary
+                boardId:
+                  type: integer
+                  description: pinは必ず何かのboardに紐づく
               required:
                 - title
                 - image
+                - boardId
       tags:
         - Pin
       security:
