@@ -15,6 +15,7 @@ type BoardRepository interface {
 	UpdateBoard(board *models.Board) error
 	DeleteBoard(boardID int) error
 	GetBoard(boardID int) (*models.Board, error)
+	GetBoardsByUserID(userID int) ([]*models.Board, error)
 }
 
 type PinRepository interface {
