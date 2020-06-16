@@ -5,6 +5,7 @@ import (
 	"app/db"
 	"app/logs"
 	"app/view"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -25,7 +26,7 @@ func ServePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http
 		}
 
 		pin, err := data.Pins.GetPin(pinID)
-		if pin == nil {
+		if err == sql.ErrNoRows {
 			logs.Error("Request: %s, pin not found in database: %v", requestSummary(r), pinID)
 			NotFound(w, r)
 			return
