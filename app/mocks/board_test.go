@@ -29,6 +29,28 @@ func TestBoardMock(t *testing.T) {
 	}
 }
 
+func TestBoardMock_GetBoardsByUserID(t *testing.T) {
+	ID := 0
+	UserID := 0
+	mock := &BoardMock{}
+	board := &models.Board{
+		ID:          ID,
+		UserID:      UserID,
+		Name:        "test board",
+		Description: "test description",
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+	}
+	mock.CreateBoard(board)
+	got, err := mock.GetBoardsByUserID(UserID)
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+	if !reflect.DeepEqual(*board, *got[0]) {
+		t.Fatalf("Not equal board")
+	}
+}
+
 func TestBoardMockRepository(t *testing.T) {
 	boards := NewBoardRepository()
 	ID := 0

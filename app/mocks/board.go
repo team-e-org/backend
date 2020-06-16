@@ -41,6 +41,10 @@ func (m *BoardMock) GetBoard(boardID int) (*models.Board, error) {
 	return m.ExpectedBoard, nil
 }
 
+func (m *BoardMock) GetBoardsByUserID(userID int) ([]*models.Board, error) {
+	return []*models.Board{m.ExpectedBoard}, nil
+}
+
 func noBoardError() error {
 	return errors.New("An error occurred, the board does not exist")
 }
