@@ -30,9 +30,20 @@ func (u *Pin) DeletePin(pinID int) error {
 
 func (p *Pin) GetPin(pinID int) (*models.Pin, error) {
 	const query = `
-SELECT p.id, p.user_id, p.title, p.description, p.url, p.image_url, p.is_private,p.created_at, p.updated_at
-FROM pins p
-WHERE p.id = ?;
+SELECT
+    p.id,
+    p.user_id,
+    p.title,
+    p.description,
+    p.url,
+    p.image_url,
+    p.is_private,
+    p.created_at,
+    p.updated_at
+FROM
+    pins p
+WHERE
+    p.id = ?;
 `
 	row := p.DB.QueryRow(query, pinID)
 
@@ -59,20 +70,20 @@ WHERE p.id = ?;
 func (p *Pin) GetPinsByBoardID(boardID int) ([]*models.Pin, error) {
 	const query = `
 SELECT
-  p.id,
-  p.user_id,
-  p.title,
-  p.description,
-  p.url,
-  p.image_url,
-  p.is_private,
-  p.created_at,
-  p.updated_at
+    p.id,
+    p.user_id,
+    p.title,
+    p.description,
+    p.url,
+    p.image_url,
+    p.is_private,
+    p.created_at,
+    p.updated_at
 FROM
-  pins AS p
-  JOIN boards_pins AS bp ON p.id = bp.pin_id
+    pins AS p
+    JOIN boards_pins AS bp ON p.id = bp.pin_id
 WHERE
-  bp.board_id = ?;
+    bp.board_id = ?;
 `
 
 	rows, err := p.DB.Query(query, boardID)
@@ -110,9 +121,20 @@ WHERE
 
 func (p *Pin) GetPinsByUserID(userID int) ([]*models.Pin, error) {
 	const query = `
-SELECT p.id, p.user_id, p.title, p.description, p.url, p.image_url, p.is_private,p.created_at, p.updated_at
-FROM pins p
-WHERE p.user_id = ?;
+SELECT
+    p.id,
+    p.user_id,
+    p.title,
+    p.description,
+    p.url,
+    p.image_url,
+    p.is_private,
+    p.created_at,
+    p.updated_at
+FROM
+    pins p
+WHERE
+    p.user_id = ?;
 `
 
 	rows, err := p.DB.Query(query, userID)
