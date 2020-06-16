@@ -17,6 +17,13 @@ func ServePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
+		userID, err := getUserIDIfAvailable(r, authLayer)
+		if err != nil {
+			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
+			Unauthorized(w, r)
+			return
+		}
+
 		vars := mux.Vars(r)
 		pinID, err := strconv.Atoi(vars["id"])
 		if err != nil {
@@ -34,6 +41,12 @@ func ServePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http
 		if err != nil {
 			logs.Error("Request: %s, getting pin from database: %v", requestSummary(r), err)
 			InternalServerError(w, r)
+			return
+		}
+
+		if pin.IsPrivate && pin.UserID != userID {
+			logs.Error("Request: %s, pin not found in database: %v", requestSummary(r), pinID)
+			NotFound(w, r)
 			return
 		}
 
