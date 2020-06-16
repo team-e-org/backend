@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"app/authz"
 	"app/logs"
 )
 
@@ -44,4 +45,24 @@ func InternalServerError(w http.ResponseWriter, r *http.Request) {
 
 func NotFound(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "404 Not Found", http.StatusNotFound)
+}
+
+func getUserIDIfAvailable(r *http.Request, al authz.AuthLayerInterface) (int, error) {
+	token := r.Header.Get(authToken)
+	if len(token) == 0 {
+		return 0, nil
+	}
+
+	return getUserIdByToken(r, al, token)
+}
+
+func getUserIdByToken(r *http.Request, al authz.AuthLayerInterface, token string) (int,
+	error) {
+
+	tokenData, err := al.GetTokenData(token)
+	if err != nil {
+		return 0, err
+	}
+
+	return tokenData.UserData.ID, nil
 }

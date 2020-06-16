@@ -36,6 +36,7 @@ func attachHandlers(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInt
 	mux.HandleFunc("/", Hello)
 	mux.HandleFunc("/users/sign-in", handlers.SignIn(*data, al)).Methods(http.MethodPost)
 	mux.HandleFunc("/boards/{id}/pins", handlers.ServePinsInBoard(*data, al)).Methods(http.MethodGet)
+	mux.HandleFunc("/pins/{id}", handlers.ServePin(*data, al)).Methods(http.MethodGet)
 }
 
 func attachReqAuth(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInterface) {
