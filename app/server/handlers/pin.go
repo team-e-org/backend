@@ -17,6 +17,13 @@ func ServePinsInBoard(data db.DataStorage, authLayer authz.AuthLayerInterface) f
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
+		userID, err := getUserIDIfAvailable(r, authLayer)
+		if err != nil {
+			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
+			Unauthorized(w, r)
+			return
+		}
+
 		vars := mux.Vars(r)
 		boardID, err := strconv.Atoi(vars["id"])
 		if err != nil {
@@ -31,6 +38,13 @@ func ServePinsInBoard(data db.DataStorage, authLayer authz.AuthLayerInterface) f
 			InternalServerError(w, r)
 			return
 		}
+
+		for i, pin := range pins {
+			if pin.IsPrivate && pin.UserID != userID {
+				pins = append(pins[:i], pins[i+1:]...)
+			}
+		}
+
 		if len(pins) == 0 {
 			logs.Error("Request: %s, pin not found in boardID: %v", requestSummary(r), boardID)
 			NotFound(w, r)
