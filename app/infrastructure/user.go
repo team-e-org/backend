@@ -22,7 +22,7 @@ func NewUserRepository(db *sql.DB) repository.UserRepository {
 
 func (u *User) CreateUser(user *models.User) error {
 	const query = `
-    INSERT INTO users (name, email, password, icon) VALUES (?, ?, ?, ?)
+    INSERT INTO users (name, email, password, icon) VALUES (?, ?, ?, ?);
     `
 
 	stmt, err := u.DB.Prepare(query)
@@ -41,7 +41,7 @@ func (u *User) CreateUser(user *models.User) error {
 
 func (u *User) UpdateUser(user *models.User) error {
 	const query = `
-    UPDATE users SET name = ?, email = ?, password = ?, icon = ? WHERE id = ?
+    UPDATE users SET name = ?, email = ?, password = ?, icon = ? WHERE id = ?;
     `
 
 	stmt, err := u.DB.Prepare(query)
@@ -50,8 +50,7 @@ func (u *User) UpdateUser(user *models.User) error {
 	}
 
 	result, err := stmt.Exec(user.Name, user.Email, user.HashedPassword, user.Icon, user.ID)
-	err = helpers.CheckDBExecError(result, err)
-	if err != nil {
+	if err = helpers.CheckDBExecError(result, err); err != nil {
 		return err
 	}
 
@@ -59,11 +58,50 @@ func (u *User) UpdateUser(user *models.User) error {
 }
 
 func (u *User) DeleteUser(userID int) error {
+	const query = `
+    DELETE FROM users WHERE id = ?;
+    `
+
+	stmt, err := u.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(userID)
+	if err = helpers.CheckDBExecError(result, err); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (u *User) GetUser(userID int) (*models.User, error) {
-	return nil, nil
+	const query = `
+    SELECT ud.id, u.email, u.password, u.icon, u.created_at, u.updated_at FROM users u WHERE u.id = ?;
+    `
+
+	stmt, err := u.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	row := stmt.QueryRow(userID)
+
+	user := &models.User{}
+	err = row.Scan(
+		&user.ID,
+		&user.Email,
+		&user.HashedPassword,
+		&user.Icon,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
 
 func (u *User) GetUserByEmail(email string) (*models.User, error) {
