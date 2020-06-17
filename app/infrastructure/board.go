@@ -29,7 +29,7 @@ INSERT INTO boards (
     created_at,
     updated_at
 )
-VALUES (?, ?, ?, ?, ?, ?,);
+VALUES (?, ?, ?, ?, ?, ?);
 `
 
 	stmt, err := b.DB.Prepare(query)
