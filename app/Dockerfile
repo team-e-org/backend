@@ -21,4 +21,5 @@ WORKDIR /go/src/app
 COPY --from=build /go/src/app/app .
 
 ENV SERVER_PORT=3000
+EXPOSE 3000
 CMD ["./app"]
