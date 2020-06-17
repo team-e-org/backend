@@ -7,7 +7,6 @@ RUN apk update && apk upgrade && apk add --no-cache git mysql-client \
     && go get github.com/cosmtrek/air 
 
 ENV SERVER_PORT=3000
-CMD ["./scripts/wait_for_mysql.sh db test_user password", "air -d"]
 
 FROM golang:1.14.2-alpine AS build
 COPY . /go/src/app
