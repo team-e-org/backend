@@ -23,7 +23,7 @@ func NewUserRepository(db *sql.DB) repository.UserRepository {
 
 func (u *User) CreateUser(user *models.User) error {
 	const query = `
-    INSERT INTO "users" ("name", "email", "password", "icon") VALUES (?, ?, ?, ?)
+    INSERT INTO users (name, email, password, icon) VALUES (?, ?, ?, ?)
     `
 
 	stmt, err := u.DB.Prepare(query)
@@ -32,7 +32,7 @@ func (u *User) CreateUser(user *models.User) error {
 		return err
 	}
 
-	result, err := stmt.Exec(query, user.Name, user.Email, user.HashedPassword, user.Icon)
+	result, err := stmt.Exec(user.Name, user.Email, user.HashedPassword, user.Icon)
 	err = helpers.CheckDBExecError(result, err)
 	if err != nil {
 		logs.Error("An error occurred: %v", err)
