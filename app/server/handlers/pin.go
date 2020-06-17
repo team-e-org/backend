@@ -4,6 +4,7 @@ import (
 	"app/authz"
 	"app/db"
 	"app/logs"
+	"app/models"
 	"app/view"
 	"database/sql"
 	"encoding/json"
@@ -39,11 +40,7 @@ func ServePinsInBoard(data db.DataStorage, authLayer authz.AuthLayerInterface) f
 			return
 		}
 
-		for i, pin := range pins {
-			if pin.IsPrivate && pin.UserID != userID {
-				pins = append(pins[:i], pins[i+1:]...)
-			}
-		}
+		pins = removePrivatePin(pins, userID)
 
 		if len(pins) == 0 {
 			logs.Error("Request: %s, pin not found in boardID: %v", requestSummary(r), boardID)
@@ -116,4 +113,14 @@ func ServePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http
 			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
 		}
 	}
+}
+
+func removePrivatePin(pins []*models.Pin, userID int) []*models.Pin {
+	for i, pin := range pins {
+		if pin.IsPrivate && pin.UserID != userID {
+			pins = append(pins[:i], pins[i+1:]...)
+		}
+	}
+
+	return pins
 }
