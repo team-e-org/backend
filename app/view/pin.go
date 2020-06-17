@@ -25,3 +25,13 @@ func NewPin(pin *models.Pin) *Pin {
 
 	return p
 }
+
+func NewPins(pins []*models.Pin) []*Pin {
+	b := make([]*Pin, 0, len(pins))
+
+	for _, pin := range pins {
+		b = append(b, NewPin(pin))
+	}
+
+	return b
+}
