@@ -14,9 +14,9 @@ func NewBoardRepository() repository.BoardRepository {
 	return &BoardMock{}
 }
 
-func (m *BoardMock) CreateBoard(board *models.Board) error {
+func (m *BoardMock) CreateBoard(board *models.Board) (*models.Board, error) {
 	m.ExpectedBoard = board
-	return nil
+	return m.ExpectedBoard, nil
 }
 
 func (m *BoardMock) UpdateBoard(board *models.Board) error {

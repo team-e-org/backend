@@ -11,7 +11,7 @@ type UserRepository interface {
 }
 
 type BoardRepository interface {
-	CreateBoard(board *models.Board) error
+	CreateBoard(board *models.Board) (*models.Board, error)
 	UpdateBoard(board *models.Board) error
 	DeleteBoard(boardID int) error
 	GetBoard(boardID int) (*models.Board, error)

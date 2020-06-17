@@ -43,6 +43,8 @@ func attachHandlers(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInt
 func attachReqAuth(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInterface) {
 	muxAuth := mux.PathPrefix("").Subrouter()
 	muxAuth.Use(middleware.RequireAuthorization(al))
+
+	mux.HandleFunc("/boards", handlers.CreateBoard(*data, al)).Methods(http.MethodPost)
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {
