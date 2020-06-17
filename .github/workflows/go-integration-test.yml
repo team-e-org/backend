@@ -28,6 +28,10 @@ jobs:
           docker-compose build
           docker-compose up -d
         working-directory: ./src/github.com/${{ github.repository }}
+      - name: sleep
+        run: |
+          sleep 10
+        working-directory: ./src/github.com/${{ github.repository }}
       - name: Test
         run: make integration_tests
         working-directory: ./src/github.com/${{ github.repository }}/app
