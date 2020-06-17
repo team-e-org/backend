@@ -35,6 +35,7 @@ func Start(port int, dbConn *sql.DB) error {
 func attachHandlers(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInterface) {
 	mux.HandleFunc("/", Hello)
 	mux.HandleFunc("/users/sign-in", handlers.SignIn(*data, al)).Methods(http.MethodPost)
+	mux.HandleFunc("/users/sign-up", handlers.SignUp(*data, al)).Methods(http.MethodPost)
 	mux.HandleFunc("/pins/{id}", handlers.ServePin(*data, al)).Methods(http.MethodGet)
 }
 
