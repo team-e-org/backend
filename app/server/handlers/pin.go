@@ -115,6 +115,43 @@ func ServePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http
 	}
 }
 
+func CreatePin(data db.DataStorage, authLayer authz.AuthLayerInterface, s3 *db.AwsS3) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logRequest(r)
+
+		userID, err := getUserIDIfAvailable(r, authLayer)
+		if err != nil {
+			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
+			Unauthorized(w, r)
+			return
+		}
+
+		maxSize := int64(1024000)
+		err = r.ParseMultipartForm(maxSize)
+		if err != nil {
+			logs.Error("Request: %s, parsing multipart: %v", requestSummary(r), err)
+			logs.Error("Image too large. Max Size: %v", maxSize)
+			BadRequest(w, r)
+			return
+		}
+
+		file, fileHeader, err := r.FormFile("image")
+		if err != nil {
+			logs.Error("Request: %s, getting uploaded image file: %v", requestSummary(r), err)
+			BadRequest(w, r)
+			return
+		}
+		defer file.Close()
+
+		url, err := s3.UploadImage(file, fileHeader)
+		if err != nil {
+			logs.Error("Request: %s, uploading image: %v", requestSummary(r), err)
+			InternalServerError(w, r)
+			return
+		}
+	}
+}
+
 func removePrivatePin(pins []*models.Pin, userID int) []*models.Pin {
 	for i, pin := range pins {
 		if pin.IsPrivate && pin.UserID != userID {

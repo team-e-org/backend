@@ -9,7 +9,7 @@ import (
 type Config struct {
 	Server Server
 	DB     DBConfig
-	AWS    Aws
+	AWS    AWS
 }
 
 type Server struct {
@@ -25,7 +25,7 @@ type DBConfig struct {
 	TimeZone string
 }
 
-type Aws struct {
+type AWS struct {
 	S3 S3
 }
 
@@ -54,8 +54,8 @@ func ReadDBConfig() (*DBConfig, error) {
 	return dbConfig, nil
 }
 
-func readAWSConfig() *Aws {
-	awsConfig := &Aws{
+func readAWSConfig() *AWS {
+	awsConfig := &AWS{
 		S3{
 			"ap-northeast-1",
 			"pinko-bucket",
