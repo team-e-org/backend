@@ -379,6 +379,7 @@ paths:
                 password:
                   type: string
                   format: password
+                  description: 大文字1、小文字1、数字1、10文字以上
               required:
                 - name
                 - email
