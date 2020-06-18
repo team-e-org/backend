@@ -2,11 +2,9 @@ package infrastructure
 
 import (
 	"app/helpers"
-	"app/logs"
 	"app/models"
 	"app/repository"
 	"database/sql"
-	"time"
 )
 
 type Board struct {
@@ -21,36 +19,21 @@ func NewBoardRepository(db *sql.DB) repository.BoardRepository {
 
 func (b *Board) CreateBoard(board *models.Board) (*models.Board, error) {
 	const query = `
-INSERT INTO boards (
-    user_id,
-    name,
-    description,
-    is_private,
-    created_at,
-    updated_at
-)
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT INTO boards (user_id, name, description, is_private) VALUES (?, ?, ?, ?)
 `
 
 	stmt, err := b.DB.Prepare(query)
 	if err != nil {
-		logs.Error("An error occurred: %v", err)
 		return nil, err
 	}
 
-	now := time.Now()
-	board.CreatedAt = now
-	board.UpdatedAt = now
 	result, err := stmt.Exec(
 		board.UserID,
 		board.Name,
 		board.Description,
-		board.IsPrivate,
-		board.CreatedAt,
-		board.UpdatedAt)
+		board.IsPrivate)
 	err = helpers.CheckDBExecError(result, err)
 	if err != nil {
-		logs.Error("An error occurred: %v", err)
 		return nil, err
 	}
 
