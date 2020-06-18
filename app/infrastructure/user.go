@@ -77,7 +77,7 @@ func (u *User) DeleteUser(userID int) error {
 
 func (u *User) GetUser(userID int) (*models.User, error) {
 	const query = `
-    SELECT ud.id, u.email, u.password, u.icon, u.created_at, u.updated_at FROM users u WHERE u.id = ?;
+    SELECT u.id, u.Name, u.email, u.password, u.icon, u.created_at, u.updated_at FROM users u WHERE u.id = ?;
     `
 
 	stmt, err := u.DB.Prepare(query)
@@ -90,6 +90,7 @@ func (u *User) GetUser(userID int) (*models.User, error) {
 	user := &models.User{}
 	err = row.Scan(
 		&user.ID,
+		&user.Name,
 		&user.Email,
 		&user.HashedPassword,
 		&user.Icon,
