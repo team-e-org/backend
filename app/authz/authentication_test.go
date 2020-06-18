@@ -4,6 +4,7 @@ import (
 	"app/db"
 	"app/mocks"
 	"app/models"
+	"reflect"
 	"testing"
 )
 
@@ -64,5 +65,48 @@ func TestAuthLayer_AuthenticateUser(t *testing.T) {
 		if !tt.wantError && len(token) != wantTokenLength {
 			t.Fatalf("invalid token length: got %s", token)
 		}
+	}
+}
+
+func TestAuthLayer_GetTokenData(t *testing.T) {
+	test := struct {
+		registeredEmail string
+		hashedPassword  string
+		email           string
+		password        string
+	}{
+		"abc@example.com",
+		"$2a$10$SOWUFP.hkVI0CrCJyfh5vuf/Gu.SDpv6Y2DYZ/Dbwyr.AKtlAldFe",
+		"abc@example.com",
+		"password",
+	}
+
+	user := &models.User{
+		ID:             0,
+		Email:          test.registeredEmail,
+		HashedPassword: test.hashedPassword,
+	}
+	userRepo := mocks.NewUserRepository()
+	_ = userRepo.CreateUser(user)
+	storage := &db.DataStorage{
+		Users: userRepo,
+	}
+	al := NewAuthLayer(*storage)
+
+	token, _ := al.AuthenticateUser(test.email, test.password)
+
+	_, err := al.GetTokenData("")
+	if err == nil {
+		t.Error("Error should occur")
+	}
+
+	_, err = al.GetTokenData("tekitou")
+	if err == nil {
+		t.Error("Error should occur")
+	}
+
+	tokenData, _ := al.GetTokenData(token)
+	if !reflect.DeepEqual(tokenData.UserData, user) {
+		t.Error("different token data")
 	}
 }
