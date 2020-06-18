@@ -144,12 +144,6 @@ func CreatePin(data db.DataStorage, authLayer authz.AuthLayerInterface, s3 *db.A
 			return
 		}
 
-		if r.FormValue("title") == "" {
-			logs.Error("Request: %s, title is required: %v", requestSummary(r), err)
-			BadRequest(w, r)
-			return
-		}
-
 		var b bool
 		if r.FormValue("isPrivate") != "" {
 			b, err = strconv.ParseBool(r.FormValue("isPrivate"))
