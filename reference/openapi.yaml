@@ -68,44 +68,6 @@ paths:
         - X-Auth-Token: []
   /pins:
     parameters: []
-    post:
-      summary: ''
-      operationId: post-pins
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pin'
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                description:
-                  type: string
-                url:
-                  type: string
-                isPirvate:
-                  type: string
-                image:
-                  type: string
-                  format: binary
-                boardId:
-                  type: integer
-                  description: pinは必ず何かのboardに紐づく
-              required:
-                - title
-                - image
-                - boardId
-      tags:
-        - Pin
-      security:
-        - X-Auth-Token: []
     get:
       summary: ''
       operationId: get-pins
@@ -263,7 +225,7 @@ paths:
   '/boards/{id}/pins':
     parameters:
       - schema:
-          type: string
+          type: integer
         name: id
         in: path
         required: true
@@ -294,6 +256,41 @@ paths:
           required: true
       security:
         - X-Auth-Token: []
+    post:
+      summary: ''
+      operationId: post-boards-id-pins
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pin'
+      tags:
+        - Pin
+      security:
+        - X-Auth-Token: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                url:
+                  type: string
+                isPrivate:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+              required:
+                - title
+                - image
+      parameters: []
   '/boards/{id}':
     parameters:
       - schema:
