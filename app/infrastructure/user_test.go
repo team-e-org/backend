@@ -263,17 +263,3 @@ func TestGetUserByEmailError(t *testing.T) {
 		t.Fatalf("Unfulfilled expectations error: %v\n", err)
 	}
 }
-
-func TestGetUser(t *testing.T) {
-	now := time.Now()
-	prepare := mock.ExpectPrepare("SELECT u.id, u.Name, u.email, u.password, u.icon. u.created_at, u.updated_at FROM users u WHERE u.id = ?")
-	prepare.ExpectQuery().WithArgs(0).
-		WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email", "password", "icon", "created_at", "updated_at"}).
-			AddRow(0, "test user", "test@test.com", "password", "test icon", now, now))
-
-	users := NewUserRepository(sqlDB)
-	_, err := users.GetUser(0)
-	if err != nil {
-		t.Fatalf("An error occurred: %v\n", err)
-	}
-}
