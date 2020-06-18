@@ -32,6 +32,7 @@ type AWS struct {
 type S3 struct {
 	Region          string
 	Bucket          string
+	PinFolder       string
 	AccessKeyID     string
 	SecretAccessKey string
 }
@@ -59,6 +60,7 @@ func readAWSConfig() *AWS {
 		S3{
 			"ap-northeast-1",
 			"pinko-bucket",
+			"pins/",
 			os.Getenv("AWS_S3_ACCESS_KEY_ID"),
 			os.Getenv("AWS_S3_SECRET_ACCESS_KEY"),
 		},

@@ -38,7 +38,7 @@ func NewAwsS3(c config.S3) *AwsS3 {
 func (a *AwsS3) UploadImage(file multipart.File, fileHeader *multipart.FileHeader) (url string, err error) {
 	var contentType string
 	fileExt := filepath.Ext(fileHeader.Filename)
-	fileName := "tekitou/" + uuid.NewV4().String() + fileExt
+	fileName := a.Config.PinFolder + uuid.NewV4().String() + fileExt
 
 	switch fileExt {
 	case ".jpg":

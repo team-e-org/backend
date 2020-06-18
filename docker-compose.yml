@@ -19,6 +19,8 @@ services:
       MYSQL_PORT: 3306
       MYSQL_HOST: db
       TZ: "Asia/Tokyo"
+    env_file:
+      - .secret.env
   db:
     build:
       context: ./db/mysql
