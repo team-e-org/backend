@@ -194,6 +194,13 @@ func CreatePin(data db.DataStorage, authLayer authz.AuthLayerInterface, s3 *db.A
 			return
 		}
 
+		err = data.BoardsPins.CreateBoardPin(boardID, pin.ID)
+		if err != nil {
+			logs.Error("Request: %s, creating board_pin: %v", requestSummary(r), err)
+			InternalServerError(w, r)
+			return
+		}
+
 		response := view.NewPin(pin)
 		bytes, err := json.Marshal(response)
 		if err != nil {
