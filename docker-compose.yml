@@ -21,6 +21,7 @@ services:
       TZ: "Asia/Tokyo"
     env_file:
       - .secret.env
+    command: /bin/ash /go/src/app/scripts/wait_for_mysql.sh db test_user password air -d
   db:
     build:
       context: ./db/mysql

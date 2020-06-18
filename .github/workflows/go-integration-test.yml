@@ -30,7 +30,7 @@ jobs:
         working-directory: ./src/github.com/${{ github.repository }}
       - name: sleep
         run: |
-          sleep 30
+          sleep 10
         working-directory: ./src/github.com/${{ github.repository }}
       - name: Test
         run: make integration_tests
