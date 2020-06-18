@@ -2,7 +2,6 @@ package mocks
 
 import (
 	"app/models"
-	"fmt"
 	"reflect"
 	"testing"
 	"time"
@@ -87,7 +86,6 @@ func TestPin(t *testing.T) {
 	pins.CreatePin(pin4, 1)
 
 	ps, err := pins.GetPinsByBoardID(0)
-	fmt.Printf("ps: %v\n", ps)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
 	}
