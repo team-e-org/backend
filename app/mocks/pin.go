@@ -20,10 +20,10 @@ func NewPinRepository() repository.PinRepository {
 	}
 }
 
-func (m *PinMock) CreatePin(pin *models.Pin, boardID int) error {
+func (m *PinMock) CreatePin(pin *models.Pin, boardID int) (*models.Pin, error) {
 	m.ExpectedPins = append(m.ExpectedPins, pin)
 	m.BoardPinMapper[boardID] = append(m.BoardPinMapper[boardID], pin.ID)
-	return nil
+	return pin, nil
 }
 
 func (m *PinMock) UpdatePin(pin *models.Pin) error {

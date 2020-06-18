@@ -19,7 +19,7 @@ type BoardRepository interface {
 }
 
 type PinRepository interface {
-	CreatePin(pin *models.Pin, boardID int) error
+	CreatePin(pin *models.Pin, boardID int) (*models.Pin, error)
 	UpdatePin(pin *models.Pin) error
 	DeletePin(pinID int) error
 	GetPin(pinID int) (*models.Pin, error)

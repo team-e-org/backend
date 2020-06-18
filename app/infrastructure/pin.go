@@ -1,6 +1,8 @@
 package infrastructure
 
 import (
+	"app/helpers"
+	"app/logs"
 	"app/models"
 	"app/repository"
 	"database/sql"
@@ -16,8 +18,48 @@ func NewPinRepository(db *sql.DB) repository.PinRepository {
 	}
 }
 
-func (u *Pin) CreatePin(pin *models.Pin, boardID int) error {
-	return nil
+func (p *Pin) CreatePin(pin *models.Pin, boardID int) (*models.Pin, error) {
+	const query = `
+INSERT INTO pins (
+	user_id,
+    title,
+    description,
+    url,
+    is_private,
+    image_url,
+    created_at,
+    updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`
+	stmt, err := p.DB.Prepare(query)
+	if err != nil {
+		logs.Error("An error occurred: %v", err)
+		return nil, err
+	}
+
+	result, err := stmt.Exec(
+		pin.UserID,
+		pin.Title,
+		pin.Description,
+		pin.URL,
+		pin.IsPrivate,
+		pin.ImageURL,
+		pin.CreatedAt,
+		pin.UpdatedAt)
+	err = helpers.CheckDBExecError(result, err)
+	if err != nil {
+		logs.Error("An error occurred: %v", err)
+		return nil, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		logs.Error("An error occurred: %v", err)
+		return nil, err
+	}
+	pin.ID = int(id)
+
+	return pin, nil
 }
 
 func (u *Pin) UpdatePin(pin *models.Pin) error {
