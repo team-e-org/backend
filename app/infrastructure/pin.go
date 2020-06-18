@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"app/helpers"
 	"app/models"
 	"app/repository"
 	"database/sql"
@@ -16,15 +17,57 @@ func NewPinRepository(db *sql.DB) repository.PinRepository {
 	}
 }
 
-func (u *Pin) CreatePin(pin *models.Pin, boardID int) error {
+func (p *Pin) CreatePin(pin *models.Pin, boardID int) error {
+	tx, err := p.DB.Begin()
+	if err != nil {
+		return err
+	}
+
+	const query = `
+INSERT INTO pins (user_id, title, description, url, image_url, is_private) VALUES (?, ?, ?, ?, ?, ?);
+`
+
+	stmt, err := tx.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(pin.UserID, pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate)
+	if err = helpers.CheckDBExecError(result, err); err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
+	pinID, err := result.LastInsertId()
+	if err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
+	const query2 = `
+INSERT INTO boards_pins (board_id, pin_id) VALUES (?, ?);
+`
+
+	stmt, err = tx.Prepare(query2)
+	if err != nil {
+		return err
+	}
+
+	result, err = stmt.Exec(boardID, pinID)
+	if err = helpers.CheckDBExecError(result, err); err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
 	return nil
 }
 
-func (u *Pin) UpdatePin(pin *models.Pin) error {
+func (p *Pin) UpdatePin(pin *models.Pin) error {
 	return nil
 }
 
-func (u *Pin) DeletePin(pinID int) error {
+func (p *Pin) DeletePin(pinID int) error {
 	return nil
 }
 
