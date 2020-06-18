@@ -107,15 +107,22 @@ func (u *User) GetUser(userID int) (*models.User, error) {
 
 func (u *User) GetUserByEmail(email string) (*models.User, error) {
 	const query = `
-SELECT u.id, u.email, u.password, u.icon, u.created_at, u.updated_at
+SELECT u.id, u.name, u.email, u.password, u.icon, u.created_at, u.updated_at
 FROM users u
 WHERE u.email = ?;
 `
-	row := u.DB.QueryRow(query, email)
+
+	stmt, err := u.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	row := stmt.QueryRow(email)
 
 	user := &models.User{}
-	err := row.Scan(
+	err = row.Scan(
 		&user.ID,
+		&user.Name,
 		&user.Email,
 		&user.HashedPassword,
 		&user.Icon,
