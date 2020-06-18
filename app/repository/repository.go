@@ -33,3 +33,7 @@ type TagRepository interface {
 	AttachTagToPin(tagID int, pinID int) error
 	GetTagsByPinID(pinID int) ([]*models.Tag, error)
 }
+
+type BoardPinRepository interface {
+	CreateBoardPin(boardID int, pinID int) error
+}
