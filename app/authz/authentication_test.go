@@ -94,10 +94,19 @@ func TestAuthLayer_GetTokenData(t *testing.T) {
 	al := NewAuthLayer(*storage)
 
 	token, _ := al.AuthenticateUser(test.email, test.password)
-	tokenData, _ := al.GetTokenData(token)
 
+	_, err := al.GetTokenData("")
+	if err == nil {
+		t.Error("Error should occur")
+	}
+
+	_, err = al.GetTokenData("tekitou")
+	if err == nil {
+		t.Error("Error should occur")
+	}
+
+	tokenData, _ := al.GetTokenData(token)
 	if !reflect.DeepEqual(tokenData.UserData, user) {
 		t.Error("different token data")
 	}
-
 }
