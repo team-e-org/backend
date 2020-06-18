@@ -98,7 +98,3 @@ func mockDBHandlingWrapper() (*sql.DB, sqlmock.Sqlmock) {
 
 	return sqlDB, mock
 }
-
-func TestRepositoryMySQLMock(t *testing.T) {
-
-}
