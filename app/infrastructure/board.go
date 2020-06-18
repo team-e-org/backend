@@ -64,10 +64,38 @@ VALUES (?, ?, ?, ?, ?, ?);
 }
 
 func (u *Board) UpdateBoard(board *models.Board) error {
+	const query = `
+UPDATE boards SET name = ?, description = ?, is_private = ?;
+`
+
+	stmt, err := u.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(board.Name, board.Description, board.IsPrivate)
+	if err = helpers.CheckDBExecError(result, err); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (u *Board) DeleteBoard(boardID int) error {
+	const query = `
+DELETE FROM boards WHERE id = ?;
+`
+
+	stmt, err := u.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(boardID)
+	if err = helpers.CheckDBExecError(result, err); err != nil {
+		return err
+	}
+
 	return nil
 }
 
