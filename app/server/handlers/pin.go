@@ -116,7 +116,7 @@ func ServePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http
 	}
 }
 
-func CreatePin(data db.DataStorage, authLayer authz.AuthLayerInterface, s3 *db.AwsS3) func(http.ResponseWriter, *http.Request) {
+func CreatePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -162,7 +162,7 @@ func CreatePin(data db.DataStorage, authLayer authz.AuthLayerInterface, s3 *db.A
 		}
 		defer file.Close()
 
-		url, err := s3.UploadImage(file, fileHeader)
+		url, err := data.AWSS3.UploadImage(file, fileHeader)
 		if err != nil {
 			logs.Error("Request: %s, uploading image: %v", requestSummary(r), err)
 			InternalServerError(w, r)

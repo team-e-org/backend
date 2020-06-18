@@ -1,6 +1,9 @@
 package repository
 
-import "app/models"
+import (
+	"app/models"
+	"mime/multipart"
+)
 
 type UserRepository interface {
 	CreateUser(user *models.User) error
@@ -36,4 +39,8 @@ type TagRepository interface {
 
 type BoardPinRepository interface {
 	CreateBoardPin(boardID int, pinID int) error
+}
+
+type FileRepository interface {
+	UploadImage(file multipart.File, fileHeader *multipart.FileHeader) (url string, err error)
 }

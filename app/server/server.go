@@ -20,11 +20,10 @@ func init() {
 
 func Start(port int, dbConn *sql.DB, awsConf *config.AWS) error {
 	router := mux.NewRouter()
-	data := db.NewDataStorage(dbConn)
-	s3 := db.NewAwsS3(awsConf.S3)
+	data := db.NewDataStorage(dbConn, awsConf)
 	authLayer := authz.NewAuthLayer(*data)
 	attachHandlers(router, data, authLayer)
-	attachReqAuth(router, data, authLayer, s3)
+	attachReqAuth(router, data, authLayer)
 
 	s := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
@@ -42,12 +41,12 @@ func attachHandlers(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInt
 	mux.HandleFunc("/boards/{id}/pins", handlers.ServePinsInBoard(*data, al)).Methods(http.MethodGet)
 }
 
-func attachReqAuth(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInterface, s3 *db.AwsS3) {
+func attachReqAuth(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInterface) {
 	muxAuth := mux.PathPrefix("").Subrouter()
 	muxAuth.Use(middleware.RequireAuthorization(al))
 
 	mux.HandleFunc("/boards", handlers.CreateBoard(*data, al)).Methods(http.MethodPost)
-	mux.HandleFunc("/boards/{id}/pins", handlers.CreatePin(*data, al, s3)).Methods(http.MethodPost)
+	mux.HandleFunc("/boards/{id}/pins", handlers.CreatePin(*data, al)).Methods(http.MethodPost)
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {

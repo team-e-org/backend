@@ -1,4 +1,4 @@
-package db
+package infrastructure
 
 import (
 	"app/config"
@@ -13,12 +13,12 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type AwsS3 struct {
+type AWSS3 struct {
 	Config   config.S3
 	Uploader *s3manager.Uploader
 }
 
-func NewAwsS3(c config.S3) *AwsS3 {
+func NewAWSS3(c config.S3) *AWSS3 {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{
 			Credentials: credentials.NewStaticCredentialsFromCreds(credentials.Value{
@@ -29,13 +29,13 @@ func NewAwsS3(c config.S3) *AwsS3 {
 		},
 	}))
 
-	return &AwsS3{
+	return &AWSS3{
 		Config:   c,
 		Uploader: s3manager.NewUploader(sess),
 	}
 }
 
-func (a *AwsS3) UploadImage(file multipart.File, fileHeader *multipart.FileHeader) (url string, err error) {
+func (a *AWSS3) UploadImage(file multipart.File, fileHeader *multipart.FileHeader) (url string, err error) {
 	var contentType string
 	fileExt := filepath.Ext(fileHeader.Filename)
 	fileName := a.Config.PinFolder + uuid.NewV4().String() + fileExt
