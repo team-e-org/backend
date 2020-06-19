@@ -167,3 +167,30 @@ func TestDeletePin(t *testing.T) {
 		t.Fatalf("Unfulfilled expectations error: %v\n", err)
 	}
 }
+
+func TestDeletePinError(t *testing.T) {
+	id := 1
+
+	mock.ExpectBegin()
+	prepare := mock.ExpectPrepare(regexp.QuoteMeta("DELETE FROM pins WHERE id = ?"))
+	prepare.ExpectExec().
+		WithArgs().
+		WillReturnResult(sqlmock.NewResult(int64(id), 1))
+
+	prepare2 := mock.ExpectPrepare(regexp.QuoteMeta("DELETE FROM boards_pins WHERE pin_id = ?"))
+	prepare2.ExpectExec().
+		WithArgs().
+		WillReturnError(fmt.Errorf("some error"))
+
+	mock.ExpectRollback()
+
+	pins := NewPinRepository(sqlDB)
+	err := pins.DeletePin(id)
+	if err == nil {
+		t.Fatalf("An error occurred: %v\n", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatalf("Unfulfilled expectations error: %v\n", err)
+	}
+}
