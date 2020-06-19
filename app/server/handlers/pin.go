@@ -5,6 +5,7 @@ import (
 	"app/db"
 	"app/logs"
 	"app/models"
+	"app/ptr"
 	"app/view"
 	"database/sql"
 	"encoding/json"
@@ -30,6 +31,13 @@ func ServePinsInBoard(data db.DataStorage, authLayer authz.AuthLayerInterface) f
 		boardID, err := strconv.Atoi(vars["id"])
 		if err != nil {
 			logs.Error("Request: %s, parse path parameter id: %v", requestSummary(r), err)
+			BadRequest(w, r)
+			return
+		}
+
+		page, err := strconv.Atoi(r.FormValue("page"))
+		if err != nil {
+			logs.Error("Request: %s, parse path parameter page: %v", requestSummary(r), err)
 			BadRequest(w, r)
 			return
 		}
