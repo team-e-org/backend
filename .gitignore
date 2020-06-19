@@ -2,4 +2,5 @@ tmp/
 tags.lock
 .DS_Store
 .secret.env
+.idea
 db/mysql/log

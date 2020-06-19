@@ -23,3 +23,13 @@ func NewBoard(board *models.Board) *Board {
 
 	return b
 }
+
+func NewBoards(boards []*models.Board) []*Board {
+	bs := make([]*Board, 0, len(boards))
+
+	for _, board := range boards {
+		bs = append(bs, NewBoard(board))
+	}
+
+	return bs
+}
