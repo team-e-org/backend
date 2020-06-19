@@ -10,7 +10,7 @@ import (
 )
 
 type SignInRequest struct {
-	Email    string `json:"email,omitempty" validate:"required"`
+	Email    string `json:"email,omitempty" validate:"required,email"`
 	Password string `json:"password,omitempty" validate:"required"`
 }
 

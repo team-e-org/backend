@@ -7,7 +7,7 @@ import (
 	"app/helpers"
 	"app/logs"
 	"app/models"
-	"app/models/view"
+	"app/view"
 	"encoding/json"
 	"net/http"
 )
