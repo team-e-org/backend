@@ -55,7 +55,7 @@ func (m *PinMock) GetPin(pinID int) (*models.Pin, error) {
 	return nil, noPinError()
 }
 
-func (m *PinMock) GetPinsByBoardID(boardID int) ([]*models.Pin, error) {
+func (m *PinMock) GetPinsByBoardID(boardID int, page int) ([]*models.Pin, error) {
 	pins := make([]*models.Pin, 0, len(m.BoardPinMapper))
 	for _, id := range m.BoardPinMapper[boardID] {
 		for _, p := range m.ExpectedPins {

@@ -34,7 +34,7 @@ func ServePinsInBoard(data db.DataStorage, authLayer authz.AuthLayerInterface) f
 			return
 		}
 
-		pins, err := data.Pins.GetPinsByBoardID(boardID)
+		pins, err := data.Pins.GetPinsByBoardID(boardID, page)
 		if err != nil {
 			logs.Error("Request: %s, while gettign pins in board: %v", requestSummary(r), err)
 			InternalServerError(w, r)
