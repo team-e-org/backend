@@ -1,13 +1,6 @@
 CREATE TABLE tags (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    tag TEXT NOT NULL UNIQUE KEY,
+    tag VARCHAR(255) UNIQUE NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
-INSERT INTO
-    tags (id, tag)
-VALUES
-    (1, "animal"),
-    (2, "wall paper"),
-    (3, "beautiful");
