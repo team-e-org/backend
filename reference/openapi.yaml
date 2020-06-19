@@ -353,8 +353,11 @@ paths:
                 properties:
                   token:
                     type: string
+                  user_id:
+                    type: integer
                 required:
                   - token
+                  - user_id
         '':
           content:
             application/json:
@@ -401,8 +404,11 @@ paths:
                 properties:
                   token:
                     type: string
+                  user_id:
+                    type: integer
                 required:
                   - token
+                  - user_id
       requestBody:
         content:
           application/json:
