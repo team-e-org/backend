@@ -64,9 +64,59 @@ SELECT t.id, t.tag, t.created_at, t.updated_at FROM tags t WHERE t.id = ?;
 }
 
 func (t *Tag) AttachTagToPin(tagID int, pinID int) error {
+	const query = `
+INSERT INTO pins_tags (pin_id, tag_id) VALUES (?, ?);
+`
+
+	stmt, err := t.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(pinID, tagID)
+	err = helpers.CheckDBExecError(result, err)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (t *Tag) GetTagsByPinID(pinID int) ([]*models.Tag, error) {
-	return nil, nil
+	const query = `
+SELECT t.id, t.tag, t.created_at, t.updated_at FROM tags t JOIN pins_tags pt JOIN pins p WHERE t.id = pt.tag_id AND pt.pin_id = p.id AND p.id = ?;
+`
+
+	stmt, err := t.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := stmt.Query(pinID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	tags := make([]*models.Tag, 0)
+	for rows.Next() {
+		tag := &models.Tag{}
+		err := rows.Scan(
+			&tag.ID,
+			&tag.Tag,
+			&tag.CreatedAt,
+			&tag.UpdatedAt,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+		tags = append(tags, tag)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return tags, nil
 }
