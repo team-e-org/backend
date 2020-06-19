@@ -2,7 +2,7 @@ CREATE TABLE pins (
     id INT PRIMARY KEY AUTO_INCREMENT,
     title TEXT NOT NULL,
     description TEXT,
-    url TEXT NOT NULL,
+    url TEXT,
     user_id INT,
     image_url TEXT NOT NULL,
     is_private BOOLEAN DEFAULT 0,

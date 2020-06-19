@@ -53,10 +53,10 @@ func getUserIDIfAvailable(r *http.Request, al authz.AuthLayerInterface) (int, er
 		return 0, nil
 	}
 
-	return getUserIdByToken(r, al, token)
+	return getUserIdByToken(al, token)
 }
 
-func getUserIdByToken(r *http.Request, al authz.AuthLayerInterface, token string) (int,
+func getUserIdByToken(al authz.AuthLayerInterface, token string) (int,
 	error) {
 
 	tokenData, err := al.GetTokenData(token)

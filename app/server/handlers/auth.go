@@ -27,8 +27,9 @@ func SignIn(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.R
 			logs.Error("Request: %s, authenticate user: %v", requestSummary(r), err)
 			Unauthorized(w, r)
 		}
+		userID, err := getUserIdByToken(authLayer, token)
 
-		response := view.NewLSignInResponse(token)
+		response := view.NewLSignInResponse(token, userID)
 		bytes, err := json.Marshal(response)
 		if err != nil {
 			logs.Error("Request: %s, serializing login response: %v", requestSummary(r), err)
@@ -79,8 +80,9 @@ func SignUp(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.R
 			logs.Error("Request: %s, authenticate user: %v", requestSummary(r), err)
 			Unauthorized(w, r)
 		}
+		userID, err := getUserIdByToken(authLayer, token)
 
-		response := view.NewLSignUpResponse(token)
+		response := view.NewLSignUpResponse(token, userID)
 		bytes, err := json.Marshal(response)
 		if err != nil {
 			logs.Error("Request: %s, serializing sign up response: %v", requestSummary(r), err)
