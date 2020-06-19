@@ -51,12 +51,6 @@ func ServePinsInBoard(data db.DataStorage, authLayer authz.AuthLayerInterface) f
 
 		pins = removePrivatePin(pins, userID)
 
-		if len(pins) == 0 {
-			logs.Error("Request: %s, pin not found in boardID: %v", requestSummary(r), boardID)
-			NotFound(w, r)
-			return
-		}
-
 		bytes, err := json.Marshal(view.NewPins(pins))
 		if err != nil {
 			logs.Error("Request: %s, serializing pins: %v", requestSummary(r), err)
