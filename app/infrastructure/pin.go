@@ -97,7 +97,7 @@ DELETE FROM pins WHERE id = ?;
 	}
 
 	result, err := stmt.Exec(pinID)
-	if err = helpers.CheckDBExecError(result, err); err != nil {
+	if err := helpers.CheckDBExecError(result, err); err != nil {
 		return helpers.TryRollback(tx, err)
 	}
 
@@ -115,8 +115,17 @@ DELETE FROM boards_pins WHERE pin_id = ?;
 		return helpers.TryRollback(tx, err)
 	}
 
+	result, err = stmt.Exec(pinID)
+	if err := helpers.CheckDBExecError(result, err); err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
 	_, err = result.RowsAffected()
 	if err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
+	if err := tx.Commit(); err != nil {
 		return helpers.TryRollback(tx, err)
 	}
 
