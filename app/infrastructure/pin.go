@@ -2,10 +2,10 @@ package infrastructure
 
 import (
 	"app/helpers"
-	"app/logs"
 	"app/models"
 	"app/repository"
 	"database/sql"
+	"fmt"
 )
 
 type Pin struct {
@@ -19,54 +19,117 @@ func NewPinRepository(db *sql.DB) repository.PinRepository {
 }
 
 func (p *Pin) CreatePin(pin *models.Pin, boardID int) (*models.Pin, error) {
+	tx, err := p.DB.Begin()
+	if err != nil {
+		return nil, err
+	}
+
 	const query = `
-INSERT INTO pins (
-	user_id,
-    title,
-    description,
-    url,
-    is_private,
-    image_url,
-    created_at,
-    updated_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+INSERT INTO pins (user_id, title, description, url, image_url, is_private) VALUES (?, ?, ?, ?, ?, ?);
 `
-	stmt, err := p.DB.Prepare(query)
+
+	stmt, err := tx.Prepare(query)
 	if err != nil {
-		logs.Error("An error occurred: %v", err)
-		return nil, err
+		return nil, helpers.TryRollback(tx, err)
 	}
 
-	result, err := stmt.Exec(
-		pin.UserID,
-		pin.Title,
-		pin.Description,
-		pin.URL,
-		pin.IsPrivate,
-		pin.ImageURL,
-		pin.CreatedAt,
-		pin.UpdatedAt)
-	err = helpers.CheckDBExecError(result, err)
-	if err != nil {
-		logs.Error("An error occurred: %v", err)
-		return nil, err
+	result, err := stmt.Exec(pin.UserID, pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate)
+	if err = helpers.CheckDBExecError(result, err); err != nil {
+		return nil, helpers.TryRollback(tx, err)
 	}
 
-	id, err := result.LastInsertId()
+	pinID, err := result.LastInsertId()
 	if err != nil {
-		logs.Error("An error occurred: %v", err)
-		return nil, err
+		return nil, helpers.TryRollback(tx, err)
 	}
-	pin.ID = int(id)
+
+	const query2 = `
+INSERT INTO boards_pins (board_id, pin_id) VALUES (?, ?);
+`
+
+	stmt, err = tx.Prepare(query2)
+	if err != nil {
+		return nil, helpers.TryRollback(tx, err)
+	}
+
+	result, err = stmt.Exec(boardID, pinID)
+	if err = helpers.CheckDBExecError(result, err); err != nil {
+		return nil, helpers.TryRollback(tx, err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return nil, helpers.TryRollback(tx, err)
+	}
 
 	return pin, nil
 }
 
-func (u *Pin) UpdatePin(pin *models.Pin) error {
+func (p *Pin) UpdatePin(pin *models.Pin) error {
+	const query = `
+UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private = ?;
+`
+
+	stmt, err := p.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate)
+	if err := helpers.CheckDBExecError(result, err); err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (u *Pin) DeletePin(pinID int) error {
+func (p *Pin) DeletePin(pinID int) error {
+	tx, err := p.DB.Begin()
+	if err != nil {
+		return err
+	}
+
+	const query = `
+DELETE FROM pins WHERE id = ?;
+`
+
+	stmt, err := tx.Prepare(query)
+	if err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
+	result, err := stmt.Exec(pinID)
+	if err := helpers.CheckDBExecError(result, err); err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
+	_, err = result.RowsAffected()
+	if err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
+	const query2 = `
+DELETE FROM boards_pins WHERE pin_id = ?;
+`
+
+	stmt, err = tx.Prepare(query2)
+	if err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
+	result, err = stmt.Exec(pinID)
+	if err := helpers.CheckDBExecError(result, err); err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
+	_, err = result.RowsAffected()
+	if err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return helpers.TryRollback(tx, err)
+	}
+
 	return nil
 }
 
@@ -87,10 +150,16 @@ FROM
 WHERE
     p.id = ?;
 `
-	row := p.DB.QueryRow(query, pinID)
+
+	stmt, err := p.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	row := stmt.QueryRow(pinID)
 
 	pin := &models.Pin{}
-	err := row.Scan(
+	err = row.Scan(
 		&pin.ID,
 		&pin.UserID,
 		&pin.Title,
@@ -125,14 +194,17 @@ FROM
     pins AS p
     JOIN boards_pins AS bp ON p.id = bp.pin_id
 WHERE
-	bp.board_id = ?
-LIMIT ?
-OFFSET ?;
+	bp.board_id = $1
+LIMIT $2
+OFFSET $3;
 `
 	limit := 10
 	offset := (page - 1) * limit
 
-	rows, err := p.DB.Query(query, boardID, limit, offset)
+	stmt, err := p.DB.Prepare(query)
+
+	rows, err := stmt.Query(boardID, limit, offset)
+	fmt.Printf("rows: %v\n", rows)
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +255,9 @@ WHERE
     p.user_id = ?;
 `
 
-	rows, err := p.DB.Query(query, userID)
+	stmt, err := p.DB.Prepare(query)
+
+	rows, err := stmt.Query(userID)
 	if err != nil {
 		return nil, err
 	}

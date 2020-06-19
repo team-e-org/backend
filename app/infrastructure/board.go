@@ -2,11 +2,9 @@ package infrastructure
 
 import (
 	"app/helpers"
-	"app/logs"
 	"app/models"
 	"app/repository"
 	"database/sql"
-	"time"
 )
 
 type Board struct {
@@ -21,36 +19,21 @@ func NewBoardRepository(db *sql.DB) repository.BoardRepository {
 
 func (b *Board) CreateBoard(board *models.Board) (*models.Board, error) {
 	const query = `
-INSERT INTO boards (
-    user_id,
-    name,
-    description,
-    is_private,
-    created_at,
-    updated_at
-)
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT INTO boards (user_id, name, description, is_private) VALUES (?, ?, ?, ?)
 `
 
 	stmt, err := b.DB.Prepare(query)
 	if err != nil {
-		logs.Error("An error occurred: %v", err)
 		return nil, err
 	}
 
-	now := time.Now()
-	board.CreatedAt = now
-	board.UpdatedAt = now
 	result, err := stmt.Exec(
 		board.UserID,
 		board.Name,
 		board.Description,
-		board.IsPrivate,
-		board.CreatedAt,
-		board.UpdatedAt)
+		board.IsPrivate)
 	err = helpers.CheckDBExecError(result, err)
 	if err != nil {
-		logs.Error("An error occurred: %v", err)
 		return nil, err
 	}
 
@@ -63,24 +46,56 @@ VALUES (?, ?, ?, ?, ?, ?);
 	return board, nil
 }
 
-func (u *Board) UpdateBoard(board *models.Board) error {
+func (b *Board) UpdateBoard(board *models.Board) error {
+	const query = `
+UPDATE boards SET name = ?, description = ?, is_private = ?;
+`
+
+	stmt, err := b.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(board.Name, board.Description, board.IsPrivate)
+	if err = helpers.CheckDBExecError(result, err); err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (u *Board) DeleteBoard(boardID int) error {
+func (b *Board) DeleteBoard(boardID int) error {
+	const query = `
+DELETE FROM boards WHERE id = ?;
+`
+
+	stmt, err := b.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(boardID)
+	if err = helpers.CheckDBExecError(result, err); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (b *Board) GetBoard(boardID int) (*models.Board, error) {
 	const query = `
-SELECT b.id, b.user_id, b.name, b.description, b.is_private, b.is_archive, b.created_at, b.updated_at
-FROM boards b
-WHERE b.id = ?;
+SELECT b.id, b.user_id, b.name, b.description, b.is_private, b.is_archive, b.created_at, b.updated_at FROM boards b WHERE b.id = ?;
 `
-	row := b.DB.QueryRow(query, boardID)
+
+	stmt, err := b.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	row := stmt.QueryRow(boardID)
 
 	board := &models.Board{}
-	err := row.Scan(
+	err = row.Scan(
 		&board.ID,
 		&board.UserID,
 		&board.Name,
@@ -100,18 +115,21 @@ WHERE b.id = ?;
 
 func (b *Board) GetBoardsByUserID(userID int) ([]*models.Board, error) {
 	const query = `
-SELECT b.id, b.user_id, b.name, b.description, b.is_private, b.is_archive, b.created_at, b.updated_at
-FROM boards b
-WHERE b.user_id = ?;
+SELECT b.id, b.user_id, b.name, b.description, b.is_private, b.is_archive, b.created_at, b.updated_at FROM boards b WHERE b.user_id = ?;
 `
 
-	rows, err := b.DB.Query(query, userID)
+	stmt, err := b.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := stmt.Query(userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var boards []*models.Board
+	boards := make([]*models.Board, 0)
 	for rows.Next() {
 		board := &models.Board{}
 		err := rows.Scan(
