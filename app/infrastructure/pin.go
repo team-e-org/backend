@@ -109,7 +109,7 @@ WHERE
 	return pin, nil
 }
 
-func (p *Pin) GetPinsByBoardID(boardID int) ([]*models.Pin, error) {
+func (p *Pin) GetPinsByBoardID(boardID int, page int) ([]*models.Pin, error) {
 	const query = `
 SELECT
     p.id,
@@ -125,10 +125,14 @@ FROM
     pins AS p
     JOIN boards_pins AS bp ON p.id = bp.pin_id
 WHERE
-    bp.board_id = ?;
+	bp.board_id = ?
+LIMIT ?
+OFFSET ?;
 `
+	limit := 10
+	offset := (page - 1) * limit
 
-	rows, err := p.DB.Query(query, boardID)
+	rows, err := p.DB.Query(query, boardID, limit, offset)
 	if err != nil {
 		return nil, err
 	}

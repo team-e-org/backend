@@ -7,7 +7,7 @@ type Pin struct {
 	UserID      int
 	Title       string
 	Description string
-	URL         string
+	URL         *string
 	ImageURL    string
 	IsPrivate   bool
 	CreatedAt   time.Time

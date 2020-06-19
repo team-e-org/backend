@@ -5,6 +5,7 @@ import (
 	"app/db"
 	"app/logs"
 	"app/models"
+	"app/ptr"
 	"app/view"
 	"database/sql"
 	"encoding/json"
@@ -34,7 +35,14 @@ func ServePinsInBoard(data db.DataStorage, authLayer authz.AuthLayerInterface) f
 			return
 		}
 
-		pins, err := data.Pins.GetPinsByBoardID(boardID)
+		page, err := strconv.Atoi(r.FormValue("page"))
+		if err != nil {
+			logs.Error("Request: %s, parse path parameter page: %v", requestSummary(r), err)
+			BadRequest(w, r)
+			return
+		}
+
+		pins, err := data.Pins.GetPinsByBoardID(boardID, page)
 		if err != nil {
 			logs.Error("Request: %s, while gettign pins in board: %v", requestSummary(r), err)
 			InternalServerError(w, r)
@@ -174,7 +182,7 @@ func CreatePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(htt
 			UserID:      userID,
 			Title:       r.FormValue("title"),
 			Description: r.FormValue("description"),
-			URL:         r.FormValue("url"),
+			URL:         ptr.NewString(r.FormValue("url")),
 			IsPrivate:   b,
 			ImageURL:    url,
 			CreatedAt:   now,

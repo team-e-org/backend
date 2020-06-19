@@ -2,6 +2,7 @@ package view
 
 import (
 	"app/models"
+	"app/ptr"
 	"testing"
 	"time"
 )
@@ -12,7 +13,7 @@ func TestPin(t *testing.T) {
 		UserID:      0,
 		Title:       "test title",
 		Description: "test description",
-		URL:         "test url",
+		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		IsPrivate:   false,
 		CreatedAt:   time.Now(),
@@ -55,7 +56,7 @@ func TestNewPins(t *testing.T) {
 		UserID:      0,
 		Title:       "test title 1",
 		Description: "test description 1",
-		URL:         "test url 1",
+		URL:         ptr.NewString("test url 1"),
 		ImageURL:    "test image url 1",
 		IsPrivate:   false,
 		CreatedAt:   time.Now(),
@@ -65,7 +66,7 @@ func TestNewPins(t *testing.T) {
 		UserID:      0,
 		Title:       "test title 2",
 		Description: "test description 2",
-		URL:         "test url 2",
+		URL:         ptr.NewString("test url 2"),
 		ImageURL:    "test image url 2",
 		IsPrivate:   false,
 		CreatedAt:   time.Now(),

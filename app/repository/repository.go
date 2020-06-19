@@ -26,7 +26,7 @@ type PinRepository interface {
 	UpdatePin(pin *models.Pin) error
 	DeletePin(pinID int) error
 	GetPin(pinID int) (*models.Pin, error)
-	GetPinsByBoardID(boardID int) ([]*models.Pin, error)
+	GetPinsByBoardID(boardID int, page int) ([]*models.Pin, error)
 	GetPinsByUserID(userID int) ([]*models.Pin, error)
 }
 
