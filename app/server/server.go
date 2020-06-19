@@ -3,6 +3,7 @@ package server
 import (
 	"app/authz"
 	"app/authz/middleware"
+	"app/config"
 	"app/db"
 	"app/server/handlers"
 	"database/sql"
@@ -17,9 +18,9 @@ func init() {
 	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
 }
 
-func Start(port int, dbConn *sql.DB) error {
+func Start(port int, dbConn *sql.DB, awsConf *config.AWS) error {
 	router := mux.NewRouter()
-	data := db.NewDataStorage(dbConn)
+	data := db.NewDataStorage(dbConn, awsConf)
 	authLayer := authz.NewAuthLayer(*data)
 	attachHandlers(router, data, authLayer)
 	attachReqAuth(router, data, authLayer)
@@ -45,6 +46,7 @@ func attachReqAuth(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInte
 	muxAuth.Use(middleware.RequireAuthorization(al))
 
 	mux.HandleFunc("/boards", handlers.CreateBoard(*data, al)).Methods(http.MethodPost)
+	mux.HandleFunc("/boards/{id}/pins", handlers.CreatePin(*data, al)).Methods(http.MethodPost)
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {

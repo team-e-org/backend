@@ -1,6 +1,9 @@
 package repository
 
-import "app/models"
+import (
+	"app/models"
+	"mime/multipart"
+)
 
 type UserRepository interface {
 	CreateUser(user *models.User) error
@@ -19,7 +22,7 @@ type BoardRepository interface {
 }
 
 type PinRepository interface {
-	CreatePin(pin *models.Pin, boardID int) error
+	CreatePin(pin *models.Pin, boardID int) (*models.Pin, error)
 	UpdatePin(pin *models.Pin) error
 	DeletePin(pinID int) error
 	GetPin(pinID int) (*models.Pin, error)
@@ -32,4 +35,12 @@ type TagRepository interface {
 	GetTag(tagID int) (*models.Tag, error)
 	AttachTagToPin(tagID int, pinID int) error
 	GetTagsByPinID(pinID int) ([]*models.Tag, error)
+}
+
+type BoardPinRepository interface {
+	CreateBoardPin(boardID int, pinID int) error
+}
+
+type FileRepository interface {
+	UploadImage(file multipart.File, fileHeader *multipart.FileHeader) (url string, err error)
 }

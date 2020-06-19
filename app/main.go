@@ -23,7 +23,7 @@ func main() {
 		panic(err)
 	}
 
-	if err = server.Start(c.Server.Port, sqlDB); err != nil {
+	if err = server.Start(c.Server.Port, sqlDB, &c.AWS); err != nil {
 		logs.Error("Failed to start server: %s", err)
 		panic(err)
 	}

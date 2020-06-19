@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Server Server
 	DB     DBConfig
+	AWS    AWS
 }
 
 type Server struct {
@@ -22,6 +23,18 @@ type DBConfig struct {
 	Host     string
 	Port     int
 	TimeZone string
+}
+
+type AWS struct {
+	S3 S3
+}
+
+type S3 struct {
+	Region          string
+	Bucket          string
+	PinFolder       string
+	AccessKeyID     string
+	SecretAccessKey string
 }
 
 func ReadDBConfig() (*DBConfig, error) {
@@ -42,6 +55,20 @@ func ReadDBConfig() (*DBConfig, error) {
 	return dbConfig, nil
 }
 
+func readAWSConfig() *AWS {
+	awsConfig := &AWS{
+		S3{
+			"ap-northeast-1",
+			"pinko-bucket",
+			"pins/",
+			os.Getenv("AWS_S3_ACCESS_KEY_ID"),
+			os.Getenv("AWS_S3_SECRET_ACCESS_KEY"),
+		},
+	}
+
+	return awsConfig
+}
+
 func ReadConfig() (*Config, error) {
 	port, err := strconv.Atoi(os.Getenv("SERVER_PORT"))
 	if err != nil {
@@ -53,10 +80,13 @@ func ReadConfig() (*Config, error) {
 		return nil, err
 	}
 
+	awsConfig := readAWSConfig()
+
 	return &Config{
 		Server{
 			Port: port,
 		},
 		*dbConfig,
+		*awsConfig,
 	}, nil
 }
