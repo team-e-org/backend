@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"app/models"
+	"app/ptr"
 	"fmt"
 	"regexp"
 	"testing"
@@ -18,7 +19,7 @@ func TestCreatePin(t *testing.T) {
 		UserID:      userID,
 		Title:       "test title",
 		Description: "test description",
-		URL:         "test url",
+		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		IsPrivate:   false,
 	}
@@ -36,7 +37,7 @@ func TestCreatePin(t *testing.T) {
 	mock.ExpectCommit()
 
 	pins := NewPinRepository(sqlDB)
-	err := pins.CreatePin(pin, boardID)
+	_, err := pins.CreatePin(pin, boardID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
 	}
@@ -55,7 +56,7 @@ func TestCreatePinError(t *testing.T) {
 		UserID:      userID,
 		Title:       "test title",
 		Description: "test description",
-		URL:         "test url",
+		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		IsPrivate:   false,
 	}
@@ -73,7 +74,7 @@ func TestCreatePinError(t *testing.T) {
 	mock.ExpectRollback()
 
 	pins := NewPinRepository(sqlDB)
-	err := pins.CreatePin(pin, boardID)
+	_, err := pins.CreatePin(pin, boardID)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
 	}
@@ -91,7 +92,7 @@ func TestUpdatePin(t *testing.T) {
 		UserID:      userID,
 		Title:       "test title",
 		Description: "test description",
-		URL:         "test url",
+		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		IsPrivate:   false,
 	}
@@ -120,7 +121,7 @@ func TestUpdatePinError(t *testing.T) {
 		UserID:      userID,
 		Title:       "test title",
 		Description: "test description",
-		URL:         "test url",
+		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		IsPrivate:   false,
 	}
@@ -186,6 +187,127 @@ func TestDeletePinError(t *testing.T) {
 
 	pins := NewPinRepository(sqlDB)
 	err := pins.DeletePin(id)
+	if err == nil {
+		t.Fatalf("An error occurred: %v\n", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatalf("Unfulfilled expectations error: %v\n", err)
+	}
+}
+
+func TestGetPin(t *testing.T) {
+	id := 1
+
+	prepare := mock.ExpectPrepare("SELECT p.id, p.user_id, p.title, p.description, p.url, p.image_url, p.is_private, p.created_at, p.updated_at FROM pins p WHERE p.id = ?")
+	prepare.ExpectQuery().
+		WithArgs(id).
+		WillReturnRows(sqlmock.NewRows([]string{"id", "user_id", "title", "description", "url", "image_url", "is_private", "created_at", "updated_at"}).
+			AddRow(1, 1, "test title", "test_description", "test url", "test image url", false, now, now))
+
+	pins := NewPinRepository(sqlDB)
+	_, err := pins.GetPin(id)
+	if err != nil {
+		t.Fatalf("An error occurred: %v\n", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatalf("Unfulfilled expectations error: %v\n", err)
+	}
+}
+
+func TestGetPinError(t *testing.T) {
+	id := 1
+
+	prepare := mock.ExpectPrepare("SELECT p.id, p.user_id, p.title, p.description, p.url, p.image_url, p.is_private, p.created_at, p.updated_at")
+	prepare.ExpectQuery().
+		WithArgs(id).
+		WillReturnError(fmt.Errorf("some error"))
+
+	pins := NewPinRepository(sqlDB)
+	_, err := pins.GetPin(id)
+	if err == nil {
+		t.Fatalf("An error occurred: %v\n", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatalf("Unfulfilled expectations error: %v\n", err)
+	}
+}
+
+// func TestGetPinsByBoardID(t *testing.T) {
+// 	boardID := 1
+// 	page := 1
+//
+// 	prepare := mock.ExpectPrepare("SELECT p.id, p.user_id, p.title, p.description, p.url, p.image_url, p.is_private, p.created_at, p.updated_at FROM pins AS p JOIN boards_pins AS bp ON p.id = bp.pin_id WHERE bp.board_id = $1 LIMIT $2 OFFSET $3")
+// 	prepare.ExpectQuery().
+// 		WithArgs(boardID).
+// 		WillReturnRows(sqlmock.NewRows([]string{"id", "user_id", "title", "description", "url", "image_url", "is_private", "created_at", "updated_at"}).
+// 			AddRow(1, 1, "test title", "test description", "test url", "test image url", false, now, now).
+// 			AddRow(2, 2, "test title2", "test description2", "test url2", "test image url2", false, now, now))
+//
+// 	pins := NewPinRepository(sqlDB)
+// 	_, err := pins.GetPinsByBoardID(boardID, page)
+// 	if err != nil {
+// 		t.Fatalf("An error occurred: %v\n", err)
+// 	}
+//
+// 	if err := mock.ExpectationsWereMet(); err != nil {
+// 		t.Fatalf("Unfulfilled expectations error: %v\n", err)
+// 	}
+// }
+//
+// func TestGetPinsByBoardIDError(t *testing.T) {
+// 	boardID := 1
+// 	page := 1
+//
+// 	prepare := mock.ExpectPrepare("SELECT p.id, p.user_id, p.title, p.description, p.url, p.image_url, p.is_private, p.created_at, p.updated_at FROM pins AS p JOIN boards_pins AS bp ON p.id = bp.pin_id WHERE bp.board_id = $1 LIMIT $2 OFFSET $3")
+// 	prepare.ExpectQuery().
+// 		WithArgs(boardID).
+// 		WillReturnError(fmt.Errorf("some error"))
+//
+// 	pins := NewPinRepository(sqlDB)
+// 	_, err := pins.GetPinsByBoardID(boardID, page)
+// 	if err == nil {
+// 		t.Fatalf("An error occurred: %v\n", err)
+// 	}
+//
+// 	if err := mock.ExpectationsWereMet(); err != nil {
+// 		t.Fatalf("Unfulfilled expectations error: %v\n", err)
+// 	}
+// }
+
+func TestGetPinsByUserID(t *testing.T) {
+	userID := 0
+
+	prepare := mock.ExpectPrepare("SELECT p.id, p.user_id, p.title, p.description, p.url, p.image_url, p.is_private, p.created_at, p.updated_at FROM pins p WHERE p.user_id = ?")
+	prepare.ExpectQuery().
+		WithArgs(userID).
+		WillReturnRows(sqlmock.NewRows([]string{"id", "user_id", "title", "description", "url", "image_url", "is_private", "created_at", "updated_at"}).
+			AddRow(1, 1, "test title", "test description", "test url", "test image url", false, now, now).
+			AddRow(2, 1, "test title2", "test description2", "test url2", "test image url2", false, now, now))
+
+	pins := NewPinRepository(sqlDB)
+	_, err := pins.GetPinsByUserID(userID)
+	if err != nil {
+		t.Fatalf("An error occurred: %v\n", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatalf("Unfulfilled expectations error: %v\n", err)
+	}
+}
+
+func TestGetPinsByUserIDError(t *testing.T) {
+	userID := 0
+
+	prepare := mock.ExpectPrepare("SELECT p.id, p.user_id, p.title, p.description, p.url, p.image_url, p.is_private, p.created_at, p.updated_at FROM pins p WHERE p.user_id = ?")
+	prepare.ExpectQuery().
+		WithArgs(userID).
+		WillReturnError(fmt.Errorf("some error"))
+
+	pins := NewPinRepository(sqlDB)
+	_, err := pins.GetPinsByUserID(userID)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
 	}

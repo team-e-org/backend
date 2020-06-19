@@ -5,6 +5,7 @@ import (
 	"app/models"
 	"app/repository"
 	"database/sql"
+	"fmt"
 )
 
 type Pin struct {
@@ -29,7 +30,7 @@ INSERT INTO pins (user_id, title, description, url, image_url, is_private) VALUE
 
 	stmt, err := tx.Prepare(query)
 	if err != nil {
-		return helpers.TryRollback(tx, err)
+		return nil, helpers.TryRollback(tx, err)
 	}
 
 	result, err := stmt.Exec(pin.UserID, pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate)
@@ -48,7 +49,7 @@ INSERT INTO boards_pins (board_id, pin_id) VALUES (?, ?);
 
 	stmt, err = tx.Prepare(query2)
 	if err != nil {
-		return helpers.TryRollback(tx, err)
+		return nil, helpers.TryRollback(tx, err)
 	}
 
 	result, err = stmt.Exec(boardID, pinID)
@@ -74,7 +75,7 @@ UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private =
 	}
 
 	result, err := stmt.Exec(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate)
-	if err = helpers.CheckDBExecError(result, err); err != nil {
+	if err := helpers.CheckDBExecError(result, err); err != nil {
 		return err
 	}
 
@@ -149,10 +150,16 @@ FROM
 WHERE
     p.id = ?;
 `
-	row := p.DB.QueryRow(query, pinID)
+
+	stmt, err := p.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	row := stmt.QueryRow(pinID)
 
 	pin := &models.Pin{}
-	err := row.Scan(
+	err = row.Scan(
 		&pin.ID,
 		&pin.UserID,
 		&pin.Title,
@@ -187,14 +194,17 @@ FROM
     pins AS p
     JOIN boards_pins AS bp ON p.id = bp.pin_id
 WHERE
-	bp.board_id = ?
-LIMIT ?
-OFFSET ?;
+	bp.board_id = $1
+LIMIT $2
+OFFSET $3;
 `
 	limit := 10
 	offset := (page - 1) * limit
 
-	rows, err := p.DB.Query(query, boardID, limit, offset)
+	stmt, err := p.DB.Prepare(query)
+
+	rows, err := stmt.Query(boardID, limit, offset)
+	fmt.Printf("rows: %v\n", rows)
 	if err != nil {
 		return nil, err
 	}
@@ -245,7 +255,9 @@ WHERE
     p.user_id = ?;
 `
 
-	rows, err := p.DB.Query(query, userID)
+	stmt, err := p.DB.Prepare(query)
+
+	rows, err := stmt.Query(userID)
 	if err != nil {
 		return nil, err
 	}
