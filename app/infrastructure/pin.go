@@ -5,7 +5,6 @@ import (
 	"app/models"
 	"app/repository"
 	"database/sql"
-	"fmt"
 )
 
 type Pin struct {
@@ -194,17 +193,18 @@ FROM
     pins AS p
     JOIN boards_pins AS bp ON p.id = bp.pin_id
 WHERE
-	bp.board_id = $1
-LIMIT $2
-OFFSET $3;
+    bp.board_id = ?
+LIMIT ? OFFSET ?;
 `
 	limit := 10
 	offset := (page - 1) * limit
 
 	stmt, err := p.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
 
 	rows, err := stmt.Query(boardID, limit, offset)
-	fmt.Printf("rows: %v\n", rows)
 	if err != nil {
 		return nil, err
 	}
