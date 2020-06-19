@@ -2,6 +2,7 @@ package db
 
 import (
 	"app/models"
+	"app/ptr"
 	"database/sql"
 	"reflect"
 	"testing"
@@ -55,7 +56,7 @@ func TestRepository(t *testing.T) {
 		UserID:      userID,
 		Title:       "test title",
 		Description: "test description",
-		URL:         "test url",
+		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),

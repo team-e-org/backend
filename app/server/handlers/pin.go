@@ -174,7 +174,7 @@ func CreatePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(htt
 			UserID:      userID,
 			Title:       r.FormValue("title"),
 			Description: r.FormValue("description"),
-			URL:         r.FormValue("url"),
+			URL:         ptr.NewString(r.FormValue("url")),
 			IsPrivate:   b,
 			ImageURL:    url,
 			CreatedAt:   now,

@@ -3,13 +3,13 @@ package view
 import "app/models"
 
 type Pin struct {
-	ID          int    `json:"id"`
-	UserID      int    `json:"userId"`
-	Title       string `json:"title,omitempty"`
-	Description string `json:"description,omitempty"`
-	URL         string `json:"url,omitempty"`
-	ImageURL    string `json:"imageUrl"`
-	IsPrivate   bool   `json:"isPrivate"`
+	ID          int     `json:"id"`
+	UserID      int     `json:"userId"`
+	Title       string  `json:"title,omitempty"`
+	Description string  `json:"description,omitempty"`
+	URL         *string `json:"url,omitempty"`
+	ImageURL    string  `json:"imageUrl"`
+	IsPrivate   bool    `json:"isPrivate"`
 }
 
 func NewPin(pin *models.Pin) *Pin {

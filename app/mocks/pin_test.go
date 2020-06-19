@@ -2,6 +2,7 @@ package mocks
 
 import (
 	"app/models"
+	"app/ptr"
 	"fmt"
 	"reflect"
 	"testing"
@@ -20,7 +21,7 @@ func TestPinMock(t *testing.T) {
 		UserID:      UserID,
 		Title:       "test title",
 		Description: "test description",
-		URL:         "test url",
+		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
@@ -45,7 +46,7 @@ func TestPinMockRepository(t *testing.T) {
 		UserID:      UserID,
 		Title:       "test title",
 		Description: "test description",
-		URL:         "test url",
+		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
@@ -86,7 +87,7 @@ func TestPin(t *testing.T) {
 	pin4 := testBuildPin(t, 2, 1)
 	pins.CreatePin(pin4, 1)
 
-	ps, err := pins.GetPinsByBoardID(0)
+	ps, err := pins.GetPinsByBoardID(0, 0)
 	fmt.Printf("ps: %v\n", ps)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -104,7 +105,7 @@ func TestPin(t *testing.T) {
 		t.Fatalf("pins do not match error")
 	}
 
-	ps, err = pins.GetPinsByBoardID(1)
+	ps, err = pins.GetPinsByBoardID(1, 0)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
 	}
@@ -150,7 +151,7 @@ func testBuildPin(t *testing.T, pinID int, userID int) *models.Pin {
 		UserID:      userID,
 		Title:       "test title",
 		Description: "test description",
-		URL:         "test url",
+		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
