@@ -2,3 +2,4 @@ tmp/
 tags.lock
 .DS_Store
 .secret.env
+db/mysql/log
