@@ -30,14 +30,14 @@ func UserBoards(data db.DataStorage, authLayer authz.AuthLayerInterface) func(ht
 			return
 		}
 
-		tokenUser, err := getUserIDIfAvailable(r, authLayer)
+		currentUserID, err := getUserIDIfAvailable(r, authLayer)
 		if err != nil {
 			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
 			Unauthorized(w, r)
 			return
 		}
 
-		boards = removePrivateBoards(boards, tokenUser)
+		boards = removePrivateBoards(boards, currentUserID)
 
 		if len(boards) == 0 {
 			logs.Error("Request: %s, board not found for userID: %d", requestSummary(r), userID)
