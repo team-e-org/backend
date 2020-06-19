@@ -64,6 +64,20 @@ INSERT INTO boards_pins (board_id, pin_id) VALUES (?, ?);
 }
 
 func (p *Pin) UpdatePin(pin *models.Pin) error {
+	const query = `
+UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private = ?;
+`
+
+	stmt, err := p.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	result, err := stmt.Exec(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate)
+	if err = helpers.CheckDBExecError(result, err); err != nil {
+		return err
+	}
+
 	return nil
 }
 
