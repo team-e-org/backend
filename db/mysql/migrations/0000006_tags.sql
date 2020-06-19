@@ -4,3 +4,10 @@ CREATE TABLE tags (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+INSERT INTO
+    tags (id, tag)
+VALUES
+    (1, "animal"),
+    (2, "wall paper"),
+    (3, "beautiful");

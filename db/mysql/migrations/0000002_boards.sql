@@ -8,3 +8,10 @@ CREATE TABLE boards (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+INSERT INTO
+    boards (id, user_id, name, description)
+VALUES
+    (1, 1, "cat", "cat images"),
+    (2, 1, "dog", "dog images"),
+    (3, 1, "bird", "bird images");
