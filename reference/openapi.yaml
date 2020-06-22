@@ -439,16 +439,9 @@ components:
         icon:
           type: string
           format: uri
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
       required:
         - id
         - name
-        - email
     Board:
       title: Board
       type: object

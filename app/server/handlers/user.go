@@ -5,6 +5,7 @@ import (
 	"app/db"
 	"app/helpers"
 	"app/logs"
+	"app/models"
 	"app/usecase"
 	"app/view"
 	"encoding/json"
@@ -51,4 +52,59 @@ func UserBoards(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(h
 			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
 		}
 	}
+}
+
+func ServeUser(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logRequest(r)
+
+		vars := mux.Vars(r)
+		userID, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			logs.Error("Request: %s, parse path parameter id: %v", requestSummary(r), err)
+			BadRequest(w, r)
+			return
+		}
+
+		user, err := data.Users.GetUser(userID)
+		if err != nil {
+			logs.Error("Request: %s, gettign user from db: %v", requestSummary(r), err)
+			InternalServerError(w, r)
+			return
+		}
+
+		currentUserID, err := getUserIDIfAvailable(r, authLayer)
+		if err != nil {
+			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
+			Unauthorized(w, r)
+			return
+		}
+
+		response := view.NewUser(user)
+		if userID != currentUserID {
+			response.Email = ""
+		}
+
+		bytes, err := json.Marshal(response)
+		if err != nil {
+			logs.Error("Request: %s, serializing users: %v", requestSummary(r), err)
+			InternalServerError(w, r)
+			return
+		}
+
+		w.Header().Set(contentType, jsonContent)
+		if _, err = w.Write(bytes); err != nil {
+			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
+		}
+	}
+}
+
+func removePrivateBoards(boards []*models.Board, userID int) []*models.Board {
+	for i, board := range boards {
+		if board.IsPrivate && board.UserID != userID {
+			boards = append(boards[:i], boards[i+1:]...)
+		}
+	}
+
+	return boards
 }
