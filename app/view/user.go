@@ -5,7 +5,7 @@ import "app/models"
 type User struct {
 	ID    int    `json:"id"`
 	Name  string `json:"name"`
-	Email string `json:"email"`
+	Email string `json:"email,omitempty"`
 	Icon  string `json:"icon"`
 }
 
