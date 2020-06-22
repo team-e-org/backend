@@ -18,6 +18,9 @@ func NewBoardRepository() repository.BoardRepository {
 }
 
 func (m *BoardMock) CreateBoard(board *models.Board) (*models.Board, error) {
+	if board == nil {
+		return nil, emptyBoardGivenError()
+	}
 	m.Boards = append(m.Boards, board)
 	return m.Boards[len(m.Boards)-1], nil
 }
@@ -61,6 +64,10 @@ func (m *BoardMock) GetBoardsByUserID(userID int) ([]*models.Board, error) {
 	return boards, nil
 }
 
+func emptyBoardGivenError() error {
+	return errors.New("Empty board is given")
+}
+
 func noBoardError() error {
-	return errors.New("An error occurred, the board does not exist")
+	return errors.New("The board does not exist")
 }

@@ -56,6 +56,9 @@ func (m *PinMock) GetPin(pinID int) (*models.Pin, error) {
 }
 
 func (m *PinMock) GetPinsByBoardID(boardID int, page int) ([]*models.Pin, error) {
+	if _, ok := m.BoardPinMapper[boardID]; !ok {
+		return nil, noBoardError()
+	}
 	pins := make([]*models.Pin, 0, len(m.BoardPinMapper))
 	for _, id := range m.BoardPinMapper[boardID] {
 		for _, p := range m.ExpectedPins {
@@ -78,5 +81,5 @@ func (m *PinMock) GetPinsByUserID(userID int) ([]*models.Pin, error) {
 }
 
 func noPinError() error {
-	return errors.New("An error occurred, the pin does not exist")
+	return errors.New("The pin does not exist")
 }
