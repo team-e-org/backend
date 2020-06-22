@@ -93,6 +93,7 @@ func ServePin(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(htt
 		if err != nil {
 			logs.Error("Request: %s, %v", requestSummary(r), err)
 			ResponseError(w, r, err)
+			return
 		}
 
 		bytes, err := json.Marshal(view.NewPin(pin))
