@@ -68,7 +68,6 @@ func TestEmptyUserBoardError(t *testing.T) {
 }
 
 func TestRemovePrivateBoards(t *testing.T) {
-	data := db.NewRepositoryMock()
 	boards := []*models.Board{
 		{
 			ID:          0,
@@ -107,19 +106,13 @@ func TestRemovePrivateBoards(t *testing.T) {
 			UpdatedAt:   time.Now(),
 		},
 	}
-	for _, b := range boards {
-		_, err := data.Boards.CreateBoard(b)
-		if err != nil {
-			t.Fatalf("An error occurred: %v", err)
-		}
-	}
-	authz := authz.NewAuthLayer(data)
 	userID := 0
-	currentUserID := 0
-	boards, err := UserBoards(data, authz, userID, currentUserID)
-	if err != nil {
-		t.Fatalf("An error occurred: %v", err)
+	boards = removePrivateBoards(boards, userID)
+
+	if len(boards) != 3 {
+		t.Fatalf("len(boards) should be 3")
 	}
+
 	for _, b := range boards {
 		if b.UserID != userID && b.IsPrivate {
 			t.Fatalf("Other people's private boards are gotten.")
