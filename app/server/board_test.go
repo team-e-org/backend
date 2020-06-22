@@ -19,22 +19,25 @@ import (
 
 func TestCreateBoard(t *testing.T) {
 	var cases = []struct {
-		Desc        string
-		Code        int
-		requestBody string
-		currentUser *models.User
+		Desc          string
+		Code          int
+		requestBody   string
+		currentUser   *models.User
+		loginPassword string
 	}{
 		{
 			"success",
 			201,
 			`{"name": "new board"}`,
 			currentUser(),
+			"password",
 		},
 		{
 			"success with more params",
 			201,
 			`{"name": "new board", "description": "test description", "isPrivate": true}`,
 			currentUser(),
+			"password",
 		},
 	}
 
@@ -48,7 +51,7 @@ func TestCreateBoard(t *testing.T) {
 			data.Users = mockUserRepository
 
 			al := authz.NewAuthLayer(data)
-			token, _ := al.AuthenticateUser(c.currentUser.Email, "password")
+			token, _ := al.AuthenticateUser(c.currentUser.Email, c.loginPassword)
 
 			attachReqAuth(router, data, al)
 			recorder := httptest.NewRecorder()
