@@ -16,9 +16,9 @@ func TestCreatePin(t *testing.T) {
 	boardID := 1
 	pin := &models.Pin{
 		ID:          id,
-		UserID:      userID,
+		UserID:      ptr.NewInt(userID),
 		Title:       "test title",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		IsPrivate:   false,
@@ -53,9 +53,9 @@ func TestCreatePinError(t *testing.T) {
 	boardID := 1
 	pin := &models.Pin{
 		ID:          id,
-		UserID:      userID,
+		UserID:      ptr.NewInt(userID),
 		Title:       "test title",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		IsPrivate:   false,
@@ -89,9 +89,9 @@ func TestUpdatePin(t *testing.T) {
 	userID := 1
 	pin := &models.Pin{
 		ID:          id,
-		UserID:      userID,
+		UserID:      ptr.NewInt(userID),
 		Title:       "test title",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		IsPrivate:   false,
@@ -118,9 +118,9 @@ func TestUpdatePinError(t *testing.T) {
 	userID := 1
 	pin := &models.Pin{
 		ID:          id,
-		UserID:      userID,
+		UserID:      ptr.NewInt(userID),
 		Title:       "test title",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		IsPrivate:   false,

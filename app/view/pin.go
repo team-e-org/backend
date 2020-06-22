@@ -15,9 +15,9 @@ type Pin struct {
 func NewPin(pin *models.Pin) *Pin {
 	p := &Pin{
 		ID:          pin.ID,
-		UserID:      pin.UserID,
+		UserID:      *pin.UserID,
 		Title:       pin.Title,
-		Description: pin.Description,
+		Description: *pin.Description,
 		URL:         pin.URL,
 		ImageURL:    pin.ImageURL,
 		IsPrivate:   pin.IsPrivate,

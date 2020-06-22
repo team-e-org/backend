@@ -4,9 +4,9 @@ import "time"
 
 type Pin struct {
 	ID          int
-	UserID      int
+	UserID      *int
 	Title       string
-	Description string
+	Description *string
 	URL         *string
 	ImageURL    string
 	IsPrivate   bool

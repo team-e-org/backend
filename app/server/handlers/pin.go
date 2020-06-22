@@ -172,9 +172,9 @@ func CreatePin(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(ht
 
 		now := time.Now()
 		pin := &models.Pin{
-			UserID:      userID,
+			UserID:      ptr.NewInt(userID),
 			Title:       r.FormValue("title"),
-			Description: r.FormValue("description"),
+			Description: ptr.NewString(r.FormValue("description")),
 			URL:         ptr.NewString(r.FormValue("url")),
 			IsPrivate:   b,
 			ImageURL:    url,

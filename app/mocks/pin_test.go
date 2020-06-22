@@ -17,9 +17,9 @@ func TestPinMock(t *testing.T) {
 	pins.BoardPinMapper = make(map[int][]int)
 	pin := &models.Pin{
 		ID:          ID,
-		UserID:      UserID,
+		UserID:      ptr.NewInt(UserID),
 		Title:       "test title",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		CreatedAt:   time.Now(),
@@ -42,9 +42,9 @@ func TestPinMockRepository(t *testing.T) {
 	boardID := 0
 	pin := &models.Pin{
 		ID:          ID,
-		UserID:      UserID,
+		UserID:      ptr.NewInt(UserID),
 		Title:       "test title",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		CreatedAt:   time.Now(),
@@ -146,9 +146,9 @@ func TestPin(t *testing.T) {
 func testBuildPin(t *testing.T, pinID int, userID int) *models.Pin {
 	pin := &models.Pin{
 		ID:          pinID,
-		UserID:      userID,
+		UserID:      ptr.NewInt(userID),
 		Title:       "test title",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		CreatedAt:   time.Now(),
