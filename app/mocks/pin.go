@@ -70,7 +70,7 @@ func (m *PinMock) GetPinsByBoardID(boardID int, page int) ([]*models.Pin, error)
 func (m *PinMock) GetPinsByUserID(userID int) ([]*models.Pin, error) {
 	pins := make([]*models.Pin, 0, len(m.BoardPinMapper))
 	for _, p := range m.ExpectedPins {
-		if p.UserID == userID {
+		if *p.UserID == userID {
 			pins = append(pins, p)
 		}
 	}

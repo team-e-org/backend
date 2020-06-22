@@ -34,7 +34,7 @@ func TestRepository(t *testing.T) {
 		ID:          boardID,
 		UserID:      userID,
 		Name:        "test board",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -50,9 +50,9 @@ func TestRepository(t *testing.T) {
 	pinID := 0
 	pin := &models.Pin{
 		ID:          pinID,
-		UserID:      userID,
+		UserID:      ptr.NewInt(userID),
 		Title:       "test title",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		URL:         ptr.NewString("test url"),
 		ImageURL:    "test image url",
 		CreatedAt:   time.Now(),

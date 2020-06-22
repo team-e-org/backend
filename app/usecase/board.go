@@ -13,7 +13,7 @@ func CreateBoard(data *db.DataStorage, requestBoard *view.Board, userID int) (*m
 	board := &models.Board{
 		UserID:      userID,
 		Name:        requestBoard.Name,
-		Description: requestBoard.Description,
+		Description: &requestBoard.Description,
 		IsPrivate:   requestBoard.IsPrivate,
 	}
 	board, err := data.Boards.CreateBoard(board)

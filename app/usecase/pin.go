@@ -33,7 +33,7 @@ func ServePin(data *db.DataStorage, pinID int, userID int) (*models.Pin, helpers
 		return nil, err
 	}
 
-	if pin.IsPrivate && pin.UserID != userID {
+	if pin.IsPrivate && *pin.UserID != userID {
 		logs.Error("Pin not found in database: %v", pinID)
 		err := helpers.NewNotFound(err)
 		return nil, err
@@ -62,7 +62,7 @@ func CreatePin(data *db.DataStorage, pin *models.Pin, userID int, boardID int) (
 
 func removePrivatePin(pins []*models.Pin, userID int) []*models.Pin {
 	for i, pin := range pins {
-		if pin.IsPrivate && pin.UserID != userID {
+		if pin.IsPrivate && *pin.UserID != userID {
 			pins = append(pins[:i], pins[i+1:]...)
 		}
 	}
