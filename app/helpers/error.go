@@ -1,9 +1,5 @@
 package helpers
 
-import (
-	"fmt"
-)
-
 type AppError interface {
 	AppError()
 	Error() string
@@ -14,7 +10,7 @@ type InternalServerError struct {
 }
 
 func (e *InternalServerError) Error() string {
-	return fmt.Sprintf("Usecase error: %v\n", e.err)
+	return e.err.Error()
 }
 
 func (e *InternalServerError) AppError() {}
@@ -28,7 +24,7 @@ type Unauthorized struct {
 }
 
 func (e *Unauthorized) Error() string {
-	return fmt.Sprintf("Usecase error: %v\n", e.err)
+	return e.err.Error()
 }
 
 func (e *Unauthorized) AppError() {}
@@ -42,11 +38,25 @@ type NotFound struct {
 }
 
 func (e *NotFound) Error() string {
-	return fmt.Sprintf("Usecase error: %v\n", e.err)
+	return e.err.Error()
 }
 
 func (e *NotFound) AppError() {}
 
 func NewNotFound(err error) AppError {
 	return &NotFound{err: err}
+}
+
+type BadRequest struct {
+	err error
+}
+
+func (e *BadRequest) Error() string {
+	return e.err.Error()
+}
+
+func (e *BadRequest) AppError() {}
+
+func NewBadRequest(err error) AppError {
+	return &BadRequest{err: err}
 }

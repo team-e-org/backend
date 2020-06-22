@@ -3,8 +3,9 @@ package handlers
 import (
 	"app/authz"
 	"app/db"
+	"app/helpers"
 	"app/logs"
-	"app/models"
+	"app/usecase"
 	"app/view"
 	"encoding/json"
 	"net/http"
@@ -16,36 +17,25 @@ func CreateBoard(data db.DataStorage, authLayer authz.AuthLayerInterface) func(h
 
 		userID, err := getUserIDIfAvailable(r, authLayer)
 		if err != nil {
-			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
-			Unauthorized(w, r)
-			return
+			err := helpers.NewUnauthorized(err)
+			ResponseError(w, r, err)
 		}
 
 		requestBoard := &view.Board{}
 		if err := json.NewDecoder(r.Body).Decode(requestBoard); err != nil {
-			logs.Error("Request: %s, unable to parse content: %v", requestSummary(r), err)
-			BadRequest(w, r)
-			return
+			err := helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
 		}
 
-		storedBoard := &models.Board{
-			UserID:      userID,
-			Name:        requestBoard.Name,
-			Description: requestBoard.Description,
-			IsPrivate:   requestBoard.IsPrivate,
-		}
-		storedBoard, err = data.Boards.CreateBoard(storedBoard)
+		storedBoard, err := usecase.CreateBoard(data, requestBoard, userID)
 		if err != nil {
-			logs.Error("Request: %s, creating board: %v", requestSummary(r), err)
-			InternalServerError(w, r)
-			return
+			ResponseError(w, r, err)
 		}
 
 		bytes, err := json.Marshal(view.NewBoard(storedBoard))
 		if err != nil {
-			logs.Error("Request: %s, serializing book: %v", requestSummary(r), err)
-			InternalServerError(w, r)
-			return
+			err := helpers.NewInternalServerError(err)
+			ResponseError(w, r, err)
 		}
 
 		w.Header().Set(contentType, jsonContent)

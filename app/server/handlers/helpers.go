@@ -62,6 +62,9 @@ func ResponseError(w http.ResponseWriter, r *http.Request, err error) {
 	case *helpers.NotFound:
 		logs.Error("Request: %s, board not found for userID: %d", requestSummary(r), err)
 		NotFound(w, r)
+	case *helpers.BadRequest:
+		logs.Error("Request: %s, unable to parse content: %v", requestSummary(r), err)
+		BadRequest(w, r)
 	}
 }
 
