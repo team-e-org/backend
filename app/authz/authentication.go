@@ -25,10 +25,10 @@ type AuthLayerInterface interface {
 
 type AuthLayer struct {
 	tokenStorage storage.TokenStorage
-	dataStorage  db.DataStorage
+	dataStorage  *db.DataStorage
 }
 
-func NewAuthLayer(data db.DataStorage) AuthLayerInterface {
+func NewAuthLayer(data *db.DataStorage) AuthLayerInterface {
 	tokenStorage := storage.NewInMemoryTokenStorage()
 	return &AuthLayer{
 		tokenStorage,

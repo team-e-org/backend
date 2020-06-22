@@ -8,6 +8,7 @@ import (
 	"database/sql"
 )
 
+// TODO add DataStorageInterface
 type DataStorage struct {
 	DB         *sql.DB
 	Users      repository.UserRepository
