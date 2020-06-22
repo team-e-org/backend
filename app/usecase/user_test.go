@@ -4,6 +4,7 @@ import (
 	"app/authz"
 	"app/db"
 	"app/models"
+	"app/ptr"
 	"testing"
 	"time"
 )
@@ -15,7 +16,7 @@ func TestUserBoard(t *testing.T) {
 			ID:          0,
 			UserID:      0,
 			Name:        "test board",
-			Description: "test description",
+			Description: ptr.NewString("test description"),
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
 		},
@@ -23,7 +24,7 @@ func TestUserBoard(t *testing.T) {
 			ID:          1,
 			UserID:      1,
 			Name:        "test board2",
-			Description: "test description2",
+			Description: ptr.NewString("test description2"),
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
 		},
@@ -31,7 +32,7 @@ func TestUserBoard(t *testing.T) {
 			ID:          2,
 			UserID:      0,
 			Name:        "test board3",
-			Description: "test description3",
+			Description: ptr.NewString("test description3"),
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
 		},
@@ -73,7 +74,7 @@ func TestRemovePrivateBoards(t *testing.T) {
 			ID:          0,
 			UserID:      0,
 			Name:        "test board",
-			Description: "test description",
+			Description: ptr.NewString("test description"),
 			IsPrivate:   false,
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
@@ -82,7 +83,7 @@ func TestRemovePrivateBoards(t *testing.T) {
 			ID:          1,
 			UserID:      0,
 			Name:        "test board2",
-			Description: "test description2",
+			Description: ptr.NewString("test description2"),
 			IsPrivate:   true,
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
@@ -91,7 +92,7 @@ func TestRemovePrivateBoards(t *testing.T) {
 			ID:          2,
 			UserID:      1,
 			Name:        "test board3",
-			Description: "test description3",
+			Description: ptr.NewString("test description3"),
 			IsPrivate:   false,
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
@@ -100,7 +101,7 @@ func TestRemovePrivateBoards(t *testing.T) {
 			ID:          3,
 			UserID:      1,
 			Name:        "test board4",
-			Description: "test description4",
+			Description: ptr.NewString("test description4"),
 			IsPrivate:   true,
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),

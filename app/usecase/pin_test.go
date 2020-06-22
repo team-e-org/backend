@@ -12,9 +12,9 @@ func createPins(t *testing.T) []*models.Pin {
 	pins := []*models.Pin{
 		{
 			ID:          0,
-			UserID:      0,
+			UserID:      ptr.NewInt(0),
 			Title:       "test title",
-			Description: "test description",
+			Description: ptr.NewString("test description"),
 			URL:         ptr.NewString("test url"),
 			ImageURL:    "test image url",
 			IsPrivate:   false,
@@ -23,9 +23,9 @@ func createPins(t *testing.T) []*models.Pin {
 		},
 		{
 			ID:          1,
-			UserID:      0,
+			UserID:      ptr.NewInt(0),
 			Title:       "test title2",
-			Description: "test description2",
+			Description: ptr.NewString("test description2"),
 			URL:         ptr.NewString("test url2"),
 			ImageURL:    "test image url2",
 			IsPrivate:   true,
@@ -34,9 +34,9 @@ func createPins(t *testing.T) []*models.Pin {
 		},
 		{
 			ID:          2,
-			UserID:      1,
+			UserID:      ptr.NewInt(1),
 			Title:       "test title3",
-			Description: "test description3",
+			Description: ptr.NewString("test description3"),
 			URL:         ptr.NewString("test url3"),
 			ImageURL:    "test image url3",
 			IsPrivate:   false,
@@ -45,9 +45,9 @@ func createPins(t *testing.T) []*models.Pin {
 		},
 		{
 			ID:          3,
-			UserID:      1,
+			UserID:      ptr.NewInt(1),
 			Title:       "test title4",
-			Description: "test description4",
+			Description: ptr.NewString("test description4"),
 			URL:         ptr.NewString("test url4"),
 			ImageURL:    "test image url4",
 			IsPrivate:   true,
@@ -86,7 +86,7 @@ func TestRemovePrivatePins(t *testing.T) {
 		t.Fatalf("len(pins) should be 3")
 	}
 	for _, p := range pins {
-		if p.IsPrivate && p.UserID != userID {
+		if p.IsPrivate && *p.UserID != userID {
 			t.Fatalf("Other people's private pins are gotten")
 		}
 	}
