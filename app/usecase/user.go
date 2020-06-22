@@ -16,6 +16,8 @@ func UserBoards(data *db.DataStorage, authLayer authz.AuthLayerInterface, userID
 		return nil, helpers.NewInternalServerError(err)
 	}
 
+	boards = removePrivateBoards(boards, currentUserID)
+
 	if len(boards) == 0 {
 		logs.Error("Board not found for userID: %d", userID)
 		return nil, helpers.NewNotFound(err)

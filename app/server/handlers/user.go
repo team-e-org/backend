@@ -5,7 +5,6 @@ import (
 	"app/db"
 	"app/helpers"
 	"app/logs"
-	"app/models"
 	"app/usecase"
 	"app/view"
 	"encoding/json"
@@ -97,14 +96,4 @@ func ServeUser(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(ht
 			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
 		}
 	}
-}
-
-func removePrivateBoards(boards []*models.Board, userID int) []*models.Board {
-	for i, board := range boards {
-		if board.IsPrivate && board.UserID != userID {
-			boards = append(boards[:i], boards[i+1:]...)
-		}
-	}
-
-	return boards
 }
