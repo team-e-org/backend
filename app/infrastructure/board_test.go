@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"app/models"
+	"app/ptr"
 	"fmt"
 	"regexp"
 	"testing"
@@ -15,7 +16,7 @@ func TestCreateBoard(t *testing.T) {
 		ID:          0,
 		UserID:      userID,
 		Name:        "test board",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		IsPrivate:   false,
 	}
 
@@ -41,7 +42,7 @@ func TestCreateBoardError(t *testing.T) {
 		ID:          0,
 		UserID:      userID,
 		Name:        "test board",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		IsPrivate:   false,
 		CreatedAt:   now,
 		UpdatedAt:   now,
@@ -69,7 +70,7 @@ func TestUpdateBoard(t *testing.T) {
 		ID:          0,
 		UserID:      userID,
 		Name:        "test board",
-		Description: "test descriptions",
+		Description: ptr.NewString("test descriptions"),
 		IsPrivate:   false,
 	}
 
@@ -95,7 +96,7 @@ func TestUpdateBoardError(t *testing.T) {
 		ID:          0,
 		UserID:      userID,
 		Name:        "test board",
-		Description: "test descriptions",
+		Description: ptr.NewString("test descriptions"),
 		IsPrivate:   false,
 	}
 

@@ -16,7 +16,7 @@ func NewBoard(board *models.Board) *Board {
 		ID:          board.ID,
 		UserID:      board.UserID,
 		Name:        board.Name,
-		Description: board.Description,
+		Description: *board.Description,
 		IsPrivate:   board.IsPrivate,
 		IsArchive:   board.IsArchive,
 	}

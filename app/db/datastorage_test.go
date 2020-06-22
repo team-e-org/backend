@@ -34,7 +34,7 @@ func TestRepository(t *testing.T) {
 		ID:          boardID,
 		UserID:      userID,
 		Name:        "test board",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}

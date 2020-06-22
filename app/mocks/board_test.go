@@ -2,6 +2,7 @@ package mocks
 
 import (
 	"app/models"
+	"app/ptr"
 	"reflect"
 	"testing"
 	"time"
@@ -15,7 +16,7 @@ func TestBoardMock(t *testing.T) {
 		ID:          ID,
 		UserID:      UserID,
 		Name:        "test board",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -37,7 +38,7 @@ func TestBoardMock_GetBoardsByUserID(t *testing.T) {
 		ID:          ID,
 		UserID:      UserID,
 		Name:        "test board",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -59,7 +60,7 @@ func TestBoardMockRepository(t *testing.T) {
 		ID:          ID,
 		UserID:      UserID,
 		Name:        "test board",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -82,7 +83,7 @@ func TestBoard(t *testing.T) {
 		ID:          ID,
 		UserID:      UserID,
 		Name:        "test board",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		CreatedAt:   now,
 		UpdatedAt:   now,
 	}
@@ -91,7 +92,7 @@ func TestBoard(t *testing.T) {
 		ID:          ID,
 		UserID:      UserID,
 		Name:        "test2 board",
-		Description: "test2 description",
+		Description: ptr.NewString("test2 description"),
 		CreatedAt:   now,
 		UpdatedAt:   time.Now(),
 	}

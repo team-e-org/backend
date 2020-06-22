@@ -2,6 +2,7 @@ package view
 
 import (
 	"app/models"
+	"app/ptr"
 	"testing"
 	"time"
 )
@@ -11,7 +12,7 @@ func TestBoard(t *testing.T) {
 		ID:          0,
 		UserID:      0,
 		Name:        "test name",
-		Description: "test description",
+		Description: ptr.NewString("test description"),
 		IsPrivate:   false,
 		IsArchive:   false,
 		CreatedAt:   time.Now(),
@@ -31,7 +32,7 @@ func TestBoard(t *testing.T) {
 		t.Fatalf("Name does not match, model: %v, view: %v", b.Name, v.Name)
 	}
 
-	if b.Description != v.Description {
+	if *b.Description != v.Description {
 		t.Fatalf("Description does not match, model: %v, view: %v", b.Description, v.Description)
 	}
 
@@ -51,7 +52,7 @@ func TestNewBoards(t *testing.T) {
 			ID:          1,
 			UserID:      2,
 			Name:        "test name 1",
-			Description: "test description 1",
+			Description: ptr.NewString("test description 1"),
 			IsPrivate:   false,
 			IsArchive:   false,
 			CreatedAt:   time.Now(),
@@ -62,7 +63,7 @@ func TestNewBoards(t *testing.T) {
 			ID:          3,
 			UserID:      4,
 			Name:        "test name 2",
-			Description: "test description 2",
+			Description: ptr.NewString("test description 2"),
 			IsPrivate:   false,
 			IsArchive:   false,
 			CreatedAt:   time.Now(),
@@ -84,7 +85,7 @@ func TestNewBoards(t *testing.T) {
 		if newBoard.Name != b.Name {
 			t.Fatalf("Name does not match, model: %v, view: %v", b.Name, newBoard.Name)
 		}
-		if newBoard.Description != b.Description {
+		if newBoard.Description != *b.Description {
 			t.Fatalf("Description does not match, model: %v, view: %v", b.Description, newBoard.Description)
 		}
 		if newBoard.IsPrivate != b.IsPrivate {
