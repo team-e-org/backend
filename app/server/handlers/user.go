@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func UserBoards(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func UserBoards(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		userID, err := strconv.Atoi(vars["id"])

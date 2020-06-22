@@ -50,7 +50,7 @@ func TestAuthLayer_AuthenticateUser(t *testing.T) {
 		storage := &db.DataStorage{
 			Users: userRepo,
 		}
-		al := NewAuthLayer(*storage)
+		al := NewAuthLayer(storage)
 
 		token, err := al.AuthenticateUser(tt.email, tt.password)
 		if !tt.wantError && err != nil {
@@ -91,7 +91,7 @@ func TestAuthLayer_GetTokenData(t *testing.T) {
 	storage := &db.DataStorage{
 		Users: userRepo,
 	}
-	al := NewAuthLayer(*storage)
+	al := NewAuthLayer(storage)
 
 	token, _ := al.AuthenticateUser(test.email, test.password)
 

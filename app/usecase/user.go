@@ -8,7 +8,7 @@ import (
 	"app/models"
 )
 
-func UserBoards(data db.DataStorage, authLayer authz.AuthLayerInterface, userID int, currentUserID int) ([]*models.Board, helpers.AppError) {
+func UserBoards(data *db.DataStorage, authLayer authz.AuthLayerInterface, userID int, currentUserID int) ([]*models.Board, helpers.AppError) {
 
 	boards, err := data.Boards.GetBoardsByUserID(userID)
 	if err != nil {

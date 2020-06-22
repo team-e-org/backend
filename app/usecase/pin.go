@@ -8,7 +8,7 @@ import (
 	"database/sql"
 )
 
-func GetPinsByBoardID(data db.DataStorage, userID int, boardID int, page int) ([]*models.Pin, helpers.AppError) {
+func GetPinsByBoardID(data *db.DataStorage, userID int, boardID int, page int) ([]*models.Pin, helpers.AppError) {
 	pins, err := data.Pins.GetPinsByBoardID(boardID, page)
 	if err != nil {
 		logs.Error("An error occurred while getting pins in board: %v", err)
@@ -20,7 +20,7 @@ func GetPinsByBoardID(data db.DataStorage, userID int, boardID int, page int) ([
 	return pins, nil
 }
 
-func ServePin(data db.DataStorage, pinID int, userID int) (*models.Pin, helpers.AppError) {
+func ServePin(data *db.DataStorage, pinID int, userID int) (*models.Pin, helpers.AppError) {
 	pin, err := data.Pins.GetPin(pinID)
 	if err == sql.ErrNoRows {
 		logs.Error("Pin not found in database: %v", pinID)
@@ -42,7 +42,7 @@ func ServePin(data db.DataStorage, pinID int, userID int) (*models.Pin, helpers.
 	return pin, nil
 }
 
-func CreatePin(data db.DataStorage, pin *models.Pin, userID int, boardID int) (*models.Pin, helpers.AppError) {
+func CreatePin(data *db.DataStorage, pin *models.Pin, userID int, boardID int) (*models.Pin, helpers.AppError) {
 	pin, err := data.Pins.CreatePin(pin, boardID)
 	if err != nil {
 		logs.Error("Creating pin: %v", err)

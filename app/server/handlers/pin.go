@@ -17,7 +17,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func ServePinsInBoard(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func ServePinsInBoard(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -68,7 +68,7 @@ func ServePinsInBoard(data db.DataStorage, authLayer authz.AuthLayerInterface) f
 	}
 }
 
-func ServePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func ServePin(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -112,7 +112,7 @@ func ServePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http
 	}
 }
 
-func CreatePin(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func CreatePin(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 

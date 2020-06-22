@@ -8,7 +8,7 @@ import (
 	"app/view"
 )
 
-func CreateBoard(data db.DataStorage, requestBoard *view.Board, userID int) (*models.Board, helpers.AppError) {
+func CreateBoard(data *db.DataStorage, requestBoard *view.Board, userID int) (*models.Board, helpers.AppError) {
 
 	board := &models.Board{
 		UserID:      userID,
