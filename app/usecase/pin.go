@@ -42,17 +42,10 @@ func ServePin(data *db.DataStorage, pinID int, userID int) (*models.Pin, helpers
 	return pin, nil
 }
 
-func CreatePin(data *db.DataStorage, pin *models.Pin, userID int, boardID int) (*models.Pin, helpers.AppError) {
+func CreatePin(data *db.DataStorage, pin *models.Pin, boardID int) (*models.Pin, helpers.AppError) {
 	pin, err := data.Pins.CreatePin(pin, boardID)
 	if err != nil {
 		logs.Error("Creating pin: %v", err)
-		err := helpers.NewInternalServerError(err)
-		return nil, err
-	}
-
-	err = data.BoardsPins.CreateBoardPin(boardID, pin.ID)
-	if err != nil {
-		logs.Error("Creating board_pin: %v", err)
 		err := helpers.NewInternalServerError(err)
 		return nil, err
 	}

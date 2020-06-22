@@ -7,44 +7,67 @@ import (
 )
 
 type BoardMock struct {
-	ExpectedBoard *models.Board
+	Boards []*models.Board
 }
 
 func NewBoardRepository() repository.BoardRepository {
-	return &BoardMock{}
+	boards := make([]*models.Board, 0)
+	return &BoardMock{
+		Boards: boards,
+	}
 }
 
 func (m *BoardMock) CreateBoard(board *models.Board) (*models.Board, error) {
-	m.ExpectedBoard = board
-	return m.ExpectedBoard, nil
+	if board == nil {
+		return nil, emptyBoardGivenError()
+	}
+	m.Boards = append(m.Boards, board)
+	return m.Boards[len(m.Boards)-1], nil
 }
 
 func (m *BoardMock) UpdateBoard(board *models.Board) error {
-	if m.ExpectedBoard == nil {
-		return noBoardError()
+	for i, b := range m.Boards {
+		if b.ID == board.ID {
+			m.Boards[i] = board
+			return nil
+		}
 	}
-	m.ExpectedBoard = board
-	return nil
+	return noBoardError()
 }
 
 func (m *BoardMock) DeleteBoard(boardID int) error {
-	if m.ExpectedBoard.ID != boardID {
-		return noBoardError()
+	for i, b := range m.Boards {
+		if b.ID == boardID {
+			m.Boards = append(m.Boards[:i], m.Boards[i+1:]...)
+			return nil
+		}
 	}
-	return nil
+	return noBoardError()
 }
 
 func (m *BoardMock) GetBoard(boardID int) (*models.Board, error) {
-	if m.ExpectedBoard.ID != boardID {
-		return nil, noBoardError()
+	for _, b := range m.Boards {
+		if b.ID == boardID {
+			return b, nil
+		}
 	}
-	return m.ExpectedBoard, nil
+	return nil, noBoardError()
 }
 
 func (m *BoardMock) GetBoardsByUserID(userID int) ([]*models.Board, error) {
-	return []*models.Board{m.ExpectedBoard}, nil
+	boards := make([]*models.Board, 0)
+	for _, b := range m.Boards {
+		if b.UserID == userID {
+			boards = append(boards, b)
+		}
+	}
+	return boards, nil
+}
+
+func emptyBoardGivenError() error {
+	return errors.New("Empty board is given")
 }
 
 func noBoardError() error {
-	return errors.New("An error occurred, the board does not exist")
+	return errors.New("The board does not exist")
 }

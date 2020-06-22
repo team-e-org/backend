@@ -182,7 +182,7 @@ func CreatePin(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(ht
 			UpdatedAt:   now,
 		}
 
-		pin, err = usecase.CreatePin(data, pin, userID, boardID)
+		pin, err = usecase.CreatePin(data, pin, boardID)
 
 		response := view.NewPin(pin)
 		bytes, err := json.Marshal(response)

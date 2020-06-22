@@ -16,8 +16,6 @@ func UserBoards(data *db.DataStorage, authLayer authz.AuthLayerInterface, userID
 		return nil, helpers.NewInternalServerError(err)
 	}
 
-	boards = removePrivateBoards(boards, currentUserID)
-
 	if len(boards) == 0 {
 		logs.Error("Board not found for userID: %d", userID)
 		return nil, helpers.NewNotFound(err)
@@ -27,11 +25,13 @@ func UserBoards(data *db.DataStorage, authLayer authz.AuthLayerInterface, userID
 }
 
 func removePrivateBoards(boards []*models.Board, userID int) []*models.Board {
-	for i, board := range boards {
-		if board.IsPrivate && board.UserID != userID {
-			boards = append(boards[:i], boards[i+1:]...)
+	res := make([]*models.Board, 0)
+	for _, b := range boards {
+		if b.IsPrivate && b.UserID != userID {
+			continue
 		}
+		res = append(res, b)
 	}
 
-	return boards
+	return res
 }
