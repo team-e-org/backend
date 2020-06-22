@@ -3,6 +3,7 @@ package usecase
 import (
 	"app/db"
 	"app/helpers"
+	"app/logs"
 	"app/models"
 	"app/view"
 )
@@ -17,6 +18,7 @@ func CreateBoard(data db.DataStorage, requestBoard *view.Board, userID int) (*mo
 	}
 	board, err := data.Boards.CreateBoard(board)
 	if err != nil {
+		logs.Error("An error occurred while creating board: %v", err)
 		return nil, helpers.NewInternalServerError(err)
 	}
 

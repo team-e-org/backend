@@ -18,8 +18,14 @@ func UserBoards(data db.DataStorage, authLayer authz.AuthLayerInterface) func(ht
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		userID, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			logs.Error("Request: %s, parse path parameter id: %v", requestSummary(r), err)
+			err := helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+		}
 		currentUserID, err := getUserIDIfAvailable(r, authLayer)
 		if err != nil {
+			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
 			err := helpers.NewUnauthorized(err)
 			ResponseError(w, r, err)
 			return
@@ -27,14 +33,17 @@ func UserBoards(data db.DataStorage, authLayer authz.AuthLayerInterface) func(ht
 
 		boards, err := usecase.UserBoards(data, authLayer, userID, currentUserID)
 		if err != nil {
+			logs.Error("Request: %s, %v", requestSummary(r), err)
 			ResponseError(w, r, err)
 			return
 		}
 
 		bytes, err := json.Marshal(view.NewBoards(boards))
 		if err != nil {
+			logs.Error("Request: %s, serializing boards: %v", requestSummary(r), err)
 			err := helpers.NewInternalServerError(err)
 			ResponseError(w, r, err)
+			return
 		}
 
 		w.Header().Set(contentType, jsonContent)
