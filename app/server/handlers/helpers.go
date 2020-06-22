@@ -5,14 +5,18 @@ import (
 	"net/http"
 
 	"app/authz"
+	"app/helpers"
 	"app/logs"
 )
 
 const (
-	contentType = "Content-Type"
-	authToken   = "X-Auth-Token"
-	jsonContent = "application/json"
-	mp3Content  = "audio/mpeg"
+	contentType           = "Content-Type"
+	authToken             = "X-Auth-Token"
+	jsonContent           = "application/json"
+	mp3Content            = "audio/mpeg"
+	INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
+	UNAUTHORIZED          = "UNAUTHORIZED"
+	NOT_FOUND             = "NOT_FOUND"
 )
 
 func logRequest(r *http.Request) {
@@ -45,6 +49,23 @@ func InternalServerError(w http.ResponseWriter, r *http.Request) {
 
 func NotFound(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "404 Not Found", http.StatusNotFound)
+}
+
+func ResponseError(w http.ResponseWriter, r *http.Request, err error) {
+	switch err.(type) {
+	case *helpers.InternalServerError:
+		logs.Error("Request: %s, while getting user's boards: %v", requestSummary(r), err)
+		InternalServerError(w, r)
+	case *helpers.Unauthorized:
+		logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
+		Unauthorized(w, r)
+	case *helpers.NotFound:
+		logs.Error("Request: %s, board not found for userID: %d", requestSummary(r), err)
+		NotFound(w, r)
+	case *helpers.BadRequest:
+		logs.Error("Request: %s, unable to parse content: %v", requestSummary(r), err)
+		BadRequest(w, r)
+	}
 }
 
 func getUserIDIfAvailable(r *http.Request, al authz.AuthLayerInterface) (int, error) {

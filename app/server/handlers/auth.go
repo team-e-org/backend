@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-func SignIn(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func SignIn(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -27,7 +27,7 @@ func SignIn(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.R
 			logs.Error("Request: %s, authenticate user: %v", requestSummary(r), err)
 			Unauthorized(w, r)
 		}
-		userID, err := getUserIdByToken(authLayer, token)
+		userID, err := authz.GetUserIdByToken(authLayer, token)
 
 		response := view.NewLSignInResponse(token, userID)
 		bytes, err := json.Marshal(response)
@@ -44,7 +44,7 @@ func SignIn(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.R
 	}
 }
 
-func SignUp(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func SignUp(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -80,7 +80,7 @@ func SignUp(data db.DataStorage, authLayer authz.AuthLayerInterface) func(http.R
 			logs.Error("Request: %s, authenticate user: %v", requestSummary(r), err)
 			Unauthorized(w, r)
 		}
-		userID, err := getUserIdByToken(authLayer, token)
+		userID, err := authz.GetUserIdByToken(authLayer, token)
 
 		response := view.NewLSignUpResponse(token, userID)
 		bytes, err := json.Marshal(response)
