@@ -5,6 +5,7 @@ import (
 	"app/helpers"
 	"app/logs"
 	"app/models"
+	"database/sql"
 )
 
 func GetPinsByBoardID(data *db.DataStorage, userID int, boardID int, page int) ([]*models.Pin, helpers.AppError) {
@@ -21,7 +22,7 @@ func GetPinsByBoardID(data *db.DataStorage, userID int, boardID int, page int) (
 
 func ServePin(data *db.DataStorage, pinID int, userID int) (*models.Pin, helpers.AppError) {
 	pin, err := data.Pins.GetPin(pinID)
-	if pin == nil {
+	if err == sql.ErrNoRows {
 		logs.Error("Pin not found in database: %v", pinID)
 		err := helpers.NewNotFound(err)
 		return nil, err

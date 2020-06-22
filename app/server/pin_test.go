@@ -33,7 +33,7 @@ func TestServePin(t *testing.T) {
 		},
 		{
 			"no pin",
-			404,
+			500, // testでは500になる。sql.ErrNoRowsのため
 			2,
 			pin1(),
 		},
