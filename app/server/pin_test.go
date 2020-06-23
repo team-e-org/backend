@@ -7,9 +7,13 @@ import (
 	"app/mocks"
 	"app/models"
 	"app/ptr"
+	"bytes"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	helpers "app/testutils"
@@ -125,6 +129,55 @@ func TestServePinsInBoard(t *testing.T) {
 	}
 }
 
+func TestCreatePin(t *testing.T) {
+	var cases = []struct {
+		Desc           string
+		Code           int
+		filePath       string
+		title          string
+		pinDescription string
+		currentUser    *models.User
+		loginPassword  string
+	}{
+		{
+			"success",
+			201,
+			"./testdata/sample.png",
+			"test title",
+			"test description",
+			currentUser(),
+			"password",
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(helpers.TableTestName(c.Desc), func(t *testing.T) {
+			router := mux.NewRouter()
+			data := db.NewRepositoryMock()
+
+			data.Users.CreateUser(c.currentUser)
+
+			al := authz.NewAuthLayerMock(data)
+			token, _ := al.AuthenticateUser(c.currentUser.Email, c.loginPassword)
+
+			attachReqAuth(router, data, al)
+			recorder := httptest.NewRecorder()
+
+			requestBody, contentType := buildMulitpartRequest(t, c.filePath, c.title, c.pinDescription)
+			req := httptest.NewRequest(http.MethodPost, "/boards/0/pins", requestBody)
+			req.Header.Set("Content-Type", contentType)
+			helpers.SetAuthTokenHeader(req, token)
+
+			router.ServeHTTP(recorder, req)
+			body := recorder.Body.Bytes()
+
+			assert.Equal(t, c.Code, recorder.Code, "Status code should match reference")
+			expected := goldenfiles.UpdateAndOrRead(t, body)
+			assert.Equal(t, expected, body, "Response body should match golden file")
+		})
+	}
+}
+
 func pin1() *models.Pin {
 	return &models.Pin{
 		ID:          1,
@@ -159,4 +212,30 @@ func privatePin() *models.Pin {
 		ImageURL:    "test image url private",
 		IsPrivate:   true,
 	}
+}
+
+func buildMulitpartRequest(t *testing.T, imageFilePath string, title string, description string) (*bytes.Buffer, string) {
+	file, err := os.Open(imageFilePath)
+	if err != nil {
+		t.Error(err)
+	}
+	defer file.Close()
+
+	body := &bytes.Buffer{}
+	mw := multipart.NewWriter(body)
+	defer mw.Close()
+
+	fw, err := mw.CreateFormFile("image", "sample")
+	if err != nil {
+		t.Error(err)
+	}
+	_, err = io.Copy(fw, file)
+	if err != nil {
+		t.Error(err)
+	}
+
+	mw.WriteField("title", title)
+	mw.WriteField("description", description)
+
+	return body, mw.FormDataContentType()
 }

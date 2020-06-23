@@ -195,6 +195,7 @@ func CreatePin(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(ht
 		}
 
 		w.Header().Set(contentType, jsonContent)
+		w.WriteHeader(http.StatusCreated)
 		if _, err = w.Write(bytes); err != nil {
 			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
 		}
