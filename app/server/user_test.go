@@ -4,10 +4,10 @@ import (
 	"app/authz"
 	"app/db"
 	"app/goldenfiles"
-	"app/mocks"
 	"app/models"
 	"app/ptr"
 	helpers "app/testutils"
+	"app/testutils/dbdata"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -57,11 +57,9 @@ func TestUserBoards(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			mockBoardRepository := mocks.NewBoardRepository()
 			for _, b := range c.boards {
-				mockBoardRepository.CreateBoard(b)
+				data.Boards.CreateBoard(b)
 			}
-			data.Boards = mockBoardRepository
 
 			attachHandlers(router, data, authz.NewAuthLayerMock(data))
 			recorder := httptest.NewRecorder()
@@ -136,8 +134,6 @@ func TestSignUp(t *testing.T) {
 }
 
 func TestSignIn(t *testing.T) {
-	storedUser := storedUser()
-
 	var cases = []struct {
 		Desc        string
 		Code        int
@@ -146,7 +142,7 @@ func TestSignIn(t *testing.T) {
 		{
 			"success",
 			200,
-			`{"email": "stored_user@email.com","password": "password"}`,
+			`{"email": "current_user@email.com","password": "password"}`,
 		},
 		{
 			"wrong email",
@@ -165,9 +161,7 @@ func TestSignIn(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			mockUserRepository := mocks.NewUserRepository()
-			mockUserRepository.CreateUser(storedUser)
-			data.Users = mockUserRepository
+			data.Users.CreateUser(dbdata.BaseUser)
 
 			al := authz.NewAuthLayerMock(data)
 
@@ -211,15 +205,5 @@ func privateBoard() *models.Board {
 		Name:        "test name private",
 		Description: ptr.NewString("test description private"),
 		IsPrivate:   true,
-	}
-}
-
-func storedUser() *models.User {
-	return &models.User{
-		ID:             1,
-		Name:           "stored user",
-		Email:          "stored_user@email.com",
-		Icon:           "test icon",
-		HashedPassword: "$2a$10$SOWUFP.hkVI0CrCJyfh5vuf/Gu.SDpv6Y2DYZ/Dbwyr.AKtlAldFe",
 	}
 }

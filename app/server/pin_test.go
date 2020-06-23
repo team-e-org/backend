@@ -4,9 +4,9 @@ import (
 	"app/authz"
 	"app/db"
 	"app/goldenfiles"
-	"app/mocks"
 	"app/models"
 	"app/ptr"
+	"app/testutils/dbdata"
 	"bytes"
 	"fmt"
 	"io"
@@ -48,9 +48,7 @@ func TestServePin(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			mockPinRepository := mocks.NewPinRepository()
-			mockPinRepository.CreatePin(c.pin, 0)
-			data.Pins = mockPinRepository
+			data.Pins.CreatePin(c.pin, 0)
 
 			attachHandlers(router, data, authz.NewAuthLayerMock(data))
 			recorder := httptest.NewRecorder()
@@ -109,11 +107,9 @@ func TestServePinsInBoard(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			mockPinRepository := mocks.NewPinRepository()
 			for _, p := range c.pins {
-				mockPinRepository.CreatePin(p, c.boardID)
+				data.Pins.CreatePin(p, c.boardID)
 			}
-			data.Pins = mockPinRepository
 
 			attachHandlers(router, data, authz.NewAuthLayerMock(data))
 			recorder := httptest.NewRecorder()
@@ -131,22 +127,23 @@ func TestServePinsInBoard(t *testing.T) {
 
 func TestCreatePin(t *testing.T) {
 	var cases = []struct {
-		Desc           string
-		Code           int
-		filePath       string
-		title          string
-		pinDescription string
-		currentUser    *models.User
-		loginPassword  string
+		Desc          string
+		Code          int
+		filePath      string
+		fieldValues   map[string]string
+		currentUser   *models.User
+		loginPassword string
 	}{
 		{
 			"success",
 			201,
 			"./testdata/sample.png",
-			"test title",
-			"test description",
-			currentUser(),
-			"password",
+			map[string]string{
+				"title":       "test title",
+				"description": "test description",
+			},
+			dbdata.BaseUser,
+			dbdata.BaseUserPassword,
 		},
 	}
 
@@ -163,7 +160,7 @@ func TestCreatePin(t *testing.T) {
 			attachReqAuth(router, data, al)
 			recorder := httptest.NewRecorder()
 
-			requestBody, contentType := buildMulitpartRequest(t, c.filePath, c.title, c.pinDescription)
+			requestBody, contentType := buildMulitpartRequest(t, c.filePath, c.fieldValues)
 			req := httptest.NewRequest(http.MethodPost, "/boards/0/pins", requestBody)
 			req.Header.Set("Content-Type", contentType)
 			helpers.SetAuthTokenHeader(req, token)
@@ -214,7 +211,7 @@ func privatePin() *models.Pin {
 	}
 }
 
-func buildMulitpartRequest(t *testing.T, imageFilePath string, title string, description string) (*bytes.Buffer, string) {
+func buildMulitpartRequest(t *testing.T, imageFilePath string, fieldValues map[string]string) (*bytes.Buffer, string) {
 	file, err := os.Open(imageFilePath)
 	if err != nil {
 		t.Error(err)
@@ -234,8 +231,9 @@ func buildMulitpartRequest(t *testing.T, imageFilePath string, title string, des
 		t.Error(err)
 	}
 
-	mw.WriteField("title", title)
-	mw.WriteField("description", description)
+	for k, v := range fieldValues {
+		mw.WriteField(k, v)
+	}
 
 	return body, mw.FormDataContentType()
 }
