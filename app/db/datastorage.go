@@ -42,10 +42,12 @@ func NewRepositoryMock() *DataStorage {
 	boards := mocks.NewBoardRepository()
 	pins := mocks.NewPinRepository()
 	tags := mocks.NewTagRepository()
+	awsS3 := mocks.NewAWSS3Repository()
 	return &DataStorage{
 		Users:  users,
 		Boards: boards,
 		Pins:   pins,
 		Tags:   tags,
+		AWSS3:  awsS3,
 	}
 }
