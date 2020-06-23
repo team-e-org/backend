@@ -6,7 +6,7 @@ type Board struct {
 	ID          int    `json:"id"`
 	UserID      int    `json:"userId"`
 	Name        string `json:"name"`
-	Description string `json:"description"`
+	Description string `json:"description,omitempty"`
 	IsPrivate   bool   `json:"isPrivate"`
 	IsArchive   bool   `json:"isArchive"`
 }
