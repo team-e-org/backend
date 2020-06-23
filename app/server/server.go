@@ -5,28 +5,32 @@ import (
 	"app/authz/middleware"
 	"app/config"
 	"app/db"
+	"app/repository"
 	"app/server/handlers"
 	"database/sql"
 	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/gomodule/redigo/redis"
 	"github.com/gorilla/mux"
 )
+
+type S3 repository.FileRepository
 
 func init() {
 	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
 }
 
-func Start(port int, dbConn *sql.DB, awsConf *config.AWS) error {
+func Start(config *config.Config, dbConn *sql.DB, redis redis.Conn, s3 S3) error {
 	router := mux.NewRouter()
-	data := db.NewDataStorage(dbConn, awsConf)
-	authLayer := authz.NewAuthLayer(data)
+	data := db.NewDataStorage(dbConn, s3)
+	authLayer := authz.NewAuthLayer(data, redis)
 	attachHandlers(router, data, authLayer)
 	attachReqAuth(router, data, authLayer)
 
 	s := &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
+		Addr:    fmt.Sprintf(":%d", config.Server.Port),
 		Handler: router,
 	}
 

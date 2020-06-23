@@ -50,7 +50,7 @@ func TestCreateBoard(t *testing.T) {
 			mockUserRepository.CreateUser(c.currentUser)
 			data.Users = mockUserRepository
 
-			al := authz.NewAuthLayer(data)
+			al := authz.NewAuthLayerMock(data)
 			token, _ := al.AuthenticateUser(c.currentUser.Email, c.loginPassword)
 
 			attachReqAuth(router, data, al)
