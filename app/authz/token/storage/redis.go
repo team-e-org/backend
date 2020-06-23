@@ -1,18 +1,17 @@
 package storage
 
-import (
-	"github.com/gomodule/redigo/redis"
-)
+import "github.com/go-redis/redis"
 
 type redisTokenStorage struct {
-	redis redis.Conn
+	redis *redis.Client
 }
 
-func NewRedisTokenStorage(redis redis.Conn) TokenStorage {
+func NewRedisTokenStorage(redis *redis.Client) TokenStorage {
 	return &redisTokenStorage{redis: redis}
 }
 
 func (s *redisTokenStorage) GetTokenData(token string) (string, error) {
+
 	return "", nil
 }
 

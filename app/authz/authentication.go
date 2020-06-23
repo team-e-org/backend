@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/gomodule/redigo/redis"
+	"github.com/go-redis/redis"
 )
 
 var ErrInvalidPassword = errors.New("password is not collect")
@@ -30,7 +30,7 @@ type AuthLayer struct {
 	dataStorage  *db.DataStorage
 }
 
-func NewAuthLayer(data *db.DataStorage, redis redis.Conn) AuthLayerInterface {
+func NewAuthLayer(data *db.DataStorage, redis *redis.Client) AuthLayerInterface {
 	tokenStorage := storage.NewRedisTokenStorage(redis)
 	return &AuthLayer{
 		tokenStorage,

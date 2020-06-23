@@ -12,7 +12,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gomodule/redigo/redis"
+	"github.com/go-redis/redis"
 	"github.com/gorilla/mux"
 )
 
@@ -22,7 +22,7 @@ func init() {
 	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
 }
 
-func Start(config *config.Config, dbConn *sql.DB, redis redis.Conn, s3 S3) error {
+func Start(config *config.Config, dbConn *sql.DB, redis *redis.Client, s3 S3) error {
 	router := mux.NewRouter()
 	data := db.NewDataStorage(dbConn, s3)
 	authLayer := authz.NewAuthLayer(data, redis)

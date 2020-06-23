@@ -24,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	redis, err := db.ConnectToRedis(c.Redis)
+	redis := db.ConnectToRedis(c.Redis)
 	if redis != nil {
 		defer redis.Close()
 	}
