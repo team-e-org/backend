@@ -5,12 +5,14 @@ import (
 	"mime/multipart"
 )
 
-type AWSS3Mock struct{}
+type AWSS3Mock struct {
+	ExpectedURL string
+}
 
 func NewAWSS3Repository() repository.FileRepository {
-	return &AWSS3Mock{}
+	return &AWSS3Mock{ExpectedURL: "https://s3/dummy-s3-url"}
 }
 
 func (m *AWSS3Mock) UploadImage(file multipart.File, fileHeader *multipart.FileHeader) (url string, err error) {
-	return "https://s3/dummy-s3-url", nil
+	return m.ExpectedURL, nil
 }
