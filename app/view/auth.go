@@ -15,8 +15,8 @@ type SignInRequest struct {
 }
 
 type SignInResponse struct {
-	Token  string `json:"token,omitempty"`
-	UserID int    `json:"user_id,omitempty"`
+	Token  string `json:"token"`
+	UserID int    `json:"user_id"`
 }
 
 type SignUpRequest struct {
@@ -26,8 +26,8 @@ type SignUpRequest struct {
 }
 
 type SignUpResponse struct {
-	Token  string `json:"token,omitempty"`
-	UserID int    `json:"user_id,omitempty"`
+	Token  string `json:"token"`
+	UserID int    `json:"user_id"`
 }
 
 func NewSignInRequest(body io.ReadCloser) (*SignInRequest, error) {

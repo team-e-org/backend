@@ -9,8 +9,10 @@ import (
 	"app/ptr"
 	helpers "app/testutils"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -64,6 +66,66 @@ func TestUserBoards(t *testing.T) {
 			attachHandlers(router, data, authz.NewAuthLayer(data))
 			recorder := httptest.NewRecorder()
 			req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users/%d/boards", c.userID), nil)
+
+			router.ServeHTTP(recorder, req)
+			body := recorder.Body.Bytes()
+
+			assert.Equal(t, c.Code, recorder.Code, "Status code should match reference")
+			expected := goldenfiles.UpdateAndOrRead(t, body)
+			assert.Equal(t, expected, body, "Response body should match golden file")
+		})
+	}
+}
+
+func TestSignUp(t *testing.T) {
+	var cases = []struct {
+		Desc        string
+		Code        int
+		requestBody string
+	}{
+		{
+			"success",
+			201,
+			`{"name": "test user","email": "user@example.com","password": "pa$$wOrd12345"}`,
+		},
+		{
+			"invalid email",
+			400,
+			`{"name": "test user","email": "userexample.com","password": "pa$$wOrd12345"}`,
+		},
+		{
+			"short password",
+			400,
+			`{"name": "test user","email": "user@example.com","password": "p$AO15"}`,
+		},
+		{
+			"only lower password",
+			400,
+			`{"name": "test user","email": "user@example.com","password": "aaaaaaaaaaa"}`,
+		},
+		{
+			"only capital password",
+			400,
+			`{"name": "test user","email": "user@example.com","password": "AAAAAAAAAAA"}`,
+		},
+		{
+			"only number password",
+			400,
+			`{"name": "test user","email": "user@example.com","password": "12345678910"}`,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(helpers.TableTestName(c.Desc), func(t *testing.T) {
+			router := mux.NewRouter()
+			data := db.NewRepositoryMock()
+
+			attachHandlers(router, data, authz.NewAuthLayer(data))
+			recorder := httptest.NewRecorder()
+			req := httptest.NewRequest(
+				http.MethodPost,
+				"/users/sign-up",
+				ioutil.NopCloser(strings.NewReader(c.requestBody)))
 
 			router.ServeHTTP(recorder, req)
 			body := recorder.Body.Bytes()
