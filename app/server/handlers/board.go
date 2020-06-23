@@ -40,13 +40,14 @@ func CreateBoard(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(
 
 		bytes, err := json.Marshal(view.NewBoard(storedBoard))
 		if err != nil {
-			logs.Error("Request: %s, serializing book: %v", requestSummary(r), err)
+			logs.Error("Request: %s, serializing board: %v", requestSummary(r), err)
 			err := helpers.NewInternalServerError(err)
 			ResponseError(w, r, err)
 			return
 		}
 
 		w.Header().Set(contentType, jsonContent)
+		w.WriteHeader(http.StatusCreated)
 		if _, err = w.Write(bytes); err != nil {
 			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
 		}
