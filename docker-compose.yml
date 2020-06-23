@@ -11,6 +11,7 @@ services:
       - ./app:/go/src/app
     depends_on:
       - db
+      - redis
     environment:
       MYSQL_DATABASE: test_db
       MYSQL_USER: test_user
@@ -44,3 +45,9 @@ services:
       - ./reference/openapi.yaml:/openapi.yaml
     environment:
       SWAGGER_JSON: /openapi.yaml
+  redis:
+    build:
+      context: ./db/redis
+    restart: always
+    ports:
+      - "6379:6379"
