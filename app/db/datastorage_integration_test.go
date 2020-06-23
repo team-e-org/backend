@@ -13,11 +13,11 @@ import (
 var sqlDB *sql.DB
 
 func dbHandlingWrapper(m *testing.M) int {
-	c, err := config.ReadConfig()
+	c, err := config.ReadDBConfig()
 	if err != nil {
 		panic(err)
 	}
-	sqlDB, err := ConnectToMySql(c.DB)
+	sqlDB, err := ConnectToMySql(*c)
 	if err != nil {
 		log.Panicf("Can not connect to DB: %v", err)
 	}
