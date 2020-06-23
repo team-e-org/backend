@@ -4,3 +4,4 @@ tags.lock
 .secret.env
 .idea
 db/mysql/log
+coverage.o

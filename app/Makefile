@@ -17,3 +17,11 @@ integration_tests:
 
 .PHONY: tests
 tests: unit_tests
+
+.PHONY: coverage.o
+coverage.o:
+	go test -cover -coverprofile=coverage.o ./...
+
+.PHONY: coverage
+coverage: coverage.o
+	go tool cover -html=coverage.o
