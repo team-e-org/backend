@@ -137,6 +137,59 @@ func TestSignUp(t *testing.T) {
 	}
 }
 
+func TestSignIn(t *testing.T) {
+	storedUser := storedUser()
+
+	var cases = []struct {
+		Desc        string
+		Code        int
+		requestBody string
+	}{
+		{
+			"success",
+			200,
+			`{"email": "stored_user@email.com","password": "password"}`,
+		},
+		{
+			"wrong email",
+			401,
+			`{"email": "wrong@email.com","password": "password"}`,
+		},
+		{
+			"wrong password",
+			401,
+			`{"email": "sss@email.com","password": "worngPasword"}`,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(helpers.TableTestName(c.Desc), func(t *testing.T) {
+			router := mux.NewRouter()
+			data := db.NewRepositoryMock()
+
+			mockUserRepository := mocks.NewUserRepository()
+			mockUserRepository.CreateUser(storedUser)
+			data.Users = mockUserRepository
+
+			al := authz.NewAuthLayer(data)
+
+			attachHandlers(router, data, al)
+			recorder := httptest.NewRecorder()
+			req := httptest.NewRequest(
+				http.MethodPost,
+				"/users/sign-in",
+				ioutil.NopCloser(strings.NewReader(c.requestBody)))
+
+			router.ServeHTTP(recorder, req)
+			body := recorder.Body.Bytes()
+
+			assert.Equal(t, c.Code, recorder.Code, "Status code should match reference")
+			expected := goldenfiles.UpdateAndOrRead(t, body)
+			assert.Equal(t, expected, body, "Response body should match golden file")
+		})
+	}
+}
+
 func board1() *models.Board {
 	return &models.Board{
 		ID:          1,
@@ -162,5 +215,15 @@ func privateBoard() *models.Board {
 		Name:        "test name private",
 		Description: ptr.NewString("test description private"),
 		IsPrivate:   true,
+	}
+}
+
+func storedUser() *models.User {
+	return &models.User{
+		ID:             1,
+		Name:           "stored user",
+		Email:          "stored_user@email.com",
+		Icon:           "test icon",
+		HashedPassword: "$2a$10$SOWUFP.hkVI0CrCJyfh5vuf/Gu.SDpv6Y2DYZ/Dbwyr.AKtlAldFe",
 	}
 }
