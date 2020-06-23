@@ -26,6 +26,7 @@ func SignIn(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.
 		if err != nil {
 			logs.Error("Request: %s, authenticate user: %v", requestSummary(r), err)
 			Unauthorized(w, r)
+			return
 		}
 		userID, err := authz.GetUserIDByToken(authLayer, token)
 
@@ -79,6 +80,7 @@ func SignUp(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.
 		if err != nil {
 			logs.Error("Request: %s, authenticate user: %v", requestSummary(r), err)
 			Unauthorized(w, r)
+			return
 		}
 		userID, err := authz.GetUserIDByToken(authLayer, token)
 
@@ -91,6 +93,7 @@ func SignUp(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.
 		}
 
 		w.Header().Set(contentType, jsonContent)
+		w.WriteHeader(http.StatusCreated)
 		if _, err = w.Write(bytes); err != nil {
 			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
 		}
