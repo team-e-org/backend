@@ -4,7 +4,6 @@ import (
 	"app/authz"
 	"app/db"
 	"app/goldenfiles"
-	"app/mocks"
 	"app/models"
 	"app/ptr"
 	"app/testutils/dbdata"
@@ -49,9 +48,7 @@ func TestServePin(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			mockPinRepository := mocks.NewPinRepository()
-			mockPinRepository.CreatePin(c.pin, 0)
-			data.Pins = mockPinRepository
+			data.Pins.CreatePin(c.pin, 0)
 
 			attachHandlers(router, data, authz.NewAuthLayerMock(data))
 			recorder := httptest.NewRecorder()
@@ -110,11 +107,9 @@ func TestServePinsInBoard(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			mockPinRepository := mocks.NewPinRepository()
 			for _, p := range c.pins {
-				mockPinRepository.CreatePin(p, c.boardID)
+				data.Pins.CreatePin(p, c.boardID)
 			}
-			data.Pins = mockPinRepository
 
 			attachHandlers(router, data, authz.NewAuthLayerMock(data))
 			recorder := httptest.NewRecorder()

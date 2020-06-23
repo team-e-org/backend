@@ -4,7 +4,6 @@ import (
 	"app/authz"
 	"app/db"
 	"app/goldenfiles"
-	"app/mocks"
 	"app/models"
 	helpers "app/testutils"
 	"app/testutils/dbdata"
@@ -47,9 +46,7 @@ func TestCreateBoard(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			mockUserRepository := mocks.NewUserRepository()
-			mockUserRepository.CreateUser(c.currentUser)
-			data.Users = mockUserRepository
+			data.Users.CreateUser(c.currentUser)
 
 			al := authz.NewAuthLayerMock(data)
 			token, _ := al.AuthenticateUser(c.currentUser.Email, c.loginPassword)
