@@ -6,7 +6,7 @@ type inMemoryStorage struct {
 	storage sync.Map
 }
 
-func NewInMemoryTokenStorage() *inMemoryStorage {
+func NewInMemoryTokenStorage() TokenStorage {
 	return &inMemoryStorage{}
 }
 

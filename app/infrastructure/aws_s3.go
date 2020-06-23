@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"app/config"
+	"app/repository"
 	"fmt"
 	"mime/multipart"
 	"path/filepath"
@@ -18,7 +19,7 @@ type AWSS3 struct {
 	Uploader *s3manager.Uploader
 }
 
-func NewAWSS3(c config.S3) *AWSS3 {
+func NewAWSS3(c config.S3) repository.FileRepository {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{
 			Credentials: credentials.NewStaticCredentialsFromCreds(credentials.Value{
@@ -33,6 +34,16 @@ func NewAWSS3(c config.S3) *AWSS3 {
 		Config:   c,
 		Uploader: s3manager.NewUploader(sess),
 	}
+}
+
+type AWSS3Mock struct{}
+
+func (a *AWSS3Mock) UploadImage(file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
+	return "", nil
+}
+
+func NewAWSS3Mock() repository.FileRepository {
+	return &AWSS3Mock{}
 }
 
 func (a *AWSS3) UploadImage(file multipart.File, fileHeader *multipart.FileHeader) (url string, err error) {

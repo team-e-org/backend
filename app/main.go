@@ -3,6 +3,7 @@ package main
 import (
 	"app/config"
 	"app/db"
+	"app/infrastructure"
 	"app/logs"
 	"app/server"
 )
@@ -14,7 +15,7 @@ func main() {
 		panic(err)
 	}
 
-	sqlDB, err := db.ConnectToMySql(c.DB.Host, c.DB.Port, c.DB.User, c.DB.Password, c.DB.DBName, c.DB.TimeZone)
+	sqlDB, err := db.ConnectToMySql(c.DB)
 	if sqlDB != nil {
 		defer sqlDB.Close()
 	}
@@ -23,7 +24,18 @@ func main() {
 		panic(err)
 	}
 
-	if err = server.Start(c.Server.Port, sqlDB, &c.AWS); err != nil {
+	redis, err := db.ConnectToRedis(c.Redis)
+	if redis != nil {
+		defer redis.Close()
+	}
+	if err != nil {
+		logs.Error("Redis connection failure: %s", err)
+		panic(err)
+	}
+
+	s3 := infrastructure.NewAWSS3(c.AWS.S3)
+
+	if err = server.Start(c, sqlDB, redis, s3); err != nil {
 		logs.Error("Failed to start server: %s", err)
 		panic(err)
 	}

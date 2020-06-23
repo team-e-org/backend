@@ -1,7 +1,7 @@
 package db
 
 import (
-	"app/config"
+	"app/infrastructure"
 	"app/models"
 	"app/ptr"
 	"reflect"
@@ -93,11 +93,9 @@ func TestNewDataStorage(t *testing.T) {
 		t.Fatalf("An error occurred: %v", err)
 	}
 
-	testConfig := config.Config{
-		DB:  config.DBConfig{},
-		AWS: config.AWS{S3: config.S3{}},
-	}
-	data := NewDataStorage(sqlDB, &testConfig.AWS)
+	s3 := infrastructure.NewAWSS3Mock()
+
+	data := NewDataStorage(sqlDB, s3)
 	if data.DB == nil {
 		t.Fatalf("DB is nil")
 	}

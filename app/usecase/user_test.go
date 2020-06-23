@@ -43,7 +43,7 @@ func TestUserBoard(t *testing.T) {
 			t.Fatalf("An error occurred: %v", err)
 		}
 	}
-	authz := authz.NewAuthLayer(data)
+	authz := authz.NewAuthLayerMock(data)
 	userID := 0
 	currentUserID := 0
 	boards, err := UserBoards(data, authz, userID, currentUserID)
@@ -59,7 +59,7 @@ func TestUserBoard(t *testing.T) {
 
 func TestEmptyUserBoardError(t *testing.T) {
 	data := db.NewRepositoryMock()
-	authz := authz.NewAuthLayer(data)
+	authz := authz.NewAuthLayerMock(data)
 	userID := 0
 	currentUserID := 0
 	_, err := UserBoards(data, authz, userID, currentUserID)

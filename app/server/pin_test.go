@@ -48,7 +48,7 @@ func TestServePin(t *testing.T) {
 			mockPinRepository.CreatePin(c.pin, 0)
 			data.Pins = mockPinRepository
 
-			attachHandlers(router, data, authz.NewAuthLayer(data))
+			attachHandlers(router, data, authz.NewAuthLayerMock(data))
 			recorder := httptest.NewRecorder()
 			req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/pins/%d", c.pinID), nil)
 
@@ -111,7 +111,7 @@ func TestServePinsInBoard(t *testing.T) {
 			}
 			data.Pins = mockPinRepository
 
-			attachHandlers(router, data, authz.NewAuthLayer(data))
+			attachHandlers(router, data, authz.NewAuthLayerMock(data))
 			recorder := httptest.NewRecorder()
 			req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/boards/%d/pins?page=%d", c.boardID, c.page), nil)
 

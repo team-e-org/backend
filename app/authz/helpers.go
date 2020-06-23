@@ -1,21 +1,12 @@
 package authz
 
 import (
-	"net/http"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
 	authToken = "X-Auth-Token"
 )
-
-func GetUserIDIfAvailable(r *http.Request, al AuthLayerInterface) (int, error) {
-	token := r.Header.Get(authToken)
-	if len(token) == 0 {
-		return 0, nil
-	}
-
-	return GetUserIDByToken(al, token)
-}
 
 func GetUserIDByToken(al AuthLayerInterface, token string) (int,
 	error) {
@@ -26,4 +17,8 @@ func GetUserIDByToken(al AuthLayerInterface, token string) (int,
 	}
 
 	return tokenData.UserData.ID, nil
+}
+
+func checkUserPassword(password string, hashedPassword string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

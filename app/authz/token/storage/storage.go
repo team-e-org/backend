@@ -11,3 +11,4 @@ type TokenStorage interface {
 var ErrInvalidToken = errors.New("Invalid Token")
 var ErrTokenDataUpdateFailed = errors.New("Unable to update token data")
 var ErrTokenInvalidationFailed = errors.New("Unable to delete token")
+var ErrSetToken = errors.New("Could not set a token")
