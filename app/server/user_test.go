@@ -63,7 +63,7 @@ func TestUserBoards(t *testing.T) {
 			}
 			data.Boards = mockBoardRepository
 
-			attachHandlers(router, data, authz.NewAuthLayer(data))
+			attachHandlers(router, data, authz.NewAuthLayerMock(data))
 			recorder := httptest.NewRecorder()
 			req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users/%d/boards", c.userID), nil)
 
@@ -120,7 +120,7 @@ func TestSignUp(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			attachHandlers(router, data, authz.NewAuthLayer(data))
+			attachHandlers(router, data, authz.NewAuthLayerMock(data))
 			recorder := httptest.NewRecorder()
 			req := httptest.NewRequest(
 				http.MethodPost,
@@ -169,7 +169,7 @@ func TestSignIn(t *testing.T) {
 			mockUserRepository.CreateUser(storedUser)
 			data.Users = mockUserRepository
 
-			al := authz.NewAuthLayer(data)
+			al := authz.NewAuthLayerMock(data)
 
 			attachHandlers(router, data, al)
 			recorder := httptest.NewRecorder()

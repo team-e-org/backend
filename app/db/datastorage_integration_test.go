@@ -17,7 +17,7 @@ func dbHandlingWrapper(m *testing.M) int {
 	if err != nil {
 		panic(err)
 	}
-	sqlDB, err := ConnectToMySql(c.DB.Host, c.DB.Port, c.DB.User, c.DB.Password, c.DB.DBName, c.DB.TimeZone)
+	sqlDB, err := ConnectToMySql(*c)
 	if err != nil {
 		log.Panicf("Can not connect to DB: %v", err)
 	}

@@ -1,12 +1,13 @@
 package db
 
 import (
-	"app/config"
 	"app/infrastructure"
 	"app/mocks"
 	"app/repository"
 	"database/sql"
 )
+
+type S3 repository.FileRepository
 
 // TODO add DataStorageInterface
 type DataStorage struct {
@@ -19,13 +20,12 @@ type DataStorage struct {
 	AWSS3      repository.FileRepository
 }
 
-func NewDataStorage(db *sql.DB, awsConf *config.AWS) *DataStorage {
+func NewDataStorage(db *sql.DB, s3 S3) *DataStorage {
 	users := infrastructure.NewUserRepository(db)
 	boards := infrastructure.NewBoardRepository(db)
 	pins := infrastructure.NewPinRepository(db)
 	tags := infrastructure.NewTagRepository(db)
 	boardsPins := infrastructure.NewBoardPinRepository(db)
-	awsS3 := infrastructure.NewAWSS3(awsConf.S3)
 	return &DataStorage{
 		DB:         db,
 		Users:      users,
@@ -33,7 +33,7 @@ func NewDataStorage(db *sql.DB, awsConf *config.AWS) *DataStorage {
 		Pins:       pins,
 		Tags:       tags,
 		BoardsPins: boardsPins,
-		AWSS3:      awsS3,
+		AWSS3:      s3,
 	}
 }
 

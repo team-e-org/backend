@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"golang.org/x/crypto/bcrypt"
+	"github.com/go-redis/redis"
 )
 
 var ErrInvalidPassword = errors.New("password is not collect")
@@ -21,6 +21,8 @@ type TokenData struct {
 type AuthLayerInterface interface {
 	AuthenticateUser(string, string) (string, error)
 	GetTokenData(string) (*TokenData, error)
+	TokenStorage() storage.TokenStorage
+	DataStorage() *db.DataStorage
 }
 
 type AuthLayer struct {
@@ -28,7 +30,15 @@ type AuthLayer struct {
 	dataStorage  *db.DataStorage
 }
 
-func NewAuthLayer(data *db.DataStorage) AuthLayerInterface {
+func NewAuthLayer(data *db.DataStorage, redis *redis.Client) AuthLayerInterface {
+	tokenStorage := storage.NewRedisTokenStorage(redis)
+	return &AuthLayer{
+		tokenStorage,
+		data,
+	}
+}
+
+func NewAuthLayerMock(data *db.DataStorage) AuthLayerInterface {
 	tokenStorage := storage.NewInMemoryTokenStorage()
 	return &AuthLayer{
 		tokenStorage,
@@ -62,10 +72,6 @@ func (a *AuthLayer) AuthenticateUser(email string, password string) (string, err
 	return token, nil
 }
 
-func checkUserPassword(password string, hashedPassword string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-}
-
 func (a *AuthLayer) GetTokenData(token string) (*TokenData, error) {
 	if len(token) == 0 {
 		return nil, ErrInvalidToken
@@ -81,4 +87,12 @@ func (a *AuthLayer) GetTokenData(token string) (*TokenData, error) {
 		return nil, err
 	}
 	return &tokenData, nil
+}
+
+func (al *AuthLayer) TokenStorage() storage.TokenStorage {
+	return al.tokenStorage
+}
+
+func (al *AuthLayer) DataStorage() *db.DataStorage {
+	return al.dataStorage
 }
