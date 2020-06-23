@@ -7,6 +7,7 @@ import (
 	"app/mocks"
 	"app/models"
 	helpers "app/testutils"
+	"app/testutils/dbdata"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -29,15 +30,15 @@ func TestCreateBoard(t *testing.T) {
 			"success",
 			201,
 			`{"name": "new board"}`,
-			currentUser(),
-			"password",
+			dbdata.BaseUser,
+			dbdata.BaseUserPassword,
 		},
 		{
 			"success with more params",
 			201,
 			`{"name": "new board", "description": "test description", "isPrivate": true}`,
-			currentUser(),
-			"password",
+			dbdata.BaseUser,
+			dbdata.BaseUserPassword,
 		},
 	}
 
@@ -67,15 +68,5 @@ func TestCreateBoard(t *testing.T) {
 			expected := goldenfiles.UpdateAndOrRead(t, body)
 			assert.Equal(t, expected, body, "Response body should match golden file")
 		})
-	}
-}
-
-func currentUser() *models.User {
-	return &models.User{
-		ID:             1,
-		Name:           "current user",
-		Email:          "current_user@email.com",
-		Icon:           "test icon",
-		HashedPassword: "$2a$10$SOWUFP.hkVI0CrCJyfh5vuf/Gu.SDpv6Y2DYZ/Dbwyr.AKtlAldFe",
 	}
 }
