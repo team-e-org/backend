@@ -11,14 +11,25 @@ func NewRedisTokenStorage(redis *redis.Client) TokenStorage {
 }
 
 func (s *redisTokenStorage) GetTokenData(token string) (string, error) {
-
-	return "", nil
+	data, err := s.redis.Get(token).Result()
+	if err != nil {
+		return "", err
+	}
+	return data, nil
 }
 
 func (s *redisTokenStorage) SetTokenData(token string, tokenData string) error {
+	err := s.redis.Set(token, tokenData, 0).Err()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (s *redisTokenStorage) DeleteToken(token string) error {
+	err := s.redis.Del(token).Err()
+	if err != nil {
+		return err
+	}
 	return nil
 }

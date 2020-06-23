@@ -43,7 +43,7 @@ type S3 struct {
 	SecretAccessKey string
 }
 
-func readDBConfig() (*DBConfig, error) {
+func ReadDBConfig() (*DBConfig, error) {
 	dbPort, err := strconv.Atoi(os.Getenv("MYSQL_PORT"))
 	if err != nil {
 		return nil, fmt.Errorf("reading env var 'MYSQL_PORT': %w", err)
@@ -61,7 +61,7 @@ func readDBConfig() (*DBConfig, error) {
 	return dbConfig, nil
 }
 
-func readRedisConfig() (*RedisConfig, error) {
+func ReadRedisConfig() (*RedisConfig, error) {
 	port, err := strconv.Atoi(os.Getenv("REDIS_PORT"))
 	if err != nil {
 		return nil, fmt.Errorf("reading env var 'REDIS_PORT': %w", err)
@@ -75,7 +75,7 @@ func readRedisConfig() (*RedisConfig, error) {
 	return redisConfig, nil
 }
 
-func readAWSConfig() *AWS {
+func ReadAWSConfig() *AWS {
 	awsConfig := &AWS{
 		S3{
 			"ap-northeast-1",
@@ -95,17 +95,17 @@ func ReadConfig() (*Config, error) {
 		return nil, fmt.Errorf("reading env var 'SERVER_PORT': %w", err)
 	}
 
-	dbConfig, err := readDBConfig()
+	dbConfig, err := ReadDBConfig()
 	if err != nil {
 		return nil, err
 	}
 
-	redisConfig, err := readRedisConfig()
+	redisConfig, err := ReadRedisConfig()
 	if err != nil {
 		return nil, err
 	}
 
-	awsConfig := readAWSConfig()
+	awsConfig := ReadAWSConfig()
 
 	return &Config{
 		Server{
