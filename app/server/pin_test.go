@@ -157,7 +157,7 @@ func TestCreatePin(t *testing.T) {
 
 			data.Users.CreateUser(c.currentUser)
 
-			al := authz.NewAuthLayer(data)
+			al := authz.NewAuthLayerMock(data)
 			token, _ := al.AuthenticateUser(c.currentUser.Email, c.loginPassword)
 
 			attachReqAuth(router, data, al)
