@@ -1,11 +1,14 @@
 package db
 
 import (
+	"app/config"
 	"app/models"
 	"app/ptr"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/DATA-DOG/go-sqlmock"
 )
 
 func TestRepository(t *testing.T) {
@@ -81,5 +84,39 @@ func TestRepository(t *testing.T) {
 	}
 	if !reflect.DeepEqual(*tag, *gotTag) {
 		t.Fatalf("Not equal tag")
+	}
+}
+
+func TestNewDataStorage(t *testing.T) {
+	sqlDB, _, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+
+	testConfig := config.Config{
+		DB:  config.DBConfig{},
+		AWS: config.AWS{S3: config.S3{}},
+	}
+	data := NewDataStorage(sqlDB, &testConfig.AWS)
+	if data.DB == nil {
+		t.Fatalf("DB is nil")
+	}
+	if data.Users == nil {
+		t.Fatalf("nil field, Users")
+	}
+	if data.Boards == nil {
+		t.Fatalf("nil field, Boards")
+	}
+	if data.Pins == nil {
+		t.Fatalf("nil field, Pins")
+	}
+	if data.Tags == nil {
+		t.Fatalf("nil field, Tags")
+	}
+	if data.BoardsPins == nil {
+		t.Fatalf("nil field, BoardsPins")
+	}
+	if data.AWSS3 == nil {
+		t.Fatalf("nil field, AWSS3")
 	}
 }

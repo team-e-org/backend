@@ -27,7 +27,7 @@ func SignIn(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.
 			logs.Error("Request: %s, authenticate user: %v", requestSummary(r), err)
 			Unauthorized(w, r)
 		}
-		userID, err := authz.GetUserIdByToken(authLayer, token)
+		userID, err := authz.GetUserIDByToken(authLayer, token)
 
 		response := view.NewLSignInResponse(token, userID)
 		bytes, err := json.Marshal(response)
@@ -80,7 +80,7 @@ func SignUp(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.
 			logs.Error("Request: %s, authenticate user: %v", requestSummary(r), err)
 			Unauthorized(w, r)
 		}
-		userID, err := authz.GetUserIdByToken(authLayer, token)
+		userID, err := authz.GetUserIDByToken(authLayer, token)
 
 		response := view.NewLSignUpResponse(token, userID)
 		bytes, err := json.Marshal(response)
