@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Server Server
 	DB     DBConfig
+	Redis  RedisConfig
 	AWS    AWS
 }
 
@@ -25,6 +26,11 @@ type DBConfig struct {
 	TimeZone string
 }
 
+type RedisConfig struct {
+	Host string
+	Port int
+}
+
 type AWS struct {
 	S3 S3
 }
@@ -37,7 +43,7 @@ type S3 struct {
 	SecretAccessKey string
 }
 
-func ReadDBConfig() (*DBConfig, error) {
+func readDBConfig() (*DBConfig, error) {
 	dbPort, err := strconv.Atoi(os.Getenv("MYSQL_PORT"))
 	if err != nil {
 		return nil, fmt.Errorf("reading env var 'MYSQL_PORT': %w", err)
@@ -53,6 +59,20 @@ func ReadDBConfig() (*DBConfig, error) {
 	}
 
 	return dbConfig, nil
+}
+
+func readRedisConfig() (*RedisConfig, error) {
+	port, err := strconv.Atoi(os.Getenv("REDIS_PORT"))
+	if err != nil {
+		return nil, fmt.Errorf("reading env var 'REDIS_PORT': %w", err)
+	}
+
+	redisConfig := &RedisConfig{
+		Host: os.Getenv("REDIS_HOST"),
+		Port: port,
+	}
+
+	return redisConfig, nil
 }
 
 func readAWSConfig() *AWS {
@@ -75,7 +95,12 @@ func ReadConfig() (*Config, error) {
 		return nil, fmt.Errorf("reading env var 'SERVER_PORT': %w", err)
 	}
 
-	dbConfig, err := ReadDBConfig()
+	dbConfig, err := readDBConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	redisConfig, err := readRedisConfig()
 	if err != nil {
 		return nil, err
 	}
@@ -87,6 +112,7 @@ func ReadConfig() (*Config, error) {
 			Port: port,
 		},
 		*dbConfig,
+		*redisConfig,
 		*awsConfig,
 	}, nil
 }

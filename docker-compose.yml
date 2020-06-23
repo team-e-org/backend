@@ -11,6 +11,7 @@ services:
       - ./app:/go/src/app
     depends_on:
       - db
+      - redis
     environment:
       MYSQL_DATABASE: test_db
       MYSQL_USER: test_user
@@ -19,6 +20,8 @@ services:
       MYSQL_PORT: 3306
       MYSQL_HOST: db
       TZ: "Asia/Tokyo"
+      REDIS_PORT: 6379
+      REDIS_HOST: redis
     command: /bin/ash /go/src/app/scripts/wait_for_mysql.sh db test_user password air -d
   db:
     build:
@@ -44,3 +47,9 @@ services:
       - ./reference/openapi.yaml:/openapi.yaml
     environment:
       SWAGGER_JSON: /openapi.yaml
+  redis:
+    build:
+      context: ./db/redis
+    restart: always
+    ports:
+      - "6379:6379"
