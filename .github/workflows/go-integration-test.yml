@@ -69,7 +69,7 @@ jobs:
         run: |
           export DOCKER_BUILDKIT=1
           docker build -t ${{ secrets.AWS_ECS_SERVICE }}-stg .
-          docker docker tag ${{ secrets.AWS_ECS_SERVICE }}-stg:latest ${{ secrets.AWS_ECR_URI }}/${{ secrets.AWS_ECS_SERVICE }}-stg:latest
+          docker tag ${{ secrets.AWS_ECS_SERVICE }}-stg:latest ${{ secrets.AWS_ECR_URI }}/${{ secrets.AWS_ECS_SERVICE }}-stg:latest
           docker push ${{ secrets.AWS_ECR_URI }}/${{ secrets.AWS_ECS_SERVICE }}-stg:latest
         working-directory: ./src/github.com/${{ github.repository }}/app
         if: contains(github.ref, 'master')
