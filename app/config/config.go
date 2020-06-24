@@ -36,11 +36,9 @@ type AWS struct {
 }
 
 type S3 struct {
-	Region          string
-	Bucket          string
-	PinFolder       string
-	AccessKeyID     string
-	SecretAccessKey string
+	Region    string
+	Bucket    string
+	PinFolder string
 }
 
 func ReadDBConfig() (*DBConfig, error) {
@@ -81,8 +79,6 @@ func ReadAWSConfig() *AWS {
 			"ap-northeast-1",
 			"pinko-bucket",
 			"pins/",
-			os.Getenv("AWS_S3_ACCESS_KEY_ID"),
-			os.Getenv("AWS_S3_SECRET_ACCESS_KEY"),
 		},
 	}
 

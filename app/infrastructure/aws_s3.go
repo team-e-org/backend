@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	uuid "github.com/satori/go.uuid"
@@ -22,10 +21,6 @@ type AWSS3 struct {
 func NewAWSS3(c config.S3) repository.FileRepository {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{
-			Credentials: credentials.NewStaticCredentialsFromCreds(credentials.Value{
-				AccessKeyID:     c.AccessKeyID,
-				SecretAccessKey: c.SecretAccessKey,
-			}),
 			Region: aws.String(c.Region),
 		},
 	}))
