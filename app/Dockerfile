@@ -19,6 +19,7 @@ FROM alpine
 WORKDIR /go/src/app
 COPY --from=build /go/src/app/app .
 
+EXPOSE 3000
 ENV SERVER_PORT=3000
 EXPOSE 3000
 CMD ["./app"]
