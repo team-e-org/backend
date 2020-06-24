@@ -54,15 +54,17 @@ jobs:
         with:
           path: ./src/github.com/${{ github.repository }}
         if: contains(github.ref, 'master')
-      - name: aws cli
-        uses: chrislennon/action-aws-cli@v1.1
+      - name: aws configure
+        uses: aws-actions/configure-aws-credentials@v1
         if: contains(github.ref, 'master')
-      - name: login to ECR
-        run: $(aws ecr get-login --no-include-email --region ${{ secrets.AWS_DEFAULT_REGION }})
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ECS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_ECS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      - name: login to amazon ECR
+        id: login-ect
+        uses: aws-actions/amazon-ecr-login@v1
         if: contains(github.ref, 'master')
-        env:
-          AWS_ECS_ACCESS_KEY_ID: ${{ secrets.AWS_ECS_ACCESS_KEY_ID }}
-          AWS_ECS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ECS_SECRET_ACCESS_KEY }}
       - name: build image
         run: |
           export DOCKER_BUILDKIT=1
