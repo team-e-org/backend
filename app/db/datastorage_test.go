@@ -2,6 +2,7 @@ package db
 
 import (
 	"app/infrastructure"
+	"app/mocks"
 	"app/models"
 	"app/ptr"
 	"reflect"
@@ -117,4 +118,42 @@ func TestNewDataStorage(t *testing.T) {
 	if data.AWSS3 == nil {
 		t.Fatalf("nil field, AWSS3")
 	}
+}
+
+func BenchmarkDataStorage(b *testing.B) {
+	var dataStorage *DataStorage
+	var dataStorageInterface DataStorageInterface
+	dataStorage = &DataStorage{
+		Users: mocks.NewUserRepository(),
+	}
+	dataStorageInterface = &DataStorage{
+		Users: mocks.NewUserRepository(),
+	}
+
+	userID := 1
+	user := &models.User{
+		ID:             userID,
+		Name:           "test user",
+		Email:          "test@test.com",
+		Icon:           "test icon",
+		HashedPassword: "password",
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+
+	b.Run("Method call", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			dataStorage.Users.CreateUser(user)
+			dataStorage.Users.GetUser(userID)
+			dataStorage.Users.DeleteUser(userID)
+		}
+	})
+
+	b.Run("Method call via interface", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			dataStorageInterface.GetUsers().CreateUser(user)
+			dataStorageInterface.GetUsers().GetUser(userID)
+			dataStorageInterface.GetUsers().DeleteUser(userID)
+		}
+	})
 }
