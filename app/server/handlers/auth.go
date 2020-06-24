@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-func SignIn(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func SignIn(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -45,7 +45,7 @@ func SignIn(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.
 	}
 }
 
-func SignUp(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func SignUp(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -67,9 +67,9 @@ func SignUp(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.
 			Name:           signUpRequest.Name,
 			Email:          signUpRequest.Email,
 			HashedPassword: hashedPassword,
-			Icon:           assets.UserIcon, // TODO: replaece with image url on S3
+			Icon:           assets.UserIcon, // TODO: replace with image url on S3
 		}
-		err = data.Users.CreateUser(user)
+		err = data.Users().CreateUser(user)
 		if err != nil {
 			logs.Error("Request: %s, creating user: %v", requestSummary(r), err)
 			InternalServerError(w, r)

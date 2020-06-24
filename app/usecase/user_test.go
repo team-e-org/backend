@@ -38,7 +38,7 @@ func TestUserBoard(t *testing.T) {
 		},
 	}
 	for _, b := range boards {
-		_, err := data.Boards.CreateBoard(b)
+		_, err := data.Boards().CreateBoard(b)
 		if err != nil {
 			t.Fatalf("An error occurred: %v", err)
 		}

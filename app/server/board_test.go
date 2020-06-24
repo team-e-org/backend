@@ -46,7 +46,7 @@ func TestCreateBoard(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			data.Users.CreateUser(c.currentUser)
+			data.Users().CreateUser(c.currentUser)
 
 			al := authz.NewAuthLayerMock(data)
 			token, _ := al.AuthenticateUser(c.currentUser.Email, c.loginPassword)

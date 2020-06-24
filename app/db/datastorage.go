@@ -10,62 +10,61 @@ import (
 type S3 repository.FileRepository
 
 type DataStorageInterface interface {
-	GetDB() *sql.DB
-	GetUsers() repository.UserRepository
-	GetBoards() repository.BoardRepository
-	GetPins() repository.PinRepository
-	GetTags() repository.TagRepository
-	GetBoardsPins() repository.BoardPinRepository
-	GetAWSS3() repository.FileRepository
+	DB() *sql.DB
+	Users() repository.UserRepository
+	Boards() repository.BoardRepository
+	Pins() repository.PinRepository
+	Tags() repository.TagRepository
+	BoardsPins() repository.BoardPinRepository
+	AWSS3() repository.FileRepository
 }
 
-// TODO add DataStorageInterface
 type DataStorage struct {
-	DB         *sql.DB
-	Users      repository.UserRepository
-	Boards     repository.BoardRepository
-	Pins       repository.PinRepository
-	Tags       repository.TagRepository
-	BoardsPins repository.BoardPinRepository
-	AWSS3      repository.FileRepository
+	db         *sql.DB
+	users      repository.UserRepository
+	boards     repository.BoardRepository
+	pins       repository.PinRepository
+	tags       repository.TagRepository
+	boardsPins repository.BoardPinRepository
+	awss3      repository.FileRepository
 }
 
-func NewDataStorage(db *sql.DB, s3 S3) *DataStorage {
+func (d *DataStorage) DB() *sql.DB                               { return d.db }
+func (d *DataStorage) Users() repository.UserRepository          { return d.users }
+func (d *DataStorage) Boards() repository.BoardRepository        { return d.boards }
+func (d *DataStorage) Pins() repository.PinRepository            { return d.pins }
+func (d *DataStorage) Tags() repository.TagRepository            { return d.tags }
+func (d *DataStorage) BoardsPins() repository.BoardPinRepository { return d.boardsPins }
+func (d *DataStorage) AWSS3() repository.FileRepository          { return d.awss3 }
+
+func NewDataStorage(db *sql.DB, s3 S3) DataStorageInterface {
 	users := infrastructure.NewUserRepository(db)
 	boards := infrastructure.NewBoardRepository(db)
 	pins := infrastructure.NewPinRepository(db)
 	tags := infrastructure.NewTagRepository(db)
 	boardsPins := infrastructure.NewBoardPinRepository(db)
 	return &DataStorage{
-		DB:         db,
-		Users:      users,
-		Boards:     boards,
-		Pins:       pins,
-		Tags:       tags,
-		BoardsPins: boardsPins,
-		AWSS3:      s3,
+		db:         db,
+		users:      users,
+		boards:     boards,
+		pins:       pins,
+		tags:       tags,
+		boardsPins: boardsPins,
+		awss3:      s3,
 	}
 }
 
-func NewRepositoryMock() *DataStorage {
+func NewRepositoryMock() DataStorageInterface {
 	users := mocks.NewUserRepository()
 	boards := mocks.NewBoardRepository()
 	pins := mocks.NewPinRepository()
 	tags := mocks.NewTagRepository()
 	awsS3 := mocks.NewAWSS3Repository()
 	return &DataStorage{
-		Users:  users,
-		Boards: boards,
-		Pins:   pins,
-		Tags:   tags,
-		AWSS3:  awsS3,
+		users:  users,
+		boards: boards,
+		pins:   pins,
+		tags:   tags,
+		awss3:  awsS3,
 	}
 }
-
-func (d *DataStorage) GetDB() *sql.DB                               { return d.DB }
-func (d *DataStorage) GetUsers() repository.UserRepository          { return d.Users }
-func (d *DataStorage) GetBoards() repository.BoardRepository        { return d.Boards }
-func (d *DataStorage) GetPins() repository.PinRepository            { return d.Pins }
-func (d *DataStorage) GetTags() repository.TagRepository            { return d.Tags }
-func (d *DataStorage) GetBoardsPins() repository.BoardPinRepository { return d.BoardsPins }
-func (d *DataStorage) GetAWSS3() repository.FileRepository          { return d.AWSS3 }

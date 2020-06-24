@@ -22,15 +22,15 @@ type AuthLayerInterface interface {
 	AuthenticateUser(string, string) (string, error)
 	GetTokenData(string) (*TokenData, error)
 	TokenStorage() storage.TokenStorage
-	DataStorage() *db.DataStorage
+	DataStorage() db.DataStorageInterface
 }
 
 type AuthLayer struct {
 	tokenStorage storage.TokenStorage
-	dataStorage  *db.DataStorage
+	dataStorage  db.DataStorageInterface
 }
 
-func NewAuthLayer(data *db.DataStorage, redis *redis.Client) AuthLayerInterface {
+func NewAuthLayer(data db.DataStorageInterface, redis *redis.Client) AuthLayerInterface {
 	tokenStorage := storage.NewRedisTokenStorage(redis)
 	return &AuthLayer{
 		tokenStorage,
@@ -38,7 +38,7 @@ func NewAuthLayer(data *db.DataStorage, redis *redis.Client) AuthLayerInterface 
 	}
 }
 
-func NewAuthLayerMock(data *db.DataStorage) AuthLayerInterface {
+func NewAuthLayerMock(data db.DataStorageInterface) AuthLayerInterface {
 	tokenStorage := storage.NewInMemoryTokenStorage()
 	return &AuthLayer{
 		tokenStorage,
@@ -47,7 +47,7 @@ func NewAuthLayerMock(data *db.DataStorage) AuthLayerInterface {
 }
 
 func (a *AuthLayer) AuthenticateUser(email string, password string) (string, error) {
-	user, err := a.dataStorage.Users.GetUserByEmail(email)
+	user, err := a.dataStorage.Users().GetUserByEmail(email)
 	if err != nil {
 		return "", err
 	}
@@ -93,6 +93,6 @@ func (al *AuthLayer) TokenStorage() storage.TokenStorage {
 	return al.tokenStorage
 }
 
-func (al *AuthLayer) DataStorage() *db.DataStorage {
+func (al *AuthLayer) DataStorage() db.DataStorageInterface {
 	return al.dataStorage
 }

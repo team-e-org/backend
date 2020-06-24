@@ -2,7 +2,6 @@ package authz
 
 import (
 	"app/db"
-	"app/mocks"
 	"app/models"
 	"reflect"
 	"testing"
@@ -45,11 +44,8 @@ func TestAuthLayer_AuthenticateUser(t *testing.T) {
 			Email:          tt.registeredEmail,
 			HashedPassword: tt.hashedPassword,
 		}
-		userRepo := mocks.NewUserRepository()
-		_ = userRepo.CreateUser(user)
-		storage := &db.DataStorage{
-			Users: userRepo,
-		}
+		storage := db.NewRepositoryMock()
+		storage.Users().CreateUser(user)
 		al := NewAuthLayerMock(storage)
 
 		token, err := al.AuthenticateUser(tt.email, tt.password)
@@ -86,11 +82,8 @@ func TestAuthLayer_GetTokenData(t *testing.T) {
 		Email:          test.registeredEmail,
 		HashedPassword: test.hashedPassword,
 	}
-	userRepo := mocks.NewUserRepository()
-	_ = userRepo.CreateUser(user)
-	storage := &db.DataStorage{
-		Users: userRepo,
-	}
+	storage := db.NewRepositoryMock()
+	storage.Users().CreateUser(user)
 	al := NewAuthLayerMock(storage)
 
 	token, _ := al.AuthenticateUser(test.email, test.password)
