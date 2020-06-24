@@ -1,14 +1,42 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"app/config"
+	"app/db"
+	"app/infrastructure"
+	"app/logs"
+	"app/server"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello World")
-	})
+	c, err := config.ReadConfig()
+	if err != nil {
+		logs.Error("Invalid config: %s", err)
+		panic(err)
+	}
 
-	http.ListenAndServe(":3000", nil)
+	sqlDB, err := db.ConnectToMySql(c.DB)
+	if sqlDB != nil {
+		defer sqlDB.Close()
+	}
+	if err != nil {
+		logs.Error("DB connection failure: %s", err)
+		panic(err)
+	}
+
+	redis, err := db.ConnectToRedis(c.Redis)
+	if redis != nil {
+		defer redis.Close()
+	}
+	if err != nil {
+		logs.Error("Redis connection failure: %s", err)
+		panic(err)
+	}
+
+	s3 := infrastructure.NewAWSS3(c.AWS.S3)
+
+	if err = server.Start(c, sqlDB, redis, s3); err != nil {
+		logs.Error("Failed to start server: %s", err)
+		panic(err)
+	}
 }
