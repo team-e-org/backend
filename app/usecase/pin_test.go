@@ -59,7 +59,7 @@ func createPins(t *testing.T) []*models.Pin {
 	return pins
 }
 
-func insertPins(t *testing.T, data *db.DataStorage, pins []*models.Pin, boardID int) {
+func insertPins(t *testing.T, data db.DataStorageInterface, pins []*models.Pin, boardID int) {
 	for i, p := range pins {
 		pp, err := CreatePin(data, p, boardID)
 		if err != nil {

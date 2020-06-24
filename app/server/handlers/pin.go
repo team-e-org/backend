@@ -17,7 +17,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func ServePinsInBoard(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func ServePinsInBoard(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -68,7 +68,7 @@ func ServePinsInBoard(data *db.DataStorage, authLayer authz.AuthLayerInterface) 
 	}
 }
 
-func ServePin(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func ServePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -113,7 +113,7 @@ func ServePin(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(htt
 	}
 }
 
-func CreatePin(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -164,7 +164,7 @@ func CreatePin(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(ht
 		}
 		defer file.Close()
 
-		url, err := data.AWSS3.UploadImage(file, fileHeader)
+		url, err := data.AWSS3().UploadImage(file, fileHeader)
 		if err != nil {
 			logs.Error("Request: %s, uploading image: %v", requestSummary(r), err)
 			InternalServerError(w, r)

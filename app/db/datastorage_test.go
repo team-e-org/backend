@@ -24,8 +24,8 @@ func TestRepository(t *testing.T) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	repository.Users.CreateUser(user)
-	gotUser, err := repository.Users.GetUser(userID)
+	repository.Users().CreateUser(user)
+	gotUser, err := repository.Users().GetUser(userID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
@@ -42,8 +42,8 @@ func TestRepository(t *testing.T) {
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-	repository.Boards.CreateBoard(board)
-	gotBoard, err := repository.Boards.GetBoard(boardID)
+	repository.Boards().CreateBoard(board)
+	gotBoard, err := repository.Boards().GetBoard(boardID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
@@ -62,8 +62,8 @@ func TestRepository(t *testing.T) {
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-	repository.Pins.CreatePin(pin, boardID)
-	gotPin, err := repository.Pins.GetPin(pinID)
+	repository.Pins().CreatePin(pin, boardID)
+	gotPin, err := repository.Pins().GetPin(pinID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
@@ -78,8 +78,8 @@ func TestRepository(t *testing.T) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	repository.Tags.CreateTag(tag)
-	gotTag, err := repository.Tags.GetTag(tagID)
+	repository.Tags().CreateTag(tag)
+	gotTag, err := repository.Tags().GetTag(tagID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
@@ -97,25 +97,25 @@ func TestNewDataStorage(t *testing.T) {
 	s3 := infrastructure.NewAWSS3Mock()
 
 	data := NewDataStorage(sqlDB, s3)
-	if data.DB == nil {
+	if data.DB() == nil {
 		t.Fatalf("DB is nil")
 	}
-	if data.Users == nil {
+	if data.Users() == nil {
 		t.Fatalf("nil field, Users")
 	}
-	if data.Boards == nil {
+	if data.Boards() == nil {
 		t.Fatalf("nil field, Boards")
 	}
-	if data.Pins == nil {
+	if data.Pins() == nil {
 		t.Fatalf("nil field, Pins")
 	}
-	if data.Tags == nil {
+	if data.Tags() == nil {
 		t.Fatalf("nil field, Tags")
 	}
-	if data.BoardsPins == nil {
+	if data.BoardsPins() == nil {
 		t.Fatalf("nil field, BoardsPins")
 	}
-	if data.AWSS3 == nil {
+	if data.AWSS3() == nil {
 		t.Fatalf("nil field, AWSS3")
 	}
 }
@@ -124,10 +124,10 @@ func BenchmarkDataStorage(b *testing.B) {
 	var dataStorage *DataStorage
 	var dataStorageInterface DataStorageInterface
 	dataStorage = &DataStorage{
-		Users: mocks.NewUserRepository(),
+		users: mocks.NewUserRepository(),
 	}
 	dataStorageInterface = &DataStorage{
-		Users: mocks.NewUserRepository(),
+		users: mocks.NewUserRepository(),
 	}
 
 	userID := 1
@@ -143,17 +143,17 @@ func BenchmarkDataStorage(b *testing.B) {
 
 	b.Run("Method call", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			dataStorage.Users.CreateUser(user)
-			dataStorage.Users.GetUser(userID)
-			dataStorage.Users.DeleteUser(userID)
+			dataStorage.users.CreateUser(user)
+			dataStorage.users.GetUser(userID)
+			dataStorage.users.DeleteUser(userID)
 		}
 	})
 
 	b.Run("Method call via interface", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			dataStorageInterface.GetUsers().CreateUser(user)
-			dataStorageInterface.GetUsers().GetUser(userID)
-			dataStorageInterface.GetUsers().DeleteUser(userID)
+			dataStorageInterface.Users().CreateUser(user)
+			dataStorageInterface.Users().GetUser(userID)
+			dataStorageInterface.Users().DeleteUser(userID)
 		}
 	})
 }

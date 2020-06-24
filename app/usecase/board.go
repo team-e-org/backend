@@ -8,7 +8,7 @@ import (
 	"app/view"
 )
 
-func CreateBoard(data *db.DataStorage, requestBoard *view.Board, userID int) (*models.Board, helpers.AppError) {
+func CreateBoard(data db.DataStorageInterface, requestBoard *view.Board, userID int) (*models.Board, helpers.AppError) {
 
 	board := &models.Board{
 		UserID:      userID,
@@ -16,7 +16,7 @@ func CreateBoard(data *db.DataStorage, requestBoard *view.Board, userID int) (*m
 		Description: &requestBoard.Description,
 		IsPrivate:   requestBoard.IsPrivate,
 	}
-	board, err := data.Boards.CreateBoard(board)
+	board, err := data.Boards().CreateBoard(board)
 	if err != nil {
 		logs.Error("An error occurred while creating board: %v", err)
 		return nil, helpers.NewInternalServerError(err)

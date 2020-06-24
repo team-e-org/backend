@@ -48,7 +48,7 @@ func TestServePin(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			data.Pins.CreatePin(c.pin, 0)
+			data.Pins().CreatePin(c.pin, 0)
 
 			attachHandlers(router, data, authz.NewAuthLayerMock(data))
 			recorder := httptest.NewRecorder()
@@ -108,7 +108,7 @@ func TestServePinsInBoard(t *testing.T) {
 			data := db.NewRepositoryMock()
 
 			for _, p := range c.pins {
-				data.Pins.CreatePin(p, c.boardID)
+				data.Pins().CreatePin(p, c.boardID)
 			}
 
 			attachHandlers(router, data, authz.NewAuthLayerMock(data))
@@ -152,7 +152,7 @@ func TestCreatePin(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			data.Users.CreateUser(c.currentUser)
+			data.Users().CreateUser(c.currentUser)
 
 			al := authz.NewAuthLayerMock(data)
 			token, _ := al.AuthenticateUser(c.currentUser.Email, c.loginPassword)

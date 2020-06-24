@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func UserBoards(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func UserBoards(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		userID, err := strconv.Atoi(vars["id"])
@@ -53,7 +53,7 @@ func UserBoards(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(h
 	}
 }
 
-func ServeUser(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func ServeUser(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -65,7 +65,7 @@ func ServeUser(data *db.DataStorage, authLayer authz.AuthLayerInterface) func(ht
 			return
 		}
 
-		user, err := data.Users.GetUser(userID)
+		user, err := data.Users().GetUser(userID)
 		if err != nil {
 			logs.Error("Request: %s, gettign user from db: %v", requestSummary(r), err)
 			InternalServerError(w, r)

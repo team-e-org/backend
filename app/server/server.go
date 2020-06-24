@@ -37,7 +37,7 @@ func Start(config *config.Config, dbConn *sql.DB, redis *redis.Client, s3 S3) er
 	return s.ListenAndServe()
 }
 
-func attachHandlers(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInterface) {
+func attachHandlers(mux *mux.Router, data db.DataStorageInterface, al authz.AuthLayerInterface) {
 	mux.HandleFunc("/", Hello)
 	mux.HandleFunc("/users/sign-in", handlers.SignIn(data, al)).Methods(http.MethodPost)
 	mux.HandleFunc("/users/sign-up", handlers.SignUp(data, al)).Methods(http.MethodPost)
@@ -47,7 +47,7 @@ func attachHandlers(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInt
 	mux.HandleFunc("/users/{id}/boards", handlers.UserBoards(data, al)).Methods(http.MethodGet)
 }
 
-func attachReqAuth(mux *mux.Router, data *db.DataStorage, al authz.AuthLayerInterface) {
+func attachReqAuth(mux *mux.Router, data db.DataStorageInterface, al authz.AuthLayerInterface) {
 	muxAuth := mux.PathPrefix("").Subrouter()
 	muxAuth.Use(middleware.RequireAuthorization(al))
 

@@ -58,7 +58,7 @@ func TestUserBoards(t *testing.T) {
 			data := db.NewRepositoryMock()
 
 			for _, b := range c.boards {
-				data.Boards.CreateBoard(b)
+				data.Boards().CreateBoard(b)
 			}
 
 			attachHandlers(router, data, authz.NewAuthLayerMock(data))
@@ -161,7 +161,7 @@ func TestSignIn(t *testing.T) {
 			router := mux.NewRouter()
 			data := db.NewRepositoryMock()
 
-			data.Users.CreateUser(dbdata.BaseUser)
+			data.Users().CreateUser(dbdata.BaseUser)
 
 			al := authz.NewAuthLayerMock(data)
 
