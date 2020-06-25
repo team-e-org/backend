@@ -62,7 +62,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_ECS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
       - name: login to amazon ECR
-        id: login-ect
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         if: contains(github.ref, 'master')
       - name: build image
