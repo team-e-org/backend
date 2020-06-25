@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"app/config"
+	"app/logs"
 	"app/repository"
 	"fmt"
 	"mime/multipart"
@@ -25,6 +26,7 @@ func NewAWSS3(c config.S3) repository.FileRepository {
 		},
 	}))
 
+	logs.Info("Connected to AWSS3 region: %s, bucket: %s, pin-folder: %s", c.Region, c.Bucket, c.PinFolder)
 	return &AWSS3{
 		Config:   c,
 		Uploader: s3manager.NewUploader(sess),
