@@ -75,8 +75,6 @@ jobs:
         if: contains(github.ref, 'master')
       - name: deploy
         run: |
-          ./scripts/ecs-deploy -c {{ secrets.AWS_ECS_SERVICE }}-cluster-stg -n {{ secrets.AWS_ECS_SERVICE }}-service-stg -i {{ secrets.AWS_ECR_URI }}/{{ secrets.AWS_ECS_SERVICE}}-stg:latest -r {{ secrets.AWS_DEFAULT_REGION }} -t 300
+          ./scripts/ecs-deploy -c ${{ secrets.AWS_ECS_SERVICE }}-cluster-stg -n ${{ secrets.AWS_ECS_SERVICE }}-service-stg -i ${{ secrets.AWS_ECR_URI }}/${{ secrets.AWS_ECS_SERVICE}}-stg:latest -r ${{ secrets.AWS_DEFAULT_REGION }} -t 300
         working-directory: ./src/github.com/${{ github.repository }}/app
         if: contains(github.ref, 'master')
-
-
