@@ -1,4 +1,4 @@
-name: go_integration_test
+name: go_integration_test_and_or_deploy
 on:
   pull_request:
     types: [opened, synchronize]
