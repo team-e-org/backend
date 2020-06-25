@@ -8,6 +8,7 @@
 `docker-compose up` でいろいろ立ち上がる。
   * localhost:3000でAPIサーバー
   * localhost:8080でOpenAPIのドキュメント
+  * localhost:6379でredisサーバ
   
 *1 起動に失敗した場合、ポート番号やローカルのMySQLと衝突している
 可能性が高いです。
