@@ -9,8 +9,11 @@
   * localhost:3000でAPIサーバー
   * localhost:8080でOpenAPIのドキュメント
   * localhost:6379でredisサーバ
+  * localhost:3306でMySQLサーバ
   
 *1 起動に失敗した場合、ポート番号やローカルのMySQLと衝突している
 可能性が高いです。
 
 *2 goのコードを編集すると自動で再ビルドが走ります。
+
+masterにpushするとstaging環境へ自動デプロイ
