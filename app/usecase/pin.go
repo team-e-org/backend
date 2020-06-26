@@ -42,6 +42,17 @@ func ServePin(data db.DataStorageInterface, pinID int, userID int) (*models.Pin,
 	return pin, nil
 }
 
+func GetPins(data db.DataStorageInterface, page int) ([]*models.Pin, helpers.AppError) {
+	pins, err := data.Pins().GetPins(page)
+	if err != nil {
+		logs.Error("An error occurred while getting pins in board: %v", err)
+		err := helpers.NewInternalServerError(err)
+		return nil, err
+	}
+
+	return pins, nil
+}
+
 func CreatePin(data db.DataStorageInterface, pin *models.Pin, boardID int) (*models.Pin, helpers.AppError) {
 	pin, err := data.Pins().CreatePin(pin, boardID)
 	if err != nil {

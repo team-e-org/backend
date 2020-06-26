@@ -28,6 +28,7 @@ type PinRepository interface {
 	GetPin(pinID int) (*models.Pin, error)
 	GetPinsByBoardID(boardID int, page int) ([]*models.Pin, error)
 	GetPinsByUserID(userID int) ([]*models.Pin, error)
+	GetPins(page int) ([]*models.Pin, error)
 }
 
 type TagRepository interface {

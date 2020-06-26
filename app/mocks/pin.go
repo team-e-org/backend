@@ -80,6 +80,10 @@ func (m *PinMock) GetPinsByUserID(userID int) ([]*models.Pin, error) {
 	return pins, nil
 }
 
+func (m *PinMock) GetPins(page int) ([]*models.Pin, error) {
+	return nil, nil
+}
+
 func noPinError() error {
 	return errors.New("The pin does not exist")
 }
