@@ -277,6 +277,45 @@ func TestGetPinsByBoardIDError(t *testing.T) {
 	}
 }
 
+func TestGetPins(t *testing.T) {
+	page := 1
+	prepare := mock.ExpectPrepare(regexp.QuoteMeta("SELECT p.id, p.user_id, p.title, p.description, p.url, p.image_url, p.created_at, p.updated_at FROM pins AS p WHERE is_private = 0 ORDER BY created_at DESC LIMIT ? OFFSET ?"))
+	prepare.ExpectQuery().
+		WithArgs(10, 0).
+		WillReturnRows(sqlmock.NewRows([]string{"id", "user_id", "title", "description", "url", "image_url", "created_at", "updated_at"}).
+			AddRow(1, 1, "test title", "test description", "test url", "test image url", now, now).
+			AddRow(1, 1, "test title2", "test description2", "test url2", "test image url2", now, now))
+
+	pins := NewPinRepository(sqlDB)
+	_, err := pins.GetPins(page)
+	if err != nil {
+		t.Fatalf("An error occurred: %v\n", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatalf("Unfulfilled expectations error: %v\n", err)
+	}
+}
+
+func TestGetPinsError(t *testing.T) {
+	page := 1
+	prepare := mock.ExpectPrepare(regexp.QuoteMeta("SELECT p.id, p.user_id, p.title, p.description, p.url, p.image_url, p.created_at, p.updated_at FROM pins AS p WHERE is_private = 0 ORDER BY created_at DESC LIMIT ? OFFSET ?"))
+	prepare.ExpectQuery().
+		WithArgs(10, 0).
+		WillReturnError(fmt.Errorf("some error"))
+
+	pins := NewPinRepository(sqlDB)
+	_, err := pins.GetPins(page)
+	if err == nil {
+		t.Fatalf("An error occurred: %v\n", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatalf("Unfulfilled expectations error: %v\n", err)
+	}
+
+}
+
 func TestGetPinsByUserID(t *testing.T) {
 	userID := 0
 

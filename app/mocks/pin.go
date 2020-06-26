@@ -81,7 +81,13 @@ func (m *PinMock) GetPinsByUserID(userID int) ([]*models.Pin, error) {
 }
 
 func (m *PinMock) GetPins(page int) ([]*models.Pin, error) {
-	return nil, nil
+	pins := make([]*models.Pin, 0, len(m.BoardPinMapper))
+	for _, p := range m.ExpectedPins {
+		if !p.IsPrivate {
+			pins = append(pins, p)
+		}
+	}
+	return pins, nil
 }
 
 func noPinError() error {

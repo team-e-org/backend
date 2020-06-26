@@ -308,6 +308,9 @@ WHERE
 `
 
 	stmt, err := p.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
 
 	rows, err := stmt.Query(userID)
 	if err != nil {
