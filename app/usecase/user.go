@@ -28,8 +28,6 @@ func UserBoards(data db.DataStorageInterface, authLayer authz.AuthLayerInterface
 }
 
 func UpdateUser(data db.DataStorageInterface, user *models.User, userID int) (*models.User, error) {
-	fmt.Printf("user: %v\n", *user)
-	fmt.Printf("userID: %d\n", userID)
 	u, err := data.Users().GetUser(userID)
 	if err != nil {
 		logs.Error("An error occurred while getting user data: %v", err)
