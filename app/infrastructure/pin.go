@@ -177,6 +177,58 @@ WHERE
 	return pin, nil
 }
 
+func (p *Pin) GetPins(page int) ([]*models.Pin, error) {
+	query := `
+SELECT
+    p.id,
+    p.user_id,
+    p.title,
+    p.description,
+    p.url,
+    p.image_url,
+    p.created_at,
+    p.updated_at
+FROM
+    pins AS p
+WHERE is_private = 0
+ORDER BY created_at DESC
+LIMIT ? OFFSET ?;
+`
+	limit := 5
+	offset := (page - 1) * limit
+
+	stmt, err := p.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := stmt.Query(limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var pins []*models.Pin
+	for rows.Next() {
+		pin := &models.Pin{}
+		err := rows.Scan(
+			&pin.ID,
+			&pin.UserID,
+			&pin.Title,
+			&pin.Description,
+			&pin.URL,
+			&pin.ImageURL,
+			&pin.CreatedAt,
+			&pin.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		pins = append(pins, pin)
+	}
+	return pins, nil
+}
+
 func (p *Pin) GetPinsByBoardID(boardID int, page int) ([]*models.Pin, error) {
 	const query = `
 SELECT
