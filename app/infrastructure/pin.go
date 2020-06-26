@@ -194,7 +194,7 @@ WHERE is_private = 0
 ORDER BY created_at DESC
 LIMIT ? OFFSET ?;
 `
-	limit := 5
+	limit := 10
 	offset := (page - 1) * limit
 
 	stmt, err := p.DB.Prepare(query)
