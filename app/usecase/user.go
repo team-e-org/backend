@@ -39,19 +39,6 @@ func UpdateUser(data db.DataStorageInterface, user *models.User, userID int) (*m
 		return nil, helpers.NewUnauthorized(err)
 	}
 
-	if user.Name != "" {
-		u.Name = user.Name
-	}
-	if user.Email != "" {
-		u.Email = user.Email
-	}
-	if user.HashedPassword != "" {
-		u.HashedPassword = user.HashedPassword
-	}
-	if user.Icon != "" {
-		u.Icon = user.Icon
-	}
-
 	if err := data.Users().UpdateUser(u); err != nil {
 		logs.Error("An error occurred: %v", err)
 		return nil, helpers.NewInternalServerError(err)
