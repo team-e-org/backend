@@ -27,24 +27,14 @@ func UserBoards(data db.DataStorageInterface, authLayer authz.AuthLayerInterface
 	return boards, nil
 }
 
-func UpdateUser(data db.DataStorageInterface, user *models.User, userID int) (*models.User, error) {
-	u, err := data.Users().GetUser(userID)
-	if err != nil {
-		logs.Error("An error occurred while getting user data: %v", err)
-		return nil, helpers.NewInternalServerError(err)
-	}
+func UpdateUser(data db.DataStorageInterface, user *models.User) (*models.User, error) {
 
-	if user.ID != u.ID {
-		logs.Error("UserIDs do not match error: %v", err)
-		return nil, helpers.NewUnauthorized(err)
-	}
-
-	if err := data.Users().UpdateUser(u); err != nil {
+	if err := data.Users().UpdateUser(user); err != nil {
 		logs.Error("An error occurred: %v", err)
 		return nil, helpers.NewInternalServerError(err)
 	}
 
-	return u, nil
+	return user, nil
 }
 
 func removePrivateBoards(boards []*models.Board, userID int) []*models.Board {
