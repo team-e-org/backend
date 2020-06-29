@@ -207,7 +207,7 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 		}
 		defer file.Close()
 
-		url, err := data.AWSS3().UploadImage(file, fileHeader)
+		url, err := data.AWSS3().UploadImage(file, fileHeader, userID)
 		if err != nil {
 			logs.Error("Request: %s, uploading image: %v", requestSummary(r), err)
 			InternalServerError(w, r)

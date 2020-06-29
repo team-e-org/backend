@@ -35,7 +35,7 @@ func NewAWSS3(c config.S3) repository.FileRepository {
 
 type AWSS3Mock struct{}
 
-func (a *AWSS3Mock) UploadImage(file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
+func (a *AWSS3Mock) UploadImage(file multipart.File, fileHeader *multipart.FileHeader, userID int) (string, error) {
 	return "", nil
 }
 
@@ -43,10 +43,12 @@ func NewAWSS3Mock() repository.FileRepository {
 	return &AWSS3Mock{}
 }
 
-func (a *AWSS3) UploadImage(file multipart.File, fileHeader *multipart.FileHeader) (url string, err error) {
+func (a *AWSS3) UploadImage(file multipart.File, fileHeader *multipart.FileHeader, userID int) (url string, err error) {
 	var contentType string
 	fileExt := filepath.Ext(fileHeader.Filename)
-	fileName := a.Config.PinFolder + uuid.NewV4().String() + fileExt
+	fileName := fmt.Sprintf("%s/%d/%s%s", a.Config.PinFolder, userID, uuid.NewV4().String(), fileExt)
+
+	logs.Info("File uploaded to %s", fileName)
 
 	switch fileExt {
 	case ".jpg":
@@ -71,5 +73,7 @@ func (a *AWSS3) UploadImage(file multipart.File, fileHeader *multipart.FileHeade
 		return "", fmt.Errorf("failed to upload file, %v", err)
 	}
 
-	return result.Location, nil
+	logs.Info("File location is %s", result.Location)
+
+	return fileName, nil
 }
