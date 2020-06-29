@@ -22,7 +22,7 @@ func TestCreateTag(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	tags := NewTagRepository(sqlDB)
-	err := tags.CreateTag(tag)
+	_, err := tags.CreateTag(tag)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
 	}
@@ -45,7 +45,7 @@ func TestCreateTagError(t *testing.T) {
 		WillReturnError(fmt.Errorf("some error"))
 
 	tags := NewTagRepository(sqlDB)
-	err := tags.CreateTag(tag)
+	_, err := tags.CreateTag(tag)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
 	}
