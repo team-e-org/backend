@@ -125,3 +125,21 @@ func testCompareUsers(t *testing.T, user *models.User, user2 *models.User) bool 
 	}
 	return true
 }
+
+func TestUserError(t *testing.T) {
+	user := &models.User{
+		ID:    1,
+		Name:  "test name",
+		Email: "test@test.com",
+		Icon:  "test icon",
+	}
+	users := NewUserRepository()
+	err := users.UpdateUser(user)
+	if err == nil {
+		t.Fatalf("An error should occur")
+	}
+	err = users.DeleteUser(user.ID)
+	if err == nil {
+		t.Fatalf("An error should occur")
+	}
+}

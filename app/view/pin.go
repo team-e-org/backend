@@ -1,6 +1,9 @@
 package view
 
-import "app/models"
+import (
+	"app/models"
+	"app/ptr"
+)
 
 type Pin struct {
 	ID          int     `json:"id"`
@@ -34,4 +37,18 @@ func NewPins(pins []*models.Pin) []*Pin {
 	}
 
 	return b
+}
+
+func NewPinModel(pin *Pin) *models.Pin {
+	p := &models.Pin{
+		ID:          pin.ID,
+		UserID:      ptr.NewInt(pin.UserID),
+		Title:       pin.Title,
+		Description: ptr.NewString(pin.Description),
+		URL:         pin.URL,
+		ImageURL:    pin.ImageURL,
+		IsPrivate:   pin.IsPrivate,
+	}
+
+	return p
 }

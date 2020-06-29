@@ -191,3 +191,10 @@ func testBuildPin(t *testing.T, pinID int, userID int) *models.Pin {
 	}
 	return pin
 }
+
+func TestNoPinError(t *testing.T) {
+	err := noPinError()
+	if err == nil {
+		t.Fatalf("An error should be returned")
+	}
+}

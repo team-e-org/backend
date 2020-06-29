@@ -3,7 +3,7 @@ package mocks
 import (
 	"app/models"
 	"app/repository"
-	"errors"
+	"database/sql"
 )
 
 type PinMock struct {
@@ -91,5 +91,5 @@ func (m *PinMock) GetPins(page int) ([]*models.Pin, error) {
 }
 
 func noPinError() error {
-	return errors.New("The pin does not exist")
+	return sql.ErrNoRows
 }

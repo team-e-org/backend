@@ -10,6 +10,7 @@ import (
 	"app/usecase"
 	"app/view"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -226,6 +227,79 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 		}
 
 		pin, err = usecase.CreatePin(data, pin, boardID)
+
+		response := view.NewPin(pin)
+		bytes, err := json.Marshal(response)
+		if err != nil {
+			logs.Error("Request: %s, serializing pin response: %v", requestSummary(r), err)
+			err := helpers.NewInternalServerError(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		w.Header().Set(contentType, jsonContent)
+		w.WriteHeader(http.StatusCreated)
+		if _, err = w.Write(bytes); err != nil {
+			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
+		}
+	}
+}
+
+func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logRequest(r)
+
+		userID, err := getUserIDIfAvailable(r, authLayer)
+		if err != nil {
+			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
+			err := helpers.NewUnauthorized(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		maxSize := int64(1024000)
+		err = r.ParseMultipartForm(maxSize)
+		if err != nil {
+			logs.Error("Request: %s, parsing multipart: %v", requestSummary(r), err)
+			logs.Error("Image too large. Max Size: %v", maxSize)
+			err := helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		vars := mux.Vars(r)
+		pinID, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			logs.Error("Request: %s, parse path parameter board id: %v", requestSummary(r), err)
+			err := helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		if string(pinID) != r.FormValue("id") {
+			err := fmt.Errorf("PinIDs do not match error")
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
+			err = helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		if string(userID) != r.FormValue("userId") {
+			err := fmt.Errorf("UserIDs do not match error")
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
+			err = helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		pin := &models.Pin{
+			ID:          pinID,
+			Title:       r.FormValue("title"),
+			Description: ptr.NewString(r.FormValue("description")),
+			URL:         ptr.NewString(r.FormValue("url")),
+		}
+
+		pin, err = usecase.UpdatePin(data, pin, userID)
 
 		response := view.NewPin(pin)
 		bytes, err := json.Marshal(response)
