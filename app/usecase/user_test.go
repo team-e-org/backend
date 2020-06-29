@@ -140,7 +140,7 @@ func TestUpdateUser(t *testing.T) {
 		CreatedAt:      now,
 		UpdatedAt:      now,
 	}
-	err = data.Users().CreateUser(user)
+	_, err = data.Users().CreateUser(user)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}

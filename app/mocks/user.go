@@ -14,9 +14,9 @@ func NewUserRepository() repository.UserRepository {
 	return &UserMock{}
 }
 
-func (m *UserMock) CreateUser(user *models.User) error {
+func (m *UserMock) CreateUser(user *models.User) (*models.User, error) {
 	m.ExpectedUser = user
-	return nil
+	return user, nil
 }
 
 func (m *UserMock) UpdateUser(user *models.User) error {
