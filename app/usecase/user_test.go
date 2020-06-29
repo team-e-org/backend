@@ -153,7 +153,7 @@ func TestUpdateUser(t *testing.T) {
 		Icon:           "test icon2",
 		HashedPassword: hashedPassword,
 	}
-	user3, err := UpdateUser(data, user2, 1)
+	user3, err := UpdateUser(data, user2)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
@@ -184,7 +184,7 @@ func TestUpdateUserError(t *testing.T) {
 		CreatedAt:      now,
 		UpdatedAt:      now,
 	}
-	_, err = UpdateUser(data, user, 1)
+	_, err = UpdateUser(data, user)
 	if err == nil {
 		t.Fatalf("An error should occur")
 	}
@@ -201,7 +201,7 @@ func TestUpdateUserError(t *testing.T) {
 	}
 	data.Users().CreateUser(user2)
 	fmt.Printf("user2: %v\n", *user2)
-	_, err = UpdateUser(data, user2, 1)
+	_, err = UpdateUser(data, user2)
 	if err == nil {
 		t.Fatalf("An error should occur")
 	}

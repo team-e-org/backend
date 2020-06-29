@@ -6,7 +6,6 @@ import (
 	"app/helpers"
 	"app/logs"
 	"app/models"
-	"fmt"
 )
 
 func UserBoards(data db.DataStorageInterface, authLayer authz.AuthLayerInterface, userID int, currentUserID int) ([]*models.Board, helpers.AppError) {

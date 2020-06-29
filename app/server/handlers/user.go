@@ -139,7 +139,7 @@ func UpdateUser(data db.DataStorageInterface, authLayer authz.AuthLayerInterface
 			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
 		}
 
-		userModel, err := usecase.UpdateUser(data, user, userID)
+		userModel, err := usecase.UpdateUser(data, user)
 		if err != nil {
 			logs.Error("Request: %s, %v", requestSummary(r), err)
 			ResponseError(w, r, err)
