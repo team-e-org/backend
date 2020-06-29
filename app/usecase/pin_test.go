@@ -78,6 +78,39 @@ func TestCreatePin(t *testing.T) {
 	insertPins(t, data, pins, boardID)
 }
 
+func TestUpdatePin(t *testing.T) {
+	boardID := 0
+	data := db.NewRepositoryMock()
+	pins := createPins(t)
+	insertPins(t, data, pins, boardID)
+	newPin := &models.Pin{
+		ID:          0,
+		Title:       "test title updated",
+		Description: ptr.NewString("test description updated"),
+		URL:         ptr.NewString("test url updated"),
+	}
+	err := data.Pins().UpdatePin(newPin)
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+	pin, err := data.Pins().GetPin(0)
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+	if pin.ID != newPin.ID {
+		t.Fatalf("PinID does not match error")
+	}
+	if pin.Title != newPin.Title {
+		t.Fatalf("Pin title does not match error")
+	}
+	if *pin.Description != *newPin.Description {
+		t.Fatalf("Pin description does not match error")
+	}
+	if *pin.URL != *newPin.URL {
+		t.Fatalf("Pin URL does not match error")
+	}
+}
+
 func TestRemovePrivatePins(t *testing.T) {
 	userID := 0
 	pins := createPins(t)
