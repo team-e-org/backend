@@ -219,6 +219,10 @@ func TestTag(t *testing.T) {
 	if tag.Tag != tagGot.Tag {
 		t.Fatalf("Tags do not match error")
 	}
+	_, err = data.DB().Exec("DELETE FROM tags WHERE id = ?;", tag.ID)
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
 }
 
 func testCreateTag(t *testing.T) *models.Tag {
