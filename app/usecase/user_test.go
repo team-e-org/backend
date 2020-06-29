@@ -6,7 +6,6 @@ import (
 	"app/helpers"
 	"app/models"
 	"app/ptr"
-	"fmt"
 	"reflect"
 	"testing"
 	"time"
@@ -185,23 +184,6 @@ func TestUpdateUserError(t *testing.T) {
 		UpdatedAt:      now,
 	}
 	_, err = UpdateUser(data, user)
-	if err == nil {
-		t.Fatalf("An error should occur")
-	}
-
-	data.Users().CreateUser(user)
-	user2 := &models.User{
-		ID:             2,
-		Name:           "test user",
-		Email:          "test@test.com",
-		Icon:           "test icon",
-		HashedPassword: hashedPassword,
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
-	data.Users().CreateUser(user2)
-	fmt.Printf("user2: %v\n", *user2)
-	_, err = UpdateUser(data, user2)
 	if err == nil {
 		t.Fatalf("An error should occur")
 	}
