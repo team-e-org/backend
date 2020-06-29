@@ -18,9 +18,9 @@ func NewTagRepository() repository.TagRepository {
 	}
 }
 
-func (m *TagMock) CreateTag(tag *models.Tag) error {
+func (m *TagMock) CreateTag(tag *models.Tag) (*models.Tag, error) {
 	m.ExpectedTags = append(m.ExpectedTags, tag)
-	return nil
+	return tag, nil
 }
 
 func (m *TagMock) GetTag(tagID int) (*models.Tag, error) {
