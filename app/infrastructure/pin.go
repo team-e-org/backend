@@ -42,6 +42,8 @@ INSERT INTO pins (user_id, title, description, url, image_url, is_private) VALUE
 		return nil, helpers.TryRollback(tx, err)
 	}
 
+	pin.ID = int(pinID)
+
 	const query2 = `
 INSERT INTO boards_pins (board_id, pin_id) VALUES (?, ?);
 `
@@ -65,7 +67,7 @@ INSERT INTO boards_pins (board_id, pin_id) VALUES (?, ?);
 
 func (p *Pin) UpdatePin(pin *models.Pin) error {
 	const query = `
-UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private = ?;
+UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private = ? WHERE id = ?;
 `
 
 	stmt, err := p.DB.Prepare(query)
@@ -73,7 +75,7 @@ UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private =
 		return err
 	}
 
-	result, err := stmt.Exec(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate)
+	result, err := stmt.Exec(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate, pin.ID)
 	if err := helpers.CheckDBExecError(result, err); err != nil {
 		return err
 	}

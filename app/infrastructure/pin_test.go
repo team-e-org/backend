@@ -97,9 +97,9 @@ func TestUpdatePin(t *testing.T) {
 		IsPrivate:   false,
 	}
 
-	prepare := mock.ExpectPrepare(regexp.QuoteMeta("UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private = ?"))
+	prepare := mock.ExpectPrepare(regexp.QuoteMeta("UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private = ? WHERE id = ?"))
 	prepare.ExpectExec().
-		WithArgs(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate).
+		WithArgs(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate, pin.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	pins := NewPinRepository(sqlDB)
@@ -126,9 +126,9 @@ func TestUpdatePinError(t *testing.T) {
 		IsPrivate:   false,
 	}
 
-	prepare := mock.ExpectPrepare(regexp.QuoteMeta("UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private = ?"))
+	prepare := mock.ExpectPrepare(regexp.QuoteMeta("UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private = ? WHERE id = ?"))
 	prepare.ExpectExec().
-		WithArgs(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate).
+		WithArgs(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate, pin.ID).
 		WillReturnError(fmt.Errorf("some error"))
 
 	pins := NewPinRepository(sqlDB)
