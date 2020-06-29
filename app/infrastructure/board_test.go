@@ -74,9 +74,9 @@ func TestUpdateBoard(t *testing.T) {
 		IsPrivate:   false,
 	}
 
-	prepare := mock.ExpectPrepare(regexp.QuoteMeta("UPDATE boards SET name = ?, description = ?, is_private = ?"))
+	prepare := mock.ExpectPrepare(regexp.QuoteMeta("UPDATE boards SET name = ?, description = ?, is_private = ? WHERE id = ?"))
 	prepare.ExpectExec().
-		WithArgs(board.Name, board.Description, board.IsPrivate).
+		WithArgs(board.Name, board.Description, board.IsPrivate, board.ID).
 		WillReturnResult(sqlmock.NewResult(0, 1))
 
 	boards := NewBoardRepository(sqlDB)
@@ -100,9 +100,9 @@ func TestUpdateBoardError(t *testing.T) {
 		IsPrivate:   false,
 	}
 
-	prepare := mock.ExpectPrepare(regexp.QuoteMeta("UPDATE boards SET name = ?, description = ?, is_private = ?"))
+	prepare := mock.ExpectPrepare(regexp.QuoteMeta("UPDATE boards SET name = ?, description = ?, is_private = ? WHERE id = ?"))
 	prepare.ExpectExec().
-		WithArgs(board.Name, board.Description, board.IsPrivate).
+		WithArgs(board.Name, board.Description, board.IsPrivate, board.ID).
 		WillReturnError(fmt.Errorf("some error"))
 
 	boards := NewBoardRepository(sqlDB)

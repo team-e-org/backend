@@ -48,7 +48,7 @@ INSERT INTO boards (user_id, name, description, is_private) VALUES (?, ?, ?, ?)
 
 func (b *Board) UpdateBoard(board *models.Board) error {
 	const query = `
-UPDATE boards SET name = ?, description = ?, is_private = ?;
+UPDATE boards SET name = ?, description = ?, is_private = ? WHERE id = ?;
 `
 
 	stmt, err := b.DB.Prepare(query)
@@ -56,7 +56,7 @@ UPDATE boards SET name = ?, description = ?, is_private = ?;
 		return err
 	}
 
-	result, err := stmt.Exec(board.Name, board.Description, board.IsPrivate)
+	result, err := stmt.Exec(board.Name, board.Description, board.IsPrivate, board.ID)
 	if err = helpers.CheckDBExecError(result, err); err != nil {
 		return err
 	}
