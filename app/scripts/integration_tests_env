@@ -3,3 +3,5 @@ export MYSQL_USER=test_user
 export MYSQL_PASSWORD=password
 export MYSQL_PORT=3306
 export MYSQL_HOST=127.0.0.1
+export REDIS_PORT=6379
+export REDIS_HOST=127.0.0.1

@@ -17,23 +17,30 @@ func NewTagRepository(db *sql.DB) repository.TagRepository {
 	}
 }
 
-func (t *Tag) CreateTag(tag *models.Tag) error {
+func (t *Tag) CreateTag(tag *models.Tag) (*models.Tag, error) {
 	const query = `
 INSERT INTO tags (tag) VALUES (?);
 `
 
 	stmt, err := t.DB.Prepare(query)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	result, err := stmt.Exec(tag.Tag)
 	err = helpers.CheckDBExecError(result, err)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	tagID, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	tag.ID = int(tagID)
+
+	return tag, nil
 }
 
 func (t *Tag) GetTag(tagID int) (*models.Tag, error) {

@@ -69,7 +69,7 @@ func SignUp(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) fu
 			HashedPassword: hashedPassword,
 			Icon:           assets.UserIcon, // TODO: replace with image url on S3
 		}
-		err = data.Users().CreateUser(user)
+		_, err = data.Users().CreateUser(user)
 		if err != nil {
 			logs.Error("Request: %s, creating user: %v", requestSummary(r), err)
 			InternalServerError(w, r)
