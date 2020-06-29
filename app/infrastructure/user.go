@@ -20,23 +20,30 @@ func NewUserRepository(db *sql.DB) repository.UserRepository {
 	}
 }
 
-func (u *User) CreateUser(user *models.User) error {
+func (u *User) CreateUser(user *models.User) (*models.User, error) {
 	const query = `
     INSERT INTO users (name, email, password, icon) VALUES (?, ?, ?, ?);
     `
 
 	stmt, err := u.DB.Prepare(query)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	result, err := stmt.Exec(user.Name, user.Email, user.HashedPassword, user.Icon)
 	err = helpers.CheckDBExecError(result, err)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	id, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	user.ID = int(id)
+
+	return user, nil
 }
 
 func (u *User) UpdateUser(user *models.User) error {

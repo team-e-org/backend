@@ -55,7 +55,7 @@ func TestCreateUser(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(0, 1))
 
 	users := NewUserRepository(sqlDB)
-	err := users.CreateUser(user)
+	_, err := users.CreateUser(user)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
 	}
@@ -82,7 +82,7 @@ func TestCreateUserError(t *testing.T) {
 		WillReturnError(fmt.Errorf("some error"))
 
 	users := NewUserRepository(sqlDB)
-	err := users.CreateUser(user)
+	_, err := users.CreateUser(user)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
 	}
