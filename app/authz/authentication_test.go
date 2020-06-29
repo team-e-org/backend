@@ -5,6 +5,9 @@ import (
 	"app/models"
 	"reflect"
 	"testing"
+
+	"github.com/alicebob/miniredis"
+	"github.com/go-redis/redis"
 )
 
 func TestAuthLayer_AuthenticateUser(t *testing.T) {
@@ -101,5 +104,21 @@ func TestAuthLayer_GetTokenData(t *testing.T) {
 	tokenData, _ := al.GetTokenData(token)
 	if !reflect.DeepEqual(tokenData.UserData, user) {
 		t.Error("different token data")
+	}
+}
+
+func TestNewAuthLayer(t *testing.T) {
+	data := db.NewRepositoryMock()
+	mr, err := miniredis.Run()
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+	rdb := redis.NewClient(&redis.Options{
+		Addr: mr.Addr(),
+	})
+	al := NewAuthLayer(data, rdb)
+	_, ok := al.(AuthLayerInterface)
+	if !ok {
+		t.Fatalf("Invalid AuthLayer returned")
 	}
 }
