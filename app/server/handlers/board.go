@@ -35,7 +35,16 @@ func CreateBoard(data db.DataStorageInterface, authLayer authz.AuthLayerInterfac
 			return
 		}
 
-		storedBoard, err := usecase.CreateBoard(data, requestBoard, userID)
+		if userID != requestBoard.UserID {
+			err := fmt.Errorf("UserIDs do not match error")
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
+			err = helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		board := view.NewBoardModel(requestBoard)
+		storedBoard, err := usecase.CreateBoard(data, board)
 		if err != nil {
 			logs.Error("Request: %s, %v", requestSummary(r), err)
 			ResponseError(w, r, err)

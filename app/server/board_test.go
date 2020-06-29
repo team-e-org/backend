@@ -28,14 +28,14 @@ func TestCreateBoard(t *testing.T) {
 		{
 			"success",
 			201,
-			`{"name": "new board"}`,
+			`{"userId": 1, "name": "new board"}`,
 			dbdata.BaseUser,
 			dbdata.BaseUserPassword,
 		},
 		{
 			"success with more params",
 			201,
-			`{"name": "new board", "description": "test description", "isPrivate": true}`,
+			`{"userId": 1, "name": "new board", "description": "test description", "isPrivate": true}`,
 			dbdata.BaseUser,
 			dbdata.BaseUserPassword,
 		},

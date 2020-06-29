@@ -10,6 +10,7 @@ import (
 	"app/usecase"
 	"app/view"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -275,13 +276,30 @@ func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 			return
 		}
 
+		if string(pinID) != r.FormValue("id") {
+			err := fmt.Errorf("PinIDs do not match error")
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
+			err = helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		if string(userID) != r.FormValue("userId") {
+			err := fmt.Errorf("UserIDs do not match error")
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
+			err = helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
 		pin := &models.Pin{
+			ID:          pinID,
 			Title:       r.FormValue("title"),
 			Description: ptr.NewString(r.FormValue("description")),
 			URL:         ptr.NewString(r.FormValue("url")),
 		}
 
-		pin, err = usecase.UpdatePin(data, pin, pinID, userID)
+		pin, err = usecase.UpdatePin(data, pin, userID)
 
 		response := view.NewPin(pin)
 		bytes, err := json.Marshal(response)

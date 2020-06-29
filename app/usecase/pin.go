@@ -65,10 +65,11 @@ func CreatePin(data db.DataStorageInterface, pin *models.Pin, boardID int) (*mod
 	return pin, nil
 }
 
-func UpdatePin(data db.DataStorageInterface, newPin *models.Pin, pinID int, userID int) (*models.Pin, helpers.AppError) {
-	pin, err := data.Pins().GetPin(pinID)
+func UpdatePin(data db.DataStorageInterface, newPin *models.Pin, userID int) (*models.Pin, helpers.AppError) {
+
+	pin, err := data.Pins().GetPin(newPin.ID)
 	if err == sql.ErrNoRows {
-		logs.Error("Pin not found in database: %v", pinID)
+		logs.Error("Pin not found in database: %v", newPin.ID)
 		err := helpers.NewNotFound(err)
 		return nil, err
 	}

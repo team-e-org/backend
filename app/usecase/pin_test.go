@@ -79,6 +79,7 @@ func TestCreatePin(t *testing.T) {
 }
 
 func TestUpdatePin(t *testing.T) {
+	userID := 0
 	boardID := 0
 	data := db.NewRepositoryMock()
 	pins := createPins(t)
@@ -89,25 +90,48 @@ func TestUpdatePin(t *testing.T) {
 		Description: ptr.NewString("test description updated"),
 		URL:         ptr.NewString("test url updated"),
 	}
-	err := data.Pins().UpdatePin(newPin)
-	if err != nil {
-		t.Fatalf("An error occurred: %v", err)
-	}
-	pin, err := data.Pins().GetPin(0)
+	pin, err := UpdatePin(data, newPin, userID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}
 	if pin.ID != newPin.ID {
-		t.Fatalf("PinID does not match error")
+		t.Fatalf("IDs do not match error")
 	}
 	if pin.Title != newPin.Title {
-		t.Fatalf("Pin title does not match error")
+		t.Fatalf("Titles do not match error")
 	}
-	if *pin.Description != *newPin.Description {
-		t.Fatalf("Pin description does not match error")
+	if pin.Description != newPin.Description {
+		t.Fatalf("Descriptions do not match error")
 	}
-	if *pin.URL != *newPin.URL {
-		t.Fatalf("Pin URL does not match error")
+	if pin.URL != newPin.URL {
+		t.Fatalf("URLs do not match error")
+	}
+}
+
+func TestUpdatePinError(t *testing.T) {
+	boardID := 0
+	data := db.NewRepositoryMock()
+	pin := &models.Pin{
+		ID:          0,
+		UserID:      ptr.NewInt(0),
+		Title:       "test title",
+		Description: ptr.NewString("test description"),
+		URL:         ptr.NewString("test url"),
+	}
+	_, err := UpdatePin(data, pin, 0)
+	if err == nil {
+		t.Fatalf("An error should occur")
+	}
+	insertPins(t, data, []*models.Pin{pin}, boardID)
+	newPin := &models.Pin{
+		ID:          0,
+		Title:       "test title",
+		Description: ptr.NewString("test description updated"),
+		URL:         ptr.NewString("test url updated"),
+	}
+	_, err = UpdatePin(data, newPin, 1)
+	if err == nil {
+		t.Fatalf("An error should occur")
 	}
 }
 

@@ -2,6 +2,7 @@ package goldenfiles
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"testing"
@@ -26,6 +27,7 @@ func readGoldenFile(t *testing.T) []byte {
 	if err != nil {
 		t.Fatalf("failed reading .golden: %s", err)
 	}
+	fmt.Printf("data: %+v\n", data)
 
 	if len(data) == 0 {
 		return nil //this is to simplify comparison with *bytes.Buffer in ResponseRecorder
