@@ -6,6 +6,7 @@ import (
 	"app/logs"
 	"app/models"
 	"database/sql"
+	"fmt"
 )
 
 func GetPinsByBoardID(data db.DataStorageInterface, userID int, boardID int, page int) ([]*models.Pin, helpers.AppError) {
@@ -60,6 +61,34 @@ func CreatePin(data db.DataStorageInterface, pin *models.Pin, boardID int) (*mod
 		err := helpers.NewInternalServerError(err)
 		return nil, err
 	}
+
+	return pin, nil
+}
+
+func UpdatePin(data db.DataStorageInterface, newPin *models.Pin, pinID int, userID int) (*models.Pin, helpers.AppError) {
+	pin, err := data.Pins().GetPin(pinID)
+	if err == sql.ErrNoRows {
+		logs.Error("Pin not found in database: %v", pinID)
+		err := helpers.NewNotFound(err)
+		return nil, err
+	}
+	if err != nil {
+		logs.Error("An error occurred while getting pin from database: %v", err)
+		err := helpers.NewInternalServerError(err)
+		return nil, err
+	}
+
+	if *pin.UserID != userID {
+		logs.Error("Not user's pin error")
+		err := helpers.NewUnauthorized(fmt.Errorf("Not user's pin error"))
+		return nil, err
+	}
+
+	pin.Title = newPin.Title
+	pin.Description = newPin.Description
+	pin.URL = newPin.URL
+
+	err = data.Pins().UpdatePin(pin)
 
 	return pin, nil
 }

@@ -243,3 +243,59 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 		}
 	}
 }
+
+func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logRequest(r)
+
+		userID, err := getUserIDIfAvailable(r, authLayer)
+		if err != nil {
+			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
+			err := helpers.NewUnauthorized(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		maxSize := int64(1024000)
+		err = r.ParseMultipartForm(maxSize)
+		if err != nil {
+			logs.Error("Request: %s, parsing multipart: %v", requestSummary(r), err)
+			logs.Error("Image too large. Max Size: %v", maxSize)
+			err := helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		vars := mux.Vars(r)
+		pinID, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			logs.Error("Request: %s, parse path parameter board id: %v", requestSummary(r), err)
+			err := helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		pin := &models.Pin{
+			Title:       r.FormValue("title"),
+			Description: ptr.NewString(r.FormValue("description")),
+			URL:         ptr.NewString(r.FormValue("url")),
+		}
+
+		pin, err = usecase.UpdatePin(data, pin, pinID, userID)
+
+		response := view.NewPin(pin)
+		bytes, err := json.Marshal(response)
+		if err != nil {
+			logs.Error("Request: %s, serializing pin response: %v", requestSummary(r), err)
+			err := helpers.NewInternalServerError(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		w.Header().Set(contentType, jsonContent)
+		w.WriteHeader(http.StatusCreated)
+		if _, err = w.Write(bytes); err != nil {
+			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
+		}
+	}
+}

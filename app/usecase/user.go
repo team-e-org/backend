@@ -26,6 +26,16 @@ func UserBoards(data db.DataStorageInterface, authLayer authz.AuthLayerInterface
 	return boards, nil
 }
 
+func UpdateUser(data db.DataStorageInterface, user *models.User) (*models.User, error) {
+
+	if err := data.Users().UpdateUser(user); err != nil {
+		logs.Error("An error occurred: %v", err)
+		return nil, helpers.NewInternalServerError(err)
+	}
+
+	return user, nil
+}
+
 func removePrivateBoards(boards []*models.Board, userID int) []*models.Board {
 	res := make([]*models.Board, 0)
 	for _, b := range boards {

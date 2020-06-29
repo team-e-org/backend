@@ -3,8 +3,11 @@ package usecase
 import (
 	"app/authz"
 	"app/db"
+	"app/helpers"
 	"app/models"
 	"app/ptr"
+	"fmt"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -118,5 +121,88 @@ func TestRemovePrivateBoards(t *testing.T) {
 		if b.UserID != userID && b.IsPrivate {
 			t.Fatalf("Other people's private boards are gotten.")
 		}
+	}
+}
+
+func TestUpdateUser(t *testing.T) {
+	data := db.NewRepositoryMock()
+	password := "password"
+	hashedPassword, err := helpers.HashPassword(password)
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+	now := time.Now()
+	user := &models.User{
+		ID:             1,
+		Name:           "test user",
+		Email:          "test@test.com",
+		Icon:           "test icon",
+		HashedPassword: hashedPassword,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+	err = data.Users().CreateUser(user)
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+
+	user2 := &models.User{
+		ID:             1,
+		Name:           "test user2",
+		Email:          "test2@test.com",
+		Icon:           "test icon2",
+		HashedPassword: hashedPassword,
+	}
+	user3, err := UpdateUser(data, user2)
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+	user, err = data.Users().GetUser(1)
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+	if !reflect.DeepEqual(user, user3) {
+		t.Fatalf("User is not updated")
+	}
+}
+
+func TestUpdateUserError(t *testing.T) {
+	password := "password"
+	hashedPassword, err := helpers.HashPassword(password)
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+
+	now := time.Now()
+	data := db.NewRepositoryMock()
+	user := &models.User{
+		ID:             1,
+		Name:           "test user",
+		Email:          "test@test.com",
+		Icon:           "test icon",
+		HashedPassword: hashedPassword,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+	_, err = UpdateUser(data, user)
+	if err == nil {
+		t.Fatalf("An error should occur")
+	}
+
+	data.Users().CreateUser(user)
+	user2 := &models.User{
+		ID:             2,
+		Name:           "test user",
+		Email:          "test@test.com",
+		Icon:           "test icon",
+		HashedPassword: hashedPassword,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+	data.Users().CreateUser(user2)
+	fmt.Printf("user2: %v\n", *user2)
+	_, err = UpdateUser(data, user2)
+	if err == nil {
+		t.Fatalf("An error should occur")
 	}
 }
