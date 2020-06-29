@@ -21,15 +21,11 @@ func CreateBoard(data db.DataStorageInterface, board *models.Board) (*models.Boa
 
 func UpdateBoard(data db.DataStorageInterface, board *models.Board) (*models.Board, error) {
 
-	fmt.Printf("board: %v", board)
-
 	b, err := data.Boards().GetBoard(board.ID)
 	if err != nil {
 		logs.Error("An error occurred: %v", err)
 		return nil, helpers.NewBadRequest(err)
 	}
-
-	fmt.Printf("b: %v", b)
 
 	if b.UserID != board.UserID {
 		err := fmt.Errorf("UserIDs do not match error")
