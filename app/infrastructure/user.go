@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"app/helpers"
+	"app/logs"
 	"app/models"
 	"app/repository"
 	"database/sql"
@@ -43,6 +44,8 @@ func (u *User) CreateUser(user *models.User) (*models.User, error) {
 
 	user.ID = int(id)
 
+	logs.Info("User created, ID: %v", int(id))
+
 	return user, nil
 }
 
@@ -61,6 +64,8 @@ func (u *User) UpdateUser(user *models.User) error {
 		return err
 	}
 
+	logs.Info("User updated, id: %v", user.ID)
+
 	return nil
 }
 
@@ -78,6 +83,8 @@ func (u *User) DeleteUser(userID int) error {
 	if err = helpers.CheckDBExecError(result, err); err != nil {
 		return err
 	}
+
+	logs.Info("User deleted, id: %v", userID)
 
 	return nil
 }
@@ -108,6 +115,8 @@ func (u *User) GetUser(userID int) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	logs.Info("User got, id: %v", userID)
 
 	return user, nil
 }
@@ -142,6 +151,8 @@ WHERE u.email = ?;
 	if err != nil {
 		return nil, err
 	}
+
+	logs.Info("User got, email: %v", email)
 
 	return user, nil
 }

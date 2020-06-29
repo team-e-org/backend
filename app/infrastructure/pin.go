@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"app/helpers"
+	"app/logs"
 	"app/models"
 	"app/repository"
 	"database/sql"
@@ -62,6 +63,8 @@ INSERT INTO boards_pins (board_id, pin_id) VALUES (?, ?);
 		return nil, helpers.TryRollback(tx, err)
 	}
 
+	logs.Info("New pin created, id: %v", int(pinID))
+
 	return pin, nil
 }
 
@@ -79,6 +82,8 @@ UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private =
 	if err := helpers.CheckDBExecError(result, err); err != nil {
 		return err
 	}
+
+	logs.Info("Pin updated, id: %v", pin.ID)
 
 	return nil
 }
@@ -131,6 +136,8 @@ DELETE FROM boards_pins WHERE pin_id = ?;
 		return helpers.TryRollback(tx, err)
 	}
 
+	logs.Info("Pin deleted, id: %v", pinID)
+
 	return nil
 }
 
@@ -175,6 +182,8 @@ WHERE
 	if err != nil {
 		return nil, err
 	}
+
+	logs.Info("Pin got, id: %v", pinID)
 
 	return pin, nil
 }
@@ -228,6 +237,9 @@ LIMIT ? OFFSET ?;
 		}
 		pins = append(pins, pin)
 	}
+
+	logs.Info("Pins got, page: %v", page)
+
 	return pins, nil
 }
 
@@ -288,6 +300,8 @@ LIMIT ? OFFSET ?;
 		return nil, err
 	}
 
+	logs.Info("Pins got, boardID: %v, page: %v", boardID, page)
+
 	return pins, nil
 }
 
@@ -343,6 +357,8 @@ WHERE
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
+
+	logs.Info("Pins got, userID: %v", userID)
 
 	return pins, nil
 }

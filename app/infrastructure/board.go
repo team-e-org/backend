@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"app/helpers"
+	"app/logs"
 	"app/models"
 	"app/repository"
 	"database/sql"
@@ -43,6 +44,8 @@ INSERT INTO boards (user_id, name, description, is_private) VALUES (?, ?, ?, ?)
 	}
 	board.ID = int(id)
 
+	logs.Info("New board inserted into %v", int(id))
+
 	return board, nil
 }
 
@@ -61,6 +64,8 @@ UPDATE boards SET name = ?, description = ?, is_private = ? WHERE id = ?;
 		return err
 	}
 
+	logs.Info("Board updated, id: %v", board.ID)
+
 	return nil
 }
 
@@ -78,6 +83,8 @@ DELETE FROM boards WHERE id = ?;
 	if err = helpers.CheckDBExecError(result, err); err != nil {
 		return err
 	}
+
+	logs.Info("Board deleted, id: %v", boardID)
 
 	return nil
 }
@@ -109,6 +116,8 @@ SELECT b.id, b.user_id, b.name, b.description, b.is_private, b.is_archive, b.cre
 	if err != nil {
 		return nil, err
 	}
+
+	logs.Info("Board got, id: %v", boardID)
 
 	return board, nil
 }
@@ -152,6 +161,8 @@ SELECT b.id, b.user_id, b.name, b.description, b.is_private, b.is_archive, b.cre
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
+
+	logs.Info("Board got, userID: %v", userID)
 
 	return boards, nil
 }

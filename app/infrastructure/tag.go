@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"app/helpers"
+	"app/logs"
 	"app/models"
 	"app/repository"
 	"database/sql"
@@ -40,6 +41,8 @@ INSERT INTO tags (tag) VALUES (?);
 
 	tag.ID = int(tagID)
 
+	logs.Info("Tag created, ID: %v", int(tagID))
+
 	return tag, nil
 }
 
@@ -67,6 +70,8 @@ SELECT t.id, t.tag, t.created_at, t.updated_at FROM tags t WHERE t.id = ?;
 		return nil, err
 	}
 
+	logs.Info("Tag got, id: %v", tagID)
+
 	return tag, nil
 }
 
@@ -85,6 +90,8 @@ INSERT INTO pins_tags (pin_id, tag_id) VALUES (?, ?);
 	if err != nil {
 		return err
 	}
+
+	logs.Info("Tag attached to pin, tagID: %v, pinID: %v", tagID, pinID)
 
 	return nil
 }
@@ -124,6 +131,8 @@ SELECT t.id, t.tag, t.created_at, t.updated_at FROM tags t JOIN pins_tags pt JOI
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
+
+	logs.Info("Tags got, pinID: %v", pinID)
 
 	return tags, nil
 }
