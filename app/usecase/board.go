@@ -24,3 +24,13 @@ func CreateBoard(data db.DataStorageInterface, requestBoard *view.Board, userID 
 
 	return board, nil
 }
+
+func UpdateBoard(data db.DataStorageInterface, board *models.Board) (*models.Board, error) {
+
+	if err := data.Boards().UpdateBoard(board); err != nil {
+		logs.Error("An error occurred: %v", err)
+		return nil, helpers.NewInternalServerError(err)
+	}
+
+	return board, nil
+}

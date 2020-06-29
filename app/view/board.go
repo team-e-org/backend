@@ -33,3 +33,16 @@ func NewBoards(boards []*models.Board) []*Board {
 
 	return bs
 }
+
+func NewBoardModel(board *Board) *models.Board {
+	b := &models.Board{
+		ID:          board.ID,
+		UserID:      board.UserID,
+		Name:        board.Name,
+		Description: &board.Description,
+		IsPrivate:   board.IsPrivate,
+		IsArchive:   board.IsArchive,
+	}
+
+	return b
+}
