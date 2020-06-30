@@ -11,8 +11,12 @@ import (
 	"app/view"
 	"encoding/json"
 	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/lambda"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -228,13 +232,26 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 
 		pin, err = usecase.CreatePin(data, pin, boardID)
 
-		response := view.NewPin(pin)
-		bytes, err := json.Marshal(response)
+		viewPin := view.NewPin(pin)
+		bytes, err := json.Marshal(viewPin)
 		if err != nil {
 			logs.Error("Request: %s, serializing pin response: %v", requestSummary(r), err)
 			err := helpers.NewInternalServerError(err)
 			ResponseError(w, r, err)
 			return
+		}
+
+		// tags=dog+cat+person
+		var tags []string
+		if r.FormValue("tags") != "" {
+			tags = strings.Split(r.FormValue("tags"), "+")
+		}
+
+		if len(tags) > 0 {
+			err = invokeAttachTagsLambda(viewPin, tags)
+			if err != nil {
+				logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
+			}
 		}
 
 		w.Header().Set(contentType, jsonContent)
@@ -243,6 +260,32 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
 		}
 	}
+}
+
+func invokeAttachTagsLambda(pin *view.Pin, tags []string) error {
+	svc := lambda.New(session.New(), aws.NewConfig().WithRegion("ap-northeast-1"))
+
+	lambdaPayload := struct {
+		pin  *view.Pin
+		tags []string
+	}{
+		pin,
+		tags,
+	}
+
+	lambdaPayloadBytes, err := json.Marshal(lambdaPayload)
+	if err != nil {
+		return err
+	}
+
+	input := &lambda.InvokeInput{
+		FunctionName:   aws.String("arn:aws:lambda:ap-northeast-1:444207867088:function:attachTag"),
+		Payload:        lambdaPayloadBytes,
+		InvocationType: aws.String("Event"),
+	}
+
+	_, err = svc.Invoke(input)
+	return err
 }
 
 func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
