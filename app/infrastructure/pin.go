@@ -7,17 +7,21 @@ import (
 	"app/repository"
 	"database/sql"
 	"fmt"
+
+	"github.com/guregu/dynamo"
 )
 
 type Pin struct {
-	DB    *sql.DB
-	S3URL string
+	DB     *sql.DB
+	S3URL  string
+	Dynamo *dynamo.DB
 }
 
-func NewPinRepository(db *sql.DB, s3URL string) repository.PinRepository {
+func NewPinRepository(db *sql.DB, s3URL string, dynamo *dynamo.DB) repository.PinRepository {
 	return &Pin{
-		DB:    db,
-		S3URL: s3URL,
+		DB:     db,
+		S3URL:  s3URL,
+		Dynamo: dynamo,
 	}
 }
 
@@ -369,6 +373,17 @@ WHERE
 	}
 
 	logs.Info("Pins got, userID: %v", userID)
+
+	return pins, nil
+}
+
+func (p *Pin) GetHomePins(userID int) ([]*models.Pin, error) {
+	table := p.Dynamo.Table("home-pins")
+	pins := []*models.Pin{}
+	err := table.Get("user_id", userID).All(&pins)
+	if err != nil {
+		return nil, err
+	}
 
 	return pins, nil
 }

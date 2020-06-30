@@ -90,6 +90,10 @@ func (m *PinMock) GetPins(page int) ([]*models.Pin, error) {
 	return pins, nil
 }
 
+func (*PinMock) GetHomePins(userID int) ([]*models.Pin, error) {
+	return nil, nil
+}
+
 func noPinError() error {
 	return sql.ErrNoRows
 }
