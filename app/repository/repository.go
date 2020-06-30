@@ -2,6 +2,7 @@ package repository
 
 import (
 	"app/models"
+	"context"
 	"mime/multipart"
 )
 
@@ -44,10 +45,11 @@ type BoardPinRepository interface {
 }
 
 type FileRepository interface {
-	UploadImage(file multipart.File, fileHeader *multipart.FileHeader, userID int) (url string, err error)
-	GetBaseURL() string
+	UploadImage(file multipart.File, fileName string, contentType string, userID int) error
+	GetURL() string
+	GetPinFolder() string
 }
 
 type LambdaRepository interface {
-	AttachTags(pin *models.Pin, tags []string) error
+	AttachTagsWithContext(ctx context.Context, pin *models.Pin, tags []string) error
 }

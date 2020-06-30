@@ -5,7 +5,9 @@ import (
 	"app/models"
 	"app/repository"
 	"app/view"
+	"context"
 	"encoding/json"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/lambda"
@@ -23,7 +25,7 @@ func NewAWSLambda(c config.Lambda) repository.LambdaRepository {
 	}
 }
 
-func (l *AWSLambda) AttachTags(pin *models.Pin, tags []string) error {
+func (l *AWSLambda) AttachTagsWithContext(ctx context.Context, pin *models.Pin, tags []string) error {
 	lambdaPayload := view.AttachTagsLambdaPayload{
 		Pin:  view.NewLambdaPin(pin),
 		Tags: tags,
@@ -40,6 +42,6 @@ func (l *AWSLambda) AttachTags(pin *models.Pin, tags []string) error {
 		InvocationType: aws.String(l.Config.InvocationType),
 	}
 
-	_, err = l.svc.Invoke(input)
+	_, err = l.svc.InvokeWithContext(ctx, input)
 	return err
 }

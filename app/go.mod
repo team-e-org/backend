@@ -17,7 +17,9 @@ require (
 	github.com/guregu/dynamo v1.8.0
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/satori/go.uuid v1.2.0
+	github.com/satori/uuid v1.2.0
 	github.com/stretchr/testify v1.5.1
 	github.com/yuin/gopher-lua v0.0.0-20200603152657-dc2b0ca8b37e // indirect
 	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
+	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208
 )
