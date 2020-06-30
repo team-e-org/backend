@@ -13,15 +13,15 @@ import (
 
 type Pin struct {
 	DB     *sql.DB
-	S3URL  string
 	Dynamo *dynamo.DB
+	S3URL  string
 }
 
-func NewPinRepository(db *sql.DB, s3URL string, dynamo *dynamo.DB) repository.PinRepository {
+func NewPinRepository(db *sql.DB, dynamo *dynamo.DB, s3URL string) repository.PinRepository {
 	return &Pin{
 		DB:     db,
-		S3URL:  s3URL,
 		Dynamo: dynamo,
+		S3URL:  s3URL,
 	}
 }
 

@@ -39,10 +39,10 @@ func (d *DataStorage) Tags() repository.TagRepository            { return d.tags
 func (d *DataStorage) BoardsPins() repository.BoardPinRepository { return d.boardsPins }
 func (d *DataStorage) AWSS3() repository.FileRepository          { return d.awss3 }
 
-func NewDataStorage(db *sql.DB, s3 S3, dynamo *dynamo.DB) DataStorageInterface {
+func NewDataStorage(db *sql.DB, dynamo *dynamo.DB, s3 S3) DataStorageInterface {
 	users := infrastructure.NewUserRepository(db)
 	boards := infrastructure.NewBoardRepository(db)
-	pins := infrastructure.NewPinRepository(db, s3.GetURL(), dynamo)
+	pins := infrastructure.NewPinRepository(db, dynamo, s3.GetURL())
 	tags := infrastructure.NewTagRepository(db)
 	boardsPins := infrastructure.NewBoardPinRepository(db)
 	return &DataStorage{

@@ -37,7 +37,7 @@ func main() {
 
 	dynamo := db.ConnectToDynamo(c.AWS.Dynamo)
 
-	if err = server.Start(c, sqlDB, redis, s3, dynamo); err != nil {
+	if err = server.Start(c, sqlDB, redis, dynamo, s3); err != nil {
 		logs.Error("Failed to start server: %s", err)
 		panic(err)
 	}

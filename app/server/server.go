@@ -23,9 +23,9 @@ func init() {
 	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
 }
 
-func Start(config *config.Config, dbConn *sql.DB, redis *redis.Client, s3 S3, dynamo *dynamo.DB) error {
+func Start(config *config.Config, dbConn *sql.DB, redis *redis.Client, dynamo *dynamo.DB, s3 S3) error {
 	router := mux.NewRouter()
-	data := db.NewDataStorage(dbConn, s3, dynamo)
+	data := db.NewDataStorage(dbConn, dynamo, s3)
 	authLayer := authz.NewAuthLayer(data, redis)
 	attachHandlers(router, data, authLayer)
 	attachReqAuth(router, data, authLayer)
