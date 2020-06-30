@@ -10,14 +10,14 @@ import (
 )
 
 type Pin struct {
-	DB    *sql.DB
-	S3URL string
+	DB      *sql.DB
+	BaseURL string
 }
 
-func NewPinRepository(db *sql.DB, s3URL string) repository.PinRepository {
+func NewPinRepository(db *sql.DB, baseUrl string) repository.PinRepository {
 	return &Pin{
-		DB:    db,
-		S3URL: s3URL,
+		DB:      db,
+		BaseURL: baseUrl,
 	}
 }
 
@@ -68,7 +68,7 @@ INSERT INTO boards_pins (board_id, pin_id) VALUES (?, ?);
 
 	logs.Info("New pin created, id: %v", int(pinID))
 
-	pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+	pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 
 	return pin, nil
 }
@@ -90,7 +90,7 @@ UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private =
 
 	logs.Info("Pin updated, id: %v", pin.ID)
 
-	pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+	pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 
 	return nil
 }
@@ -192,7 +192,7 @@ WHERE
 
 	logs.Info("Pin got, id: %v", pinID)
 
-	pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+	pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 
 	return pin, nil
 }
@@ -244,7 +244,7 @@ LIMIT ? OFFSET ?;
 		if err != nil {
 			return nil, err
 		}
-		pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+		pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 		pins = append(pins, pin)
 	}
 

@@ -39,7 +39,7 @@ func (a *AWSS3Mock) UploadImage(file multipart.File, fileHeader *multipart.FileH
 	return "", nil
 }
 
-func (a *AWSS3Mock) GetURL() string {
+func (a *AWSS3Mock) GetBaseURL() string {
 	return ""
 }
 
@@ -82,6 +82,6 @@ func (a *AWSS3) UploadImage(file multipart.File, fileHeader *multipart.FileHeade
 	return fileName, nil
 }
 
-func (a *AWSS3) GetURL() string {
-	return a.Config.URL
+func (a *AWSS3) GetBaseURL() string {
+	return a.Config.BaseURL
 }

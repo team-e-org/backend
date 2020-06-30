@@ -40,7 +40,7 @@ func (d *DataStorage) AWSS3() repository.FileRepository          { return d.awss
 func NewDataStorage(db *sql.DB, s3 S3) DataStorageInterface {
 	users := infrastructure.NewUserRepository(db)
 	boards := infrastructure.NewBoardRepository(db)
-	pins := infrastructure.NewPinRepository(db, s3.GetURL())
+	pins := infrastructure.NewPinRepository(db, s3.GetBaseURL())
 	tags := infrastructure.NewTagRepository(db)
 	boardsPins := infrastructure.NewBoardPinRepository(db)
 	return &DataStorage{
