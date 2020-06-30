@@ -284,6 +284,9 @@ paths:
                   type: string
                 isPrivate:
                   type: string
+                tags:
+                  type: string
+                  description: tags separeted by single space
                 image:
                   type: string
                   format: binary
