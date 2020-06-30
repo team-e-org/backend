@@ -241,7 +241,7 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 
 		var tags []string
 		if r.FormValue("tags") != "" {
-			tags = strings.Split(r.FormValue("tags"), "+")
+			tags = strings.Split(r.FormValue("tags"), " ")
 		}
 
 		if len(tags) > 0 {
