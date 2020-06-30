@@ -384,7 +384,6 @@ func (p *Pin) GetHomePins(userID int) ([]*models.Pin, error) {
 	if err != nil {
 		return nil, err
 	}
-	logs.Info("Pins are got: %v, userID: ", pins, userID)
 
 	return pins, nil
 }
