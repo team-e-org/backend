@@ -7,13 +7,11 @@ import (
 	"app/logs"
 	"app/models"
 	"app/ptr"
+	"app/repository"
 	"app/usecase"
 	"app/view"
 	"encoding/json"
 	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/lambda"
 	"net/http"
 	"strconv"
 	"strings"
@@ -160,7 +158,7 @@ func ServePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) 
 	}
 }
 
-func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface, lambda repository.LambdaRepository) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -241,14 +239,13 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 			return
 		}
 
-		// tags=dog+cat+person
 		var tags []string
 		if r.FormValue("tags") != "" {
 			tags = strings.Split(r.FormValue("tags"), "+")
 		}
 
 		if len(tags) > 0 {
-			err = invokeAttachTagsLambda(viewPin, tags)
+			err = lambda.AttachTags(viewPin, tags)
 			if err != nil {
 				logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
 			}
@@ -260,32 +257,6 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
 		}
 	}
-}
-
-func invokeAttachTagsLambda(pin *view.Pin, tags []string) error {
-	svc := lambda.New(session.New(), aws.NewConfig().WithRegion("ap-northeast-1"))
-
-	lambdaPayload := struct {
-		pin  *view.Pin
-		tags []string
-	}{
-		pin,
-		tags,
-	}
-
-	lambdaPayloadBytes, err := json.Marshal(lambdaPayload)
-	if err != nil {
-		return err
-	}
-
-	input := &lambda.InvokeInput{
-		FunctionName:   aws.String("arn:aws:lambda:ap-northeast-1:444207867088:function:attachTag"),
-		Payload:        lambdaPayloadBytes,
-		InvocationType: aws.String("Event"),
-	}
-
-	_, err = svc.Invoke(input)
-	return err
 }
 
 func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {

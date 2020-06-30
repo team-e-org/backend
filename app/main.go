@@ -34,8 +34,9 @@ func main() {
 	}
 
 	s3 := infrastructure.NewAWSS3(c.AWS.S3)
+	lambda := infrastructure.NewAWSLambda(c.AWS.Lambda)
 
-	if err = server.Start(c, sqlDB, redis, s3); err != nil {
+	if err = server.Start(c, sqlDB, redis, s3, lambda); err != nil {
 		logs.Error("Failed to start server: %s", err)
 		panic(err)
 	}
