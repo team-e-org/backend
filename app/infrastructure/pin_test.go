@@ -36,7 +36,7 @@ func TestCreatePin(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	_, err := pins.CreatePin(pin, boardID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -73,7 +73,7 @@ func TestCreatePinError(t *testing.T) {
 		WillReturnError(fmt.Errorf("some error"))
 	mock.ExpectRollback()
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	_, err := pins.CreatePin(pin, boardID)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -102,7 +102,7 @@ func TestUpdatePin(t *testing.T) {
 		WithArgs(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate, pin.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	err := pins.UpdatePin(pin)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -131,7 +131,7 @@ func TestUpdatePinError(t *testing.T) {
 		WithArgs(pin.Title, pin.Description, pin.URL, pin.ImageURL, pin.IsPrivate, pin.ID).
 		WillReturnError(fmt.Errorf("some error"))
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	err := pins.UpdatePin(pin)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -158,7 +158,7 @@ func TestDeletePin(t *testing.T) {
 
 	mock.ExpectCommit()
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	err := pins.DeletePin(id)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -185,7 +185,7 @@ func TestDeletePinError(t *testing.T) {
 
 	mock.ExpectRollback()
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	err := pins.DeletePin(id)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -205,7 +205,7 @@ func TestGetPin(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"id", "user_id", "title", "description", "url", "image_url", "is_private", "created_at", "updated_at"}).
 			AddRow(1, 1, "test title", "test_description", "test url", "test image url", false, now, now))
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	_, err := pins.GetPin(id)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -224,7 +224,7 @@ func TestGetPinError(t *testing.T) {
 		WithArgs(id).
 		WillReturnError(fmt.Errorf("some error"))
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	_, err := pins.GetPin(id)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -246,7 +246,7 @@ func TestGetPinsByBoardID(t *testing.T) {
 			AddRow(1, 1, "test title", "test description", "test url", "test image url", false, now, now).
 			AddRow(2, 2, "test title2", "test description2", "test url2", "test image url2", false, now, now))
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	_, err := pins.GetPinsByBoardID(boardID, page)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -266,7 +266,7 @@ func TestGetPinsByBoardIDError(t *testing.T) {
 		WithArgs(boardID, 10, 0).
 		WillReturnError(fmt.Errorf("some error"))
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	_, err := pins.GetPinsByBoardID(boardID, page)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -286,7 +286,7 @@ func TestGetPins(t *testing.T) {
 			AddRow(1, 1, "test title", "test description", "test url", "test image url", now, now).
 			AddRow(1, 1, "test title2", "test description2", "test url2", "test image url2", now, now))
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	_, err := pins.GetPins(page)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -304,7 +304,7 @@ func TestGetPinsError(t *testing.T) {
 		WithArgs(10, 0).
 		WillReturnError(fmt.Errorf("some error"))
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	_, err := pins.GetPins(page)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -326,7 +326,7 @@ func TestGetPinsByUserID(t *testing.T) {
 			AddRow(1, 1, "test title", "test description", "test url", "test image url", false, now, now).
 			AddRow(2, 1, "test title2", "test description2", "test url2", "test image url2", false, now, now))
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	_, err := pins.GetPinsByUserID(userID)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
@@ -345,7 +345,7 @@ func TestGetPinsByUserIDError(t *testing.T) {
 		WithArgs(userID).
 		WillReturnError(fmt.Errorf("some error"))
 
-	pins := NewPinRepository(sqlDB, "")
+	pins := NewPinRepository(sqlDB, "", nil)
 	_, err := pins.GetPinsByUserID(userID)
 	if err == nil {
 		t.Fatalf("An error occurred: %v\n", err)
