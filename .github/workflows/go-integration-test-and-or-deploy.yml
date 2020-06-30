@@ -13,10 +13,6 @@ jobs:
       GOPATH: ${{ github.workspace }}
     runs-on: ubuntu-latest
     steps:
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.14.2
       - name: Checkout code
         uses: actions/checkout@v2
         with:
@@ -44,11 +40,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     steps:
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.14.2
-        if: contains(github.ref, 'master')
       - name: Checkout code
         uses: actions/checkout@v2
         with:
