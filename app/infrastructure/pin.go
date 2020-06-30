@@ -380,7 +380,8 @@ WHERE
 func (p *Pin) GetHomePins(userID int) ([]*models.Pin, error) {
 	table := p.Dynamo.Table("home-pins")
 	pins := []*models.Pin{}
-	err := table.Get("user_id", userID).All(&pins)
+	// TODO: sort by created_at after inmplementing it with epoch time
+	err := table.Get("user_id", userID).Order(false).All(&pins)
 	if err != nil {
 		return nil, err
 	}
