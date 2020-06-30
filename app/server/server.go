@@ -58,6 +58,7 @@ func attachReqAuth(mux *mux.Router, data db.DataStorageInterface, al authz.AuthL
 	mux.HandleFunc("/boards/{id}", handlers.UpdateBoard(data, al)).Methods(http.MethodPut)
 	mux.HandleFunc("/pins/{id}", handlers.UpdatePin(data, al)).Methods(http.MethodPut)
 	mux.HandleFunc("/users/{id}", handlers.UpdateUser(data, al)).Methods(http.MethodPut)
+	mux.HandleFunc("/home/pins", handlers.ServeHomePins(data, al)).Methods(http.MethodGet)
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {
