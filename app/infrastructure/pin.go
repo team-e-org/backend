@@ -68,6 +68,8 @@ INSERT INTO boards_pins (board_id, pin_id) VALUES (?, ?);
 
 	logs.Info("New pin created, id: %v", int(pinID))
 
+	pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+
 	return pin, nil
 }
 
@@ -87,6 +89,8 @@ UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private =
 	}
 
 	logs.Info("Pin updated, id: %v", pin.ID)
+
+	pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
 
 	return nil
 }
