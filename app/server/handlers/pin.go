@@ -245,6 +245,8 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 		}
 
 		if len(tags) > 0 {
+			// TODO go routineで呼ぶ
+			logs.Info("attaching tags")
 			err = lambda.AttachTags(viewPin, tags)
 			if err != nil {
 				logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)

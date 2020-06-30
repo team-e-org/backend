@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"app/config"
+	"app/logs"
 	"app/repository"
 	"app/view"
 	"encoding/json"
@@ -23,9 +24,10 @@ func NewAWSLambda(c config.Lambda) repository.LambdaRepository {
 }
 
 func (l *AWSLambda) AttachTags(pin *view.Pin, tags []string) error {
+	// TODO 型に切り出す
 	lambdaPayload := struct {
-		pin  *view.Pin
-		tags []string
+		Pin  *view.Pin `json:"pin"`
+		Tags []string `json:"tags"`
 	}{
 		pin, tags,
 	}
@@ -35,8 +37,10 @@ func (l *AWSLambda) AttachTags(pin *view.Pin, tags []string) error {
 		return err
 	}
 
+	logs.Info(string(lambdaPayloadBytes))
+
 	input := &lambda.InvokeInput{
-		FunctionName:   aws.String(l.Config.Region),
+		FunctionName:   aws.String(l.Config.FunctionARN),
 		Payload:        lambdaPayloadBytes,
 		InvocationType: aws.String(l.Config.InvocationType),
 	}
