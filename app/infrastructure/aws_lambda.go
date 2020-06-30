@@ -25,13 +25,9 @@ func NewAWSLambda(c config.Lambda) repository.LambdaRepository {
 }
 
 func (l *AWSLambda) AttachTags(pin *models.Pin, tags []string) error {
-	// TODO 型に切り出す
-	lambdaPayload := struct {
-		Pin  *view.AttachTagsLambdaPayloadPin `json:"pin"`
-		Tags []string                         `json:"tags"`
-	}{
-		view.NewLambdaPin(pin),
-		tags,
+	lambdaPayload := view.AttachtagsLambdaPayload{
+		Pin:  view.NewLambdaPin(pin),
+		Tags: tags,
 	}
 
 	lambdaPayloadBytes, err := json.Marshal(lambdaPayload)
