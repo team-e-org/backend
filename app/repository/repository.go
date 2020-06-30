@@ -46,3 +46,7 @@ type FileRepository interface {
 	UploadImage(file multipart.File, fileHeader *multipart.FileHeader, userID int) (url string, err error)
 	GetURL() string
 }
+
+type LambdaRepository interface {
+	AttachTags(pin *models.Pin, tags []string) error
+}

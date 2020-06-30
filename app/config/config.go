@@ -32,7 +32,8 @@ type RedisConfig struct {
 }
 
 type AWS struct {
-	S3 S3
+	S3     S3
+	Lambda Lambda
 }
 
 type S3 struct {
@@ -40,6 +41,12 @@ type S3 struct {
 	URL       string
 	Bucket    string
 	PinFolder string
+}
+
+type Lambda struct {
+	Region         string
+	FunctionARN    string
+	InvocationType string
 }
 
 func ReadDBConfig() (*DBConfig, error) {
@@ -83,6 +90,11 @@ func ReadAWSConfig() *AWS {
 			URL:       url,
 			Bucket:    bucket,
 			PinFolder: "pins",
+		},
+		Lambda{
+			Region:         "ap-northeast-1",
+			FunctionARN:    "arn:aws:lambda:ap-northeast-1:444207867088:function:attachTag",
+			InvocationType: "Event",
 		},
 	}
 
