@@ -82,12 +82,12 @@ func ReadRedisConfig() (*RedisConfig, error) {
 }
 
 func ReadAWSConfig() *AWS {
-	baseUrl := os.Getenv("CLOUDFRONT_URL")
+	baseURL := os.Getenv("CLOUDFRONT_URL")
 	bucket := os.Getenv("S3_BUCKET")
 	awsConfig := &AWS{
 		S3{
 			Region:    "ap-northeast-1",
-			BaseURL:   baseUrl,
+			BaseURL:   baseURL,
 			Bucket:    bucket,
 			PinFolder: "pins",
 		},

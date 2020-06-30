@@ -14,10 +14,10 @@ type Pin struct {
 	BaseURL string
 }
 
-func NewPinRepository(db *sql.DB, baseUrl string) repository.PinRepository {
+func NewPinRepository(db *sql.DB, baseURL string) repository.PinRepository {
 	return &Pin{
 		DB:      db,
-		BaseURL: baseUrl,
+		BaseURL: baseURL,
 	}
 }
 
