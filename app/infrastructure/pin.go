@@ -6,15 +6,18 @@ import (
 	"app/models"
 	"app/repository"
 	"database/sql"
+	"fmt"
 )
 
 type Pin struct {
-	DB *sql.DB
+	DB    *sql.DB
+	S3URL string
 }
 
-func NewPinRepository(db *sql.DB) repository.PinRepository {
+func NewPinRepository(db *sql.DB, s3URL string) repository.PinRepository {
 	return &Pin{
-		DB: db,
+		DB:    db,
+		S3URL: s3URL,
 	}
 }
 
@@ -185,6 +188,8 @@ WHERE
 
 	logs.Info("Pin got, id: %v", pinID)
 
+	pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+
 	return pin, nil
 }
 
@@ -235,6 +240,7 @@ LIMIT ? OFFSET ?;
 		if err != nil {
 			return nil, err
 		}
+		pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
 		pins = append(pins, pin)
 	}
 

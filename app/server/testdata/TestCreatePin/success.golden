@@ -1,1 +1,1 @@
-{"id":0,"userId":1,"title":"test title","description":"test description","url":"","imageUrl":"https://s3/dummy-s3-url","isPrivate":false}
+{"id":0,"userId":1,"title":"test title","description":"test description","url":"","imageUrl":"dummy-s3-url","isPrivate":false}

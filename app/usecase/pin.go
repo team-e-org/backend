@@ -22,6 +22,7 @@ func GetPinsByBoardID(data db.DataStorageInterface, userID int, boardID int, pag
 }
 
 func ServePin(data db.DataStorageInterface, pinID int, userID int) (*models.Pin, helpers.AppError) {
+	data.AWSS3()
 	pin, err := data.Pins().GetPin(pinID)
 	if err == sql.ErrNoRows {
 		logs.Error("Pin not found in database: %v", pinID)
