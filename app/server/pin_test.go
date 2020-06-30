@@ -4,6 +4,7 @@ import (
 	"app/authz"
 	"app/db"
 	"app/goldenfiles"
+	"app/mocks"
 	"app/models"
 	"app/ptr"
 	"app/testutils/dbdata"
@@ -157,7 +158,9 @@ func TestCreatePin(t *testing.T) {
 			al := authz.NewAuthLayerMock(data)
 			token, _ := al.AuthenticateUser(c.currentUser.Email, c.loginPassword)
 
-			attachReqAuth(router, data, al)
+			lambda := mocks.NewAWSLambda()
+
+			attachReqAuth(router, data, al, lambda)
 			recorder := httptest.NewRecorder()
 
 			requestBody, contentType := buildMulitpartRequest(t, c.filePath, c.fieldValues)

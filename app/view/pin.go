@@ -7,15 +7,13 @@ import (
 )
 
 type Pin struct {
-	ID          int        `json:"id"`
-	UserID      int        `json:"userId"`
-	Title       string     `json:"title,omitempty"`
-	Description string     `json:"description,omitempty"`
-	URL         *string    `json:"url,omitempty"`
-	ImageURL    string     `json:"imageUrl"`
-	IsPrivate   bool       `json:"isPrivate"`
-	CreatedAt   *time.Time `json:"createdAt"`
-	UpdatedAt   *time.Time `json:"updatedAt"`
+	ID          int     `json:"id"`
+	UserID      int     `json:"userId"`
+	Title       string  `json:"title,omitempty"`
+	Description string  `json:"description,omitempty"`
+	URL         *string `json:"url,omitempty"`
+	ImageURL    string  `json:"imageUrl"`
+	IsPrivate   bool    `json:"isPrivate"`
 }
 
 func NewPin(pin *models.Pin) *Pin {
@@ -27,8 +25,6 @@ func NewPin(pin *models.Pin) *Pin {
 		URL:         pin.URL,
 		ImageURL:    pin.ImageURL,
 		IsPrivate:   pin.IsPrivate,
-		CreatedAt:   &pin.CreatedAt,
-		UpdatedAt:   &pin.UpdatedAt,
 	}
 
 	return p
@@ -53,6 +49,34 @@ func NewPinModel(pin *Pin) *models.Pin {
 		URL:         pin.URL,
 		ImageURL:    pin.ImageURL,
 		IsPrivate:   pin.IsPrivate,
+	}
+
+	return p
+}
+
+type AttachTagsLambdaPayloadPin struct {
+	ID          int        `json:"id"`
+	UserID      int        `json:"userId"`
+	Title       string     `json:"title,omitempty"`
+	Description string     `json:"description,omitempty"`
+	URL         *string    `json:"url,omitempty"`
+	ImageURL    string     `json:"imageUrl"`
+	IsPrivate   bool       `json:"isPrivate"`
+	CreatedAt   *time.Time `json:"createdAt"`
+	UpdatedAt   *time.Time `json:"updatedAt"`
+}
+
+func NewLambdaPin(pin *models.Pin) *AttachTagsLambdaPayloadPin {
+	p := &AttachTagsLambdaPayloadPin{
+		ID:          pin.ID,
+		UserID:      *pin.UserID,
+		Title:       pin.Title,
+		Description: *pin.Description,
+		URL:         pin.URL,
+		ImageURL:    pin.ImageURL,
+		IsPrivate:   pin.IsPrivate,
+		CreatedAt:   &pin.CreatedAt,
+		UpdatedAt:   &pin.UpdatedAt,
 	}
 
 	return p

@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"app/config"
 	"app/logs"
+	"app/models"
 	"app/repository"
 	"app/view"
 	"encoding/json"
@@ -23,13 +24,14 @@ func NewAWSLambda(c config.Lambda) repository.LambdaRepository {
 	}
 }
 
-func (l *AWSLambda) AttachTags(pin *view.Pin, tags []string) error {
+func (l *AWSLambda) AttachTags(pin *models.Pin, tags []string) error {
 	// TODO 型に切り出す
 	lambdaPayload := struct {
-		Pin  *view.Pin `json:"pin"`
-		Tags []string `json:"tags"`
+		Pin  *view.AttachTagsLambdaPayloadPin `json:"pin"`
+		Tags []string                         `json:"tags"`
 	}{
-		pin, tags,
+		view.NewLambdaPin(pin),
+		tags,
 	}
 
 	lambdaPayloadBytes, err := json.Marshal(lambdaPayload)

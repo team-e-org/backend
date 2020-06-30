@@ -2,7 +2,6 @@ package repository
 
 import (
 	"app/models"
-	"app/view"
 	"mime/multipart"
 )
 
@@ -49,5 +48,5 @@ type FileRepository interface {
 }
 
 type LambdaRepository interface {
-	AttachTags(pin *view.Pin, tags []string) error
+	AttachTags(pin *models.Pin, tags []string) error
 }
