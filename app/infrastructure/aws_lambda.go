@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"app/config"
-	"app/logs"
 	"app/models"
 	"app/repository"
 	"app/view"
@@ -25,7 +24,7 @@ func NewAWSLambda(c config.Lambda) repository.LambdaRepository {
 }
 
 func (l *AWSLambda) AttachTags(pin *models.Pin, tags []string) error {
-	lambdaPayload := view.AttachtagsLambdaPayload{
+	lambdaPayload := view.AttachTagsLambdaPayload{
 		Pin:  view.NewLambdaPin(pin),
 		Tags: tags,
 	}
@@ -34,8 +33,6 @@ func (l *AWSLambda) AttachTags(pin *models.Pin, tags []string) error {
 	if err != nil {
 		return err
 	}
-
-	logs.Info(string(lambdaPayloadBytes))
 
 	input := &lambda.InvokeInput{
 		FunctionName:   aws.String(l.Config.FunctionARN),
