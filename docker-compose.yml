@@ -23,6 +23,7 @@ services:
       REDIS_PORT: 6379
       REDIS_HOST: redis
       S3_BUCKET: pinko-bucket-test
+      S3_URL: https://pinko-bucket-test.s3-ap-northeast-1.amazonaws.com
     command: /bin/ash /go/src/app/scripts/wait_for_mysql.sh db test_user password air -d
   db:
     build:

@@ -37,6 +37,7 @@ type AWS struct {
 
 type S3 struct {
 	Region    string
+	URL       string
 	Bucket    string
 	PinFolder string
 }
@@ -74,10 +75,12 @@ func ReadRedisConfig() (*RedisConfig, error) {
 }
 
 func ReadAWSConfig() *AWS {
+	url := os.Getenv("S3_URL")
 	bucket := os.Getenv("S3_BUCKET")
 	awsConfig := &AWS{
 		S3{
 			Region:    "ap-northeast-1",
+			URL:       url,
 			Bucket:    bucket,
 			PinFolder: "pins",
 		},
