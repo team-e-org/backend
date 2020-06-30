@@ -35,7 +35,9 @@ func main() {
 
 	s3 := infrastructure.NewAWSS3(c.AWS.S3)
 
-	if err = server.Start(c, sqlDB, redis, s3); err != nil {
+	dynamo := db.ConnectToDynamo(c.AWS.Dynamo)
+
+	if err = server.Start(c, sqlDB, redis, s3, dynamo); err != nil {
 		logs.Error("Failed to start server: %s", err)
 		panic(err)
 	}

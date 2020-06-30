@@ -32,7 +32,8 @@ type RedisConfig struct {
 }
 
 type AWS struct {
-	S3 S3
+	S3     S3
+	Dynamo Dynamo
 }
 
 type S3 struct {
@@ -40,6 +41,11 @@ type S3 struct {
 	URL       string
 	Bucket    string
 	PinFolder string
+}
+
+type Dynamo struct {
+	Region string
+	Table  string
 }
 
 func ReadDBConfig() (*DBConfig, error) {
@@ -83,6 +89,10 @@ func ReadAWSConfig() *AWS {
 			URL:       url,
 			Bucket:    bucket,
 			PinFolder: "pins",
+		},
+		Dynamo{
+			Region: "ap-northeast-1",
+			Table:  "home-pins",
 		},
 	}
 

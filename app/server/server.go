@@ -14,6 +14,7 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/gorilla/mux"
+	"github.com/guregu/dynamo"
 )
 
 type S3 repository.FileRepository
@@ -22,9 +23,9 @@ func init() {
 	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
 }
 
-func Start(config *config.Config, dbConn *sql.DB, redis *redis.Client, s3 S3) error {
+func Start(config *config.Config, dbConn *sql.DB, redis *redis.Client, s3 S3, dynamo *dynamo.DB) error {
 	router := mux.NewRouter()
-	data := db.NewDataStorage(dbConn, s3)
+	data := db.NewDataStorage(dbConn, s3, dynamo)
 	authLayer := authz.NewAuthLayer(data, redis)
 	attachHandlers(router, data, authLayer)
 	attachReqAuth(router, data, authLayer)
