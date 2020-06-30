@@ -74,11 +74,12 @@ func ReadRedisConfig() (*RedisConfig, error) {
 }
 
 func ReadAWSConfig() *AWS {
+	bucket := os.Getenv("S3_BUCKET")
 	awsConfig := &AWS{
 		S3{
-			"ap-northeast-1",
-			"pinko-bucket",
-			"pins/",
+			Region:    "ap-northeast-1",
+			Bucket:    bucket,
+			PinFolder: "pins",
 		},
 	}
 
