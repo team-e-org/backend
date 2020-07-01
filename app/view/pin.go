@@ -15,6 +15,16 @@ type Pin struct {
 	IsPrivate   bool    `json:"isPrivate"`
 }
 
+type DynamoPin struct {
+	ID          int    `dynamo:"pin_id"`
+	UserID      int    `dynamo:"post_user_id"`
+	Title       string `dynamo:"title,omitempty"`
+	Description string `dynamo:"description,omitempty"`
+	URL         string `dynamo:"url,omitempty"`
+	ImageURL    string `dynamo:"image_url"`
+	IsPrivate   bool   `dynamo:"is_private"`
+}
+
 func NewPin(pin *models.Pin) *Pin {
 	p := &Pin{
 		ID:          pin.ID,

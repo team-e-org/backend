@@ -5,6 +5,7 @@ import (
 	"app/logs"
 	"app/models"
 	"app/repository"
+	"app/view"
 	"database/sql"
 	"fmt"
 
@@ -379,11 +380,27 @@ WHERE
 
 func (p *Pin) GetHomePins(userID int) ([]*models.Pin, error) {
 	table := p.Dynamo.Table("home-pins")
-	pins := []*models.Pin{}
+	dynamoPins := []*view.DynamoPin{}
 	// TODO: sort by created_at after inmplementing it with epoch time
-	err := table.Get("user_id", userID).Order(false).All(&pins)
+	err := table.Get("user_id", userID).Order(false).All(&dynamoPins)
 	if err != nil {
 		return nil, err
+	}
+
+	pins := make([]*models.Pin, 0, len(dynamoPins))
+	for _, dp := range dynamoPins {
+		logs.Debug("dynamo pin :%v", dp.Title)
+		p := &models.Pin{
+			ID:          dp.ID,
+			UserID:      &dp.UserID,
+			Title:       dp.Title,
+			Description: &dp.Description,
+			URL:         &dp.URL,
+			ImageURL:    dp.ImageURL,
+			IsPrivate:   dp.IsPrivate,
+		}
+
+		pins = append(pins, p)
 	}
 
 	return pins, nil
