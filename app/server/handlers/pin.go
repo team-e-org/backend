@@ -10,18 +10,14 @@ import (
 	"app/repository"
 	"app/usecase"
 	"app/view"
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"path/filepath"
 	"strconv"
-	"strings"
-	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/satori/uuid"
-	"golang.org/x/sync/errgroup"
 )
 
 func ServePinsInBoard(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
@@ -248,11 +244,6 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 		}
 		defer file.Close()
 
-		eg, ctx := errgroup.WithContext(context.Background())
-		ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-		defer cancel()
-
-		pinFolder := data.AWSS3().GetPinFolder()
 		fileExt := filepath.Ext(fileHeader.Filename)
 
 		var contentType string
@@ -271,83 +262,43 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 			return
 		}
 
+		pinFolder := data.AWSS3().GetPinFolder()
 		fileName := fmt.Sprintf("%s/%d/%s%s", pinFolder, userID, uuid.NewV4().String(), fileExt)
 
-		pinCh := make(chan *models.Pin)
+		pin := &models.Pin{
+			UserID:      ptr.NewInt(userID),
+			Title:       r.FormValue("title"),
+			Description: ptr.NewString(r.FormValue("description")),
+			URL:         ptr.NewString(r.FormValue("url")),
+			IsPrivate:   b,
+			ImageURL:    fileName,
+		}
 
-		eg.Go(func() error {
-			i := 0
-			for {
-				select {
-				case <-ctx.Done():
-					return fmt.Errorf("Uploading file to S3 failed")
-				default:
-					if err := data.AWSS3().UploadImage(file, fileName, contentType, userID); err != nil {
-						i++
-						logs.Error("Uploading S3 failed, %d", i)
-						continue
-					}
-					return nil
-				}
-			}
-		})
-
-		eg.Go(func() error {
-			pin := &models.Pin{
-				UserID:      ptr.NewInt(userID),
-				Title:       r.FormValue("title"),
-				Description: ptr.NewString(r.FormValue("description")),
-				URL:         ptr.NewString(r.FormValue("url")),
-				IsPrivate:   b,
-				ImageURL:    fileName,
-			}
-
-			i := 0
-			for {
-				err := fmt.Errorf("Inserting pin column into DB failed")
-				select {
-				case <-ctx.Done():
-					return err
-				default:
-					pin, err := usecase.CreatePin(data, pin, boardID)
-					if err != nil {
-						i++
-						logs.Error("%v, %d", err, i)
-						continue
-					}
-					pinCh <- pin
-					return nil
-				}
-			}
-		})
-
-		if err := eg.Wait(); err != nil {
-			logs.Error("Request: %s, %v", requestSummary(r), err)
-			err := helpers.NewInternalServerError(err)
+		pin, err = usecase.CreatePin(data, pin, file, fileName, contentType, userID, boardID)
+		if err != nil {
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
 			ResponseError(w, r, err)
 			return
 		}
 
-		pin := <-pinCh
+		// ctx := context.Background()
+		// ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 
-		ctx = context.Background()
-		ctx, cancel = context.WithTimeout(ctx, 10*time.Second)
-		defer cancel()
+		// go func() {
+		// 	var tags []string
+		// 	if r.FormValue("tags") != "" {
+		// 		tags = strings.Split(r.FormValue("tags"), " ")
+		// 	}
 
-		go func() {
-			var tags []string
-			if r.FormValue("tags") != "" {
-				tags = strings.Split(r.FormValue("tags"), " ")
-			}
-
-			if len(tags) > 0 {
-				logs.Info("attaching tags, %+v to %+v", tags, pin)
-				err = lambda.AttachTagsWithContext(ctx, pin, tags)
-				if err != nil {
-					logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
-				}
-			}
-		}()
+		// 	if len(tags) > 0 {
+		// 		logs.Info("attaching tags, %+v to %+v", tags, pin)
+		// 		err = lambda.AttachTagsWithContext(ctx, pin, tags)
+		// 		if err != nil {
+		// 			logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
+		// 			cancel()
+		// 		}
+		// 	}
+		// }()
 
 		viewPin := view.NewPin(pin)
 		bytes, err := json.Marshal(viewPin)

@@ -15,6 +15,7 @@ require (
 	github.com/gomodule/redigo v1.8.2 // indirect
 	github.com/gorilla/mux v1.7.4
 	github.com/guregu/dynamo v1.8.0
+	github.com/labstack/gommon v0.3.0
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/satori/uuid v1.2.0
