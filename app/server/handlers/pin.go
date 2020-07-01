@@ -113,6 +113,41 @@ func ServePins(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 	}
 }
 
+func ServeHomePins(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logRequest(r)
+
+		userID, err := getUserIDIfAvailable(r, authLayer)
+		if err != nil {
+			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
+			err := helpers.NewUnauthorized(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		pins, err := data.Pins().GetHomePins(userID)
+		if err != nil {
+			logs.Error("Request: %s, getting home pins: %v", requestSummary(r), err)
+			err := helpers.NewInternalServerError(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		bytes, err := json.Marshal(view.NewPins(pins))
+		if err != nil {
+			logs.Error("Request: %s, serializing pins: %v", requestSummary(r), err)
+			err := helpers.NewInternalServerError(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		w.Header().Set(contentType, jsonContent)
+		if _, err = w.Write(bytes); err != nil {
+			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
+		}
+	}
+}
+
 func ServePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)

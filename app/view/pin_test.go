@@ -33,7 +33,7 @@ func TestPin(t *testing.T) {
 		t.Fatalf("Title does not match, model: %v, view: %v", p.Title, v.Title)
 	}
 
-	if *p.Description != v.Description {
+	if p.Description != v.Description {
 		t.Fatalf("Description does not match, model: %v, view: %v", p.Description, v.Description)
 	}
 
@@ -90,7 +90,7 @@ func TestNewPins(t *testing.T) {
 			t.Fatalf("Title does not match, model: %v, view: %v", p.Title, newPin.Title)
 		}
 
-		if *p.Description != newPin.Description {
+		if p.Description != newPin.Description {
 			t.Fatalf("Description does not match, model: %v, view: %v", p.Description, newPin.Description)
 		}
 

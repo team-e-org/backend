@@ -14,6 +14,7 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/gorilla/mux"
+	"github.com/guregu/dynamo"
 )
 
 type S3 repository.FileRepository
@@ -23,9 +24,9 @@ func init() {
 	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
 }
 
-func Start(config *config.Config, dbConn *sql.DB, redis *redis.Client, s3 S3, lambda Lambda) error {
+func Start(config *config.Config, dbConn *sql.DB, redis *redis.Client, dynamo *dynamo.DB, s3 S3, lambda Lambda) error {
 	router := mux.NewRouter()
-	data := db.NewDataStorage(dbConn, s3)
+	data := db.NewDataStorage(dbConn, dynamo, s3)
 	authLayer := authz.NewAuthLayer(data, redis)
 	attachHandlers(router, data, authLayer)
 	attachReqAuth(router, data, authLayer, lambda)
@@ -60,6 +61,7 @@ func attachReqAuth(mux *mux.Router, data db.DataStorageInterface, al authz.AuthL
 	mux.HandleFunc("/boards/{id}", handlers.UpdateBoard(data, al)).Methods(http.MethodPut)
 	mux.HandleFunc("/pins/{id}", handlers.UpdatePin(data, al)).Methods(http.MethodPut)
 	mux.HandleFunc("/users/{id}", handlers.UpdateUser(data, al)).Methods(http.MethodPut)
+	mux.HandleFunc("/home/pins", handlers.ServeHomePins(data, al)).Methods(http.MethodGet)
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {

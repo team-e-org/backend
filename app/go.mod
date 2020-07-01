@@ -14,6 +14,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gomodule/redigo v1.8.2 // indirect
 	github.com/gorilla/mux v1.7.4
+	github.com/guregu/dynamo v1.8.0
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/stretchr/testify v1.5.1

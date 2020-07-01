@@ -5,18 +5,23 @@ import (
 	"app/logs"
 	"app/models"
 	"app/repository"
+	"app/view"
 	"database/sql"
 	"fmt"
+
+	"github.com/guregu/dynamo"
 )
 
 type Pin struct {
 	DB      *sql.DB
+	Dynamo  *dynamo.DB
 	BaseURL string
 }
 
-func NewPinRepository(db *sql.DB, baseURL string) repository.PinRepository {
+func NewPinRepository(db *sql.DB, dynamo *dynamo.DB, baseURL string) repository.PinRepository {
 	return &Pin{
 		DB:      db,
+		Dynamo:  dynamo,
 		BaseURL: baseURL,
 	}
 }
@@ -371,6 +376,34 @@ WHERE
 	}
 
 	logs.Info("Pins got, userID: %v", userID)
+
+	return pins, nil
+}
+
+func (p *Pin) GetHomePins(userID int) ([]*models.Pin, error) {
+	table := p.Dynamo.Table("home-pins")
+	dynamoPins := []*view.DynamoPin{}
+	// TODO: sort by created_at after inmplementing it with epoch time
+	err := table.Get("user_id", userID).Order(false).All(&dynamoPins)
+	if err != nil {
+		return nil, err
+	}
+
+	pins := make([]*models.Pin, 0, len(dynamoPins))
+	for _, dp := range dynamoPins {
+		mp := &models.Pin{
+			ID:          dp.ID,
+			UserID:      &dp.UserID,
+			Title:       dp.Title,
+			Description: &dp.Description,
+			URL:         &dp.URL,
+			ImageURL:    dp.ImageURL,
+			IsPrivate:   dp.IsPrivate,
+		}
+		mp.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, mp.ImageURL)
+
+		pins = append(pins, mp)
+	}
 
 	return pins, nil
 }

@@ -96,7 +96,7 @@ func TestNewDataStorage(t *testing.T) {
 
 	s3 := infrastructure.NewAWSS3Mock()
 
-	data := NewDataStorage(sqlDB, s3)
+	data := NewDataStorage(sqlDB, nil, s3)
 	if data.DB() == nil {
 		t.Fatalf("DB is nil")
 	}

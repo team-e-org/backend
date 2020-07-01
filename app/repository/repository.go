@@ -29,6 +29,7 @@ type PinRepository interface {
 	GetPinsByBoardID(boardID int, page int) ([]*models.Pin, error)
 	GetPinsByUserID(userID int) ([]*models.Pin, error)
 	GetPins(page int) ([]*models.Pin, error)
+	GetHomePins(userID int) ([]*models.Pin, error) // TODO: receive last evaluated key and do pagenation
 }
 
 type TagRepository interface {

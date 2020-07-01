@@ -5,6 +5,8 @@ import (
 	"app/mocks"
 	"app/repository"
 	"database/sql"
+
+	"github.com/guregu/dynamo"
 )
 
 type S3 repository.FileRepository
@@ -37,10 +39,10 @@ func (d *DataStorage) Tags() repository.TagRepository            { return d.tags
 func (d *DataStorage) BoardsPins() repository.BoardPinRepository { return d.boardsPins }
 func (d *DataStorage) AWSS3() repository.FileRepository          { return d.awss3 }
 
-func NewDataStorage(db *sql.DB, s3 S3) DataStorageInterface {
+func NewDataStorage(db *sql.DB, dynamo *dynamo.DB, s3 S3) DataStorageInterface {
 	users := infrastructure.NewUserRepository(db)
 	boards := infrastructure.NewBoardRepository(db)
-	pins := infrastructure.NewPinRepository(db, s3.GetBaseURL())
+	pins := infrastructure.NewPinRepository(db, dynamo, s3.GetBaseURL())
 	tags := infrastructure.NewTagRepository(db)
 	boardsPins := infrastructure.NewBoardPinRepository(db)
 	return &DataStorage{
