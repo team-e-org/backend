@@ -13,16 +13,17 @@ import (
 )
 
 type Pin struct {
-	DB     *sql.DB
-	Dynamo *dynamo.DB
-	BaseURL  string
+	DB      *sql.DB
+	Dynamo  *dynamo.DB
+	BaseURL string
 }
 
 func NewPinRepository(db *sql.DB, dynamo *dynamo.DB, baseURL string) repository.PinRepository {
 	return &Pin{
-		DB:     db,
-		Dynamo: dynamo,
-		BaseURL:  baseURL,
+		DB:      db,
+		Dynamo:  dynamo,
+		BaseURL: baseURL,
+	}
 }
 
 func (p *Pin) CreatePin(pin *models.Pin, boardID int) (*models.Pin, error) {
@@ -397,7 +398,7 @@ func (p *Pin) GetHomePins(userID int) ([]*models.Pin, error) {
 			Title:       dp.Title,
 			Description: &dp.Description,
 			URL:         &dp.URL,
-			ImageURL:    fmt.Sprintf("%s/%s", p.S3URL, dp.ImageURL),
+			ImageURL:    fmt.Sprintf("%s/%s", p.BaseURL, dp.ImageURL),
 			IsPrivate:   dp.IsPrivate,
 		}
 		pins = append(pins, p)
