@@ -149,7 +149,6 @@ func SavePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) f
 		err = usecase.SavePin(data, boardID, pinID)
 		if err != nil {
 			logs.Error("Request: %s, failed to save pin: %v", requestSummary(r), err)
-			err := helpers.NewInternalServerError(err)
 			ResponseError(w, r, err)
 			return
 		}
@@ -177,7 +176,6 @@ func UnsavePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 		err = usecase.UnsavePin(data, boardID, pinID)
 		if err != nil {
 			logs.Error("Request: %s, failed to unsave pin: %v", requestSummary(r), err)
-			err := helpers.NewInternalServerError(err)
 			ResponseError(w, r, err)
 			return
 		}

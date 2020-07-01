@@ -41,26 +41,38 @@ func UpdateBoard(data db.DataStorageInterface, board *models.Board) (*models.Boa
 	return board, nil
 }
 
-func SavePin(data db.DataStorageInterface, boardID int, pinID int) error {
+func SavePin(data db.DataStorageInterface, boardID int, pinID int) helpers.AppError {
 	// Check board and pin exist
 	_, err := data.Boards().GetBoard(boardID)
 	if err != nil {
 		logs.Error("An error occurred while checking board exists: %v", err)
-		return err
+		return helpers.NewBadRequest(err)
 	}
 
 	_, err = data.Pins().GetPin(pinID)
 	if err != nil {
 		logs.Error("An error occurred while checking pin exists: %v", err)
-		return err
+		return helpers.NewBadRequest(err)
 	}
 
 	// TODO: Check if board-pin row already exists
 	// See: https://github.com/team-e-org/backend/issues/242
 
-	return data.BoardsPins().CreateBoardPin(boardID, pinID)
+	err = data.BoardsPins().CreateBoardPin(boardID, pinID)
+	if err != nil {
+		logs.Error("An error occurred while adding board pin: %v", err)
+		return helpers.NewInternalServerError(err)
+	}
+
+	return nil
 }
 
-func UnsavePin(data db.DataStorageInterface, boardID int, pinID int) error {
-	return data.BoardsPins().DeleteBoardPin(boardID, pinID)
+func UnsavePin(data db.DataStorageInterface, boardID int, pinID int) helpers.AppError {
+	err := data.BoardsPins().DeleteBoardPin(boardID, pinID)
+	if err != nil {
+		logs.Error("An error occurred while deleting board pin: %v", err)
+		return helpers.NewInternalServerError(err)
+	}
+
+	return nil
 }
