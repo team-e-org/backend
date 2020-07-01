@@ -36,9 +36,8 @@ masterにpushするとstaging環境へ自動デプロイ
 
 ### テーブル図
 
-https://gyazo.com/1d05718fc2d6ed4fb85cb7412ca96d5d
-
+![image](https://user-images.githubusercontent.com/24651683/86198821-7540f780-bb93-11ea-8212-95e14a8b0cbc.png)
 
 ### タグに関連する設計
 
-https://user-images.githubusercontent.com/24651683/85977118-e8712f00-ba16-11ea-9924-b5a5bf97d36e.png
+![マイクロ〜サービス](https://user-images.githubusercontent.com/24651683/85977118-e8712f00-ba16-11ea-9924-b5a5bf97d36e.png)
