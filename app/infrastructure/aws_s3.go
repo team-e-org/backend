@@ -66,7 +66,7 @@ func (a *AWSS3) UploadImage(file multipart.File, fileHeader *multipart.FileHeade
 	}
 
 	result, err := a.Uploader.Upload(&s3manager.UploadInput{
-		ACL:         aws.String("public-read"),
+		ACL:         aws.String("private"),
 		Body:        file,
 		Bucket:      aws.String(a.Config.Bucket),
 		ContentType: aws.String(contentType),
