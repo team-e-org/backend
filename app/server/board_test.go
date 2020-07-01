@@ -4,6 +4,7 @@ import (
 	"app/authz"
 	"app/db"
 	"app/goldenfiles"
+	"app/mocks"
 	"app/models"
 	helpers "app/testutils"
 	"app/testutils/dbdata"
@@ -51,7 +52,9 @@ func TestCreateBoard(t *testing.T) {
 			al := authz.NewAuthLayerMock(data)
 			token, _ := al.AuthenticateUser(c.currentUser.Email, c.loginPassword)
 
-			attachReqAuth(router, data, al)
+			lambda := mocks.NewAWSLambda()
+
+			attachReqAuth(router, data, al, lambda)
 			recorder := httptest.NewRecorder()
 			req := httptest.NewRequest(http.MethodPost, "/boards", ioutil.NopCloser(strings.NewReader(c.requestBody)))
 			if token != "" {

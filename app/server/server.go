@@ -18,17 +18,18 @@ import (
 )
 
 type S3 repository.FileRepository
+type Lambda repository.LambdaRepository
 
 func init() {
 	time.Local = time.FixedZone("Asia/Tokyo", 9*60*60)
 }
 
-func Start(config *config.Config, dbConn *sql.DB, redis *redis.Client, dynamo *dynamo.DB, s3 S3) error {
+func Start(config *config.Config, dbConn *sql.DB, redis *redis.Client, dynamo *dynamo.DB, s3 S3, lambda Lambda) error {
 	router := mux.NewRouter()
 	data := db.NewDataStorage(dbConn, dynamo, s3)
 	authLayer := authz.NewAuthLayer(data, redis)
 	attachHandlers(router, data, authLayer)
-	attachReqAuth(router, data, authLayer)
+	attachReqAuth(router, data, authLayer, lambda)
 
 	s := &http.Server{
 		Addr:    fmt.Sprintf(":%d", config.Server.Port),
@@ -49,12 +50,12 @@ func attachHandlers(mux *mux.Router, data db.DataStorageInterface, al authz.Auth
 	mux.HandleFunc("/users/{id}/boards", handlers.UserBoards(data, al)).Methods(http.MethodGet)
 }
 
-func attachReqAuth(mux *mux.Router, data db.DataStorageInterface, al authz.AuthLayerInterface) {
+func attachReqAuth(mux *mux.Router, data db.DataStorageInterface, al authz.AuthLayerInterface, lambda Lambda) {
 	muxAuth := mux.PathPrefix("").Subrouter()
 	muxAuth.Use(middleware.RequireAuthorization(al))
 
 	mux.HandleFunc("/boards", handlers.CreateBoard(data, al)).Methods(http.MethodPost)
-	mux.HandleFunc("/boards/{id}/pins", handlers.CreatePin(data, al)).Methods(http.MethodPost)
+	mux.HandleFunc("/boards/{id}/pins", handlers.CreatePin(data, al, lambda)).Methods(http.MethodPost)
 	mux.HandleFunc("/boards/{id}", handlers.UpdateBoard(data, al)).Methods(http.MethodPut)
 	mux.HandleFunc("/pins/{id}", handlers.UpdatePin(data, al)).Methods(http.MethodPut)
 	mux.HandleFunc("/users/{id}", handlers.UpdateUser(data, al)).Methods(http.MethodPut)

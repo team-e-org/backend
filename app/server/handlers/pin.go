@@ -7,12 +7,14 @@ import (
 	"app/logs"
 	"app/models"
 	"app/ptr"
+	"app/repository"
 	"app/usecase"
 	"app/view"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -191,7 +193,7 @@ func ServePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) 
 	}
 }
 
-func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface, lambda repository.LambdaRepository) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -263,13 +265,26 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 
 		pin, err = usecase.CreatePin(data, pin, boardID)
 
-		response := view.NewPin(pin)
-		bytes, err := json.Marshal(response)
+		viewPin := view.NewPin(pin)
+		bytes, err := json.Marshal(viewPin)
 		if err != nil {
 			logs.Error("Request: %s, serializing pin response: %v", requestSummary(r), err)
 			err := helpers.NewInternalServerError(err)
 			ResponseError(w, r, err)
 			return
+		}
+
+		var tags []string
+		if r.FormValue("tags") != "" {
+			tags = strings.Split(r.FormValue("tags"), " ")
+		}
+
+		if len(tags) > 0 {
+			logs.Info("attaching tags")
+			err = lambda.AttachTags(pin, tags)
+			if err != nil {
+				logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
+			}
 		}
 
 		w.Header().Set(contentType, jsonContent)
