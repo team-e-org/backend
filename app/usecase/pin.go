@@ -7,9 +7,13 @@ import (
 	"app/models"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
+
 	"mime/multipart"
 	"time"
+
+	"github.com/guregu/dynamo"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -58,6 +62,33 @@ func GetPins(data db.DataStorageInterface, page int) ([]*models.Pin, helpers.App
 	}
 
 	return pins, nil
+}
+
+func GetHomePins(data db.DataStorageInterface, userID int, pagingKey string) ([]*models.Pin, string, helpers.AppError) {
+	dynamoPagingKey := dynamo.PagingKey{}
+	if pagingKey == "" {
+		dynamoPagingKey = nil
+	} else {
+		json.Unmarshal([]byte(pagingKey), &dynamoPagingKey)
+	}
+
+	pins, nextPagingKey, err := data.Pins().GetHomePins(userID, dynamoPagingKey)
+	if err != nil {
+		logs.Error("Getting home pins: %v", err)
+		err := helpers.NewInternalServerError(err)
+		return nil, "", err
+	}
+
+	pins = removePrivatePin(pins, userID)
+
+	nextPagingKeyBytes, err := json.Marshal(nextPagingKey)
+	if err != nil {
+		logs.Error("Marshaling nextPagingKey: %v", err)
+		err := helpers.NewInternalServerError(err)
+		return nil, "", err
+	}
+
+	return pins, string(nextPagingKeyBytes), nil
 }
 
 func uploadImageToS3(ctx context.Context, data db.DataStorageInterface, file multipart.File, fileName string, contentType string, userID int) error {

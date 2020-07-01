@@ -6,6 +6,15 @@ import (
 	"time"
 )
 
+type HomePinsRequest struct {
+	PagingKey string `json:"pagingKey,omitempty"`
+}
+
+type HomePinsResponse struct {
+	Pins      []*Pin `json:"pins"`
+	PagingKey string `json:"pagingKey"`
+}
+
 type Pin struct {
 	ID          int     `json:"id"`
 	UserID      int     `json:"userId"`
@@ -82,6 +91,8 @@ func NewLambdaPin(pin *models.Pin) *AttachTagsLambdaPayloadPin {
 	return p
 }
 
+// time is yet implemented
+// time needed to be epoch time in dynamo
 type DynamoPin struct {
 	ID          int    `dynamo:"pin_id"`
 	UserID      int    `dynamo:"post_user_id"`
@@ -90,4 +101,16 @@ type DynamoPin struct {
 	URL         string `dynamo:"url,omitempty"`
 	ImageURL    string `dynamo:"image_url"`
 	IsPrivate   bool   `dynamo:"is_private"`
+}
+
+func DynamoToModelPin(dp *DynamoPin) *models.Pin {
+	return &models.Pin{
+		ID:          dp.ID,
+		UserID:      &dp.UserID,
+		Title:       dp.Title,
+		Description: &dp.Description,
+		URL:         &dp.URL,
+		ImageURL:    dp.ImageURL,
+		IsPrivate:   dp.IsPrivate,
+	}
 }

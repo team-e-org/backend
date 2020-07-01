@@ -380,30 +380,27 @@ WHERE
 	return pins, nil
 }
 
-func (p *Pin) GetHomePins(userID int) ([]*models.Pin, error) {
+func (p *Pin) GetHomePins(userID int, pagingKey dynamo.PagingKey) ([]*models.Pin, dynamo.PagingKey, error) {
 	table := p.Dynamo.Table("home-pins")
 	dynamoPins := []*view.DynamoPin{}
 	// TODO: sort by created_at after inmplementing it with epoch time
-	err := table.Get("user_id", userID).Order(false).All(&dynamoPins)
+	nextPagingKey, err := table.
+		Get("user_id", userID).
+		StartFrom(pagingKey).
+		Order(false). // desc
+		Limit(10).
+		AllWithLastEvaluatedKey(&dynamoPins)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	pins := make([]*models.Pin, 0, len(dynamoPins))
 	for _, dp := range dynamoPins {
-		mp := &models.Pin{
-			ID:          dp.ID,
-			UserID:      &dp.UserID,
-			Title:       dp.Title,
-			Description: &dp.Description,
-			URL:         &dp.URL,
-			ImageURL:    dp.ImageURL,
-			IsPrivate:   dp.IsPrivate,
-		}
+		mp := view.DynamoToModelPin(dp)
 		mp.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, mp.ImageURL)
 
 		pins = append(pins, mp)
 	}
 
-	return pins, nil
+	return pins, nextPagingKey, nil
 }

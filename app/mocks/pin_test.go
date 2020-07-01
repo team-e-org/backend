@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/guregu/dynamo"
 )
 
 func TestPinMock(t *testing.T) {
@@ -159,7 +161,7 @@ func TestPin(t *testing.T) {
 		t.Fatalf("pins do not match error")
 	}
 
-	ps, err = pins.GetHomePins(0)
+	ps, _, err = pins.GetHomePins(0, dynamo.PagingKey{})
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
 	}

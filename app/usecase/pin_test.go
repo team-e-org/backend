@@ -199,6 +199,20 @@ func TestGetPins(t *testing.T) {
 	}
 }
 
+func TestGetHomePins(t *testing.T) {
+	boardID := 0
+	data := db.NewRepositoryMock()
+	pins := createPins(t)
+	insertPins(t, data, pins, boardID)
+	pins, _, err := GetHomePins(data, 0, "")
+	if err != nil {
+		t.Fatalf("An error occurred: %v", err)
+	}
+	if len(pins) != 3 {
+		t.Fatalf("len(pins) should be 3, got: %v", len(pins))
+	}
+}
+
 func TestGetPinsByBoardID(t *testing.T) {
 	userID := 0
 	boardID := 0

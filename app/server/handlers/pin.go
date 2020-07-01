@@ -127,15 +127,21 @@ func ServeHomePins(data db.DataStorageInterface, authLayer authz.AuthLayerInterf
 			return
 		}
 
-		pins, err := data.Pins().GetHomePins(userID)
+		homePinsRequest := &view.HomePinsRequest{}
+		json.NewDecoder(r.Body).Decode(homePinsRequest)
+
+		pins, nextPagingKey, err := usecase.GetHomePins(data, userID, homePinsRequest.PagingKey)
 		if err != nil {
-			logs.Error("Request: %s, getting home pins: %v", requestSummary(r), err)
-			err := helpers.NewInternalServerError(err)
+			logs.Error("Request: %s, %v", requestSummary(r), err)
 			ResponseError(w, r, err)
 			return
 		}
 
-		bytes, err := json.Marshal(view.NewPins(pins))
+		res := view.HomePinsResponse{
+			Pins:      view.NewPins(pins),
+			PagingKey: nextPagingKey,
+		}
+		bytes, err := json.Marshal(res)
 		if err != nil {
 			logs.Error("Request: %s, serializing pins: %v", requestSummary(r), err)
 			err := helpers.NewInternalServerError(err)
