@@ -57,14 +57,16 @@ func NewDataStorage(db *sql.DB, s3 S3) DataStorageInterface {
 func NewRepositoryMock() DataStorageInterface {
 	users := mocks.NewUserRepository()
 	boards := mocks.NewBoardRepository()
+	boardPins := mocks.NewBoardPinRepository()
 	pins := mocks.NewPinRepository()
 	tags := mocks.NewTagRepository()
 	awsS3 := mocks.NewAWSS3Repository()
 	return &DataStorage{
-		users:  users,
-		boards: boards,
-		pins:   pins,
-		tags:   tags,
-		awss3:  awsS3,
+		users:      users,
+		boards:     boards,
+		boardsPins: boardPins,
+		pins:       pins,
+		tags:       tags,
+		awss3:      awsS3,
 	}
 }

@@ -133,3 +133,40 @@ func UpdateBoard(data db.DataStorageInterface, authLayer authz.AuthLayerInterfac
 		}
 	}
 }
+
+func SavePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logRequest(r)
+
+		vars := mux.Vars(r)
+		boardID, err := strconv.Atoi(vars["boardID"])
+		if err != nil {
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
+			err := helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		pinID, err := strconv.Atoi(vars["pinID"])
+		if err != nil {
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
+			err := helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		err = usecase.SavePin(data, boardID, pinID)
+		if err != nil {
+			logs.Error("Request: %s, failed to save pin: %v", requestSummary(r), err)
+			err := helpers.NewInternalServerError(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		w.Header().Set(contentType, jsonContent)
+		w.WriteHeader(http.StatusCreated)
+		if _, err = w.Write([]byte("{}")); err != nil {
+			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
+		}
+	}
+}
