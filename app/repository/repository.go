@@ -2,6 +2,7 @@ package repository
 
 import (
 	"app/models"
+	"context"
 	"mime/multipart"
 
 	"github.com/guregu/dynamo"
@@ -46,10 +47,12 @@ type BoardPinRepository interface {
 }
 
 type FileRepository interface {
-	UploadImage(file multipart.File, fileHeader *multipart.FileHeader, userID int) (url string, err error)
+	UploadImage(file multipart.File, fileName string, contentType string, userID int) error
 	GetBaseURL() string
+	GetPinFolder() string
+	CreateFileName(userID int, fileExt string) string
 }
 
 type LambdaRepository interface {
-	AttachTags(pin *models.Pin, tags []string) error
+	AttachTagsWithContext(ctx context.Context, pin *models.Pin, tags []string) error
 }

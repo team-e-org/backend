@@ -1,7 +1,6 @@
 package db
 
 import (
-	"app/infrastructure"
 	"app/mocks"
 	"app/models"
 	"app/ptr"
@@ -94,7 +93,7 @@ func TestNewDataStorage(t *testing.T) {
 		t.Fatalf("An error occurred: %v", err)
 	}
 
-	s3 := infrastructure.NewAWSS3Mock()
+	s3 := mocks.NewAWSS3Repository()
 
 	data := NewDataStorage(sqlDB, nil, s3)
 	if data.DB() == nil {

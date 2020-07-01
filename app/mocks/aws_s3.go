@@ -6,18 +6,26 @@ import (
 )
 
 type AWSS3Mock struct {
-	ExpectedURL string
-	BaseURL     string
+	FileName string
+	URL      string
 }
 
 func NewAWSS3Repository() repository.FileRepository {
-	return &AWSS3Mock{ExpectedURL: "dummy-s3-url", BaseURL: "https://s3"}
+	return &AWSS3Mock{FileName: "dummy-s3-url", URL: "https://s3"}
 }
 
-func (m *AWSS3Mock) UploadImage(file multipart.File, fileHeader *multipart.FileHeader, userID int) (url string, err error) {
-	return m.ExpectedURL, nil
+func (m *AWSS3Mock) UploadImage(file multipart.File, fileName string, contentType string, userID int) error {
+	return nil
 }
 
 func (m *AWSS3Mock) GetBaseURL() string {
-	return m.BaseURL
+	return m.URL
+}
+
+func (m *AWSS3Mock) GetPinFolder() string {
+	return "pins"
+}
+
+func (m *AWSS3Mock) CreateFileName(userID int, fileExt string) string {
+	return m.FileName
 }
