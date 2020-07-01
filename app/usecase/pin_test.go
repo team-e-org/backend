@@ -61,7 +61,7 @@ func createPins(t *testing.T) []*models.Pin {
 
 func insertPins(t *testing.T, data db.DataStorageInterface, pins []*models.Pin, boardID int) {
 	for i, p := range pins {
-		pp, err := CreatePin(data, p, boardID)
+		pp, err := CreatePin(data, p, nil, "", "", boardID)
 		if err != nil {
 			t.Fatalf("An error occurred: %v", err)
 		}

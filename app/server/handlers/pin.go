@@ -20,7 +20,6 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/satori/uuid"
 )
 
 func ServePinsInBoard(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
@@ -265,8 +264,7 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 			return
 		}
 
-		pinFolder := data.AWSS3().GetPinFolder()
-		fileName := fmt.Sprintf("%s/%d/%s%s", pinFolder, userID, uuid.NewV4().String(), fileExt)
+		fileName := data.AWSS3().CreateFileName(userID, fileExt)
 
 		pin := &models.Pin{
 			UserID:      ptr.NewInt(userID),
@@ -277,7 +275,7 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 			ImageURL:    fileName,
 		}
 
-		pin, err = usecase.CreatePin(data, pin, file, fileName, contentType, userID, boardID)
+		pin, err = usecase.CreatePin(data, pin, file, fileName, contentType, boardID)
 		if err != nil {
 			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
 			ResponseError(w, r, err)

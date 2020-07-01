@@ -101,7 +101,7 @@ func createPin(ctx context.Context, data db.DataStorageInterface, pin *models.Pi
 	}
 }
 
-func CreatePin(data db.DataStorageInterface, pin *models.Pin, file multipart.File, fileName string, contentType string, userID int, boardID int) (*models.Pin, helpers.AppError) {
+func CreatePin(data db.DataStorageInterface, pin *models.Pin, file multipart.File, fileName string, contentType string, boardID int) (*models.Pin, helpers.AppError) {
 
 	eg, ctx := errgroup.WithContext(context.Background())
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
@@ -110,7 +110,7 @@ func CreatePin(data db.DataStorageInterface, pin *models.Pin, file multipart.Fil
 	pinIDCh := make(chan int, 1)
 
 	eg.Go(func() error {
-		return uploadImageToS3(ctx, data, file, fileName, contentType, userID)
+		return uploadImageToS3(ctx, data, file, fileName, contentType, *pin.UserID)
 	})
 
 	eg.Go(func() error {

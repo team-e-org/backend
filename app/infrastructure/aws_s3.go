@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/satori/uuid"
 )
 
 type AWSS3 struct {
@@ -57,4 +58,10 @@ func (a *AWSS3) GetBaseURL() string {
 
 func (a *AWSS3) GetPinFolder() string {
 	return a.Config.PinFolder
+}
+
+func (a *AWSS3) CreateFileName(userID int, fileExt string) string {
+	pinFolder := a.GetPinFolder()
+	fileName := fmt.Sprintf("%s/%d/%s%s", pinFolder, userID, uuid.NewV4().String(), fileExt)
+	return fileName
 }
