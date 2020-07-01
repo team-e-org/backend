@@ -91,17 +91,3 @@ type DynamoPin struct {
 	ImageURL    string `dynamo:"image_url"`
 	IsPrivate   bool   `dynamo:"is_private"`
 }
-
-func DynamoToModelPin(dp *DynamoPin) *models.Pin {
-	mp := &models.Pin{
-		ID:          dp.ID,
-		UserID:      &dp.UserID,
-		Title:       dp.Title,
-		Description: &dp.Description,
-		URL:         &dp.URL,
-		ImageURL:    dp.ImageURL,
-		IsPrivate:   dp.IsPrivate,
-	}
-
-	return mp
-}
