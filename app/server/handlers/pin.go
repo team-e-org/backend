@@ -319,16 +319,6 @@ func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 			return
 		}
 
-		maxSize := int64(1024000)
-		err = r.ParseMultipartForm(maxSize)
-		if err != nil {
-			logs.Error("Request: %s, parsing multipart: %v", requestSummary(r), err)
-			logs.Error("Image too large. Max Size: %v", maxSize)
-			err := helpers.NewBadRequest(err)
-			ResponseError(w, r, err)
-			return
-		}
-
 		vars := mux.Vars(r)
 		pinID, err := strconv.Atoi(vars["id"])
 		if err != nil {
