@@ -81,24 +81,30 @@ func ReadRedisConfig() (*RedisConfig, error) {
 	return redisConfig, nil
 }
 
-func ReadAWSConfig() *AWS {
+func ReadS3Config() S3 {
 	baseURL := os.Getenv("CLOUDFRONT_URL")
 	bucket := os.Getenv("S3_BUCKET")
-	awsConfig := &AWS{
-		S3{
-			Region:    "ap-northeast-1",
-			BaseURL:   baseURL,
-			Bucket:    bucket,
-			PinFolder: "pins",
-		},
-		Lambda{
-			Region:         "ap-northeast-1",
-			FunctionARN:    "arn:aws:lambda:ap-northeast-1:444207867088:function:attachTag",
-			InvocationType: "Event",
-		},
+	return S3{
+		Region:    "ap-northeast-1",
+		BaseURL:   baseURL,
+		Bucket:    bucket,
+		PinFolder: "pins",
 	}
+}
 
-	return awsConfig
+func ReadLambdaConfig() Lambda {
+	return Lambda{
+		Region:         "ap-northeast-1",
+		FunctionARN:    "arn:aws:lambda:ap-northeast-1:444207867088:function:attachTag",
+		InvocationType: "Event",
+	}
+}
+
+func ReadAWSConfig() *AWS {
+	return &AWS{
+		ReadS3Config(),
+		ReadLambdaConfig(),
+	}
 }
 
 func ReadConfig() (*Config, error) {
