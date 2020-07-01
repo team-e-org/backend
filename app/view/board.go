@@ -4,7 +4,6 @@ import "app/models"
 
 type Board struct {
 	ID          int    `json:"id"`
-	UserID      int    `json:"userId"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	IsPrivate   bool   `json:"isPrivate"`
@@ -14,7 +13,6 @@ type Board struct {
 func NewBoard(board *models.Board) *Board {
 	b := &Board{
 		ID:          board.ID,
-		UserID:      board.UserID,
 		Name:        board.Name,
 		Description: *board.Description,
 		IsPrivate:   board.IsPrivate,
@@ -34,10 +32,10 @@ func NewBoards(boards []*models.Board) []*Board {
 	return bs
 }
 
-func NewBoardModel(board *Board) *models.Board {
+func NewBoardModel(board *Board, userID int) *models.Board {
 	b := &models.Board{
 		ID:          board.ID,
-		UserID:      board.UserID,
+		UserID:      userID,
 		Name:        board.Name,
 		Description: &board.Description,
 		IsPrivate:   board.IsPrivate,

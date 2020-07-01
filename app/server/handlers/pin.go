@@ -336,14 +336,6 @@ func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 			return
 		}
 
-		if string(userID) != r.FormValue("userId") {
-			err := fmt.Errorf("UserIDs do not match error")
-			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
-			err = helpers.NewBadRequest(err)
-			ResponseError(w, r, err)
-			return
-		}
-
 		pin := &models.Pin{
 			ID:          pinID,
 			Title:       r.FormValue("title"),

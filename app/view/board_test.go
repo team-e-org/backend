@@ -24,10 +24,6 @@ func TestBoard(t *testing.T) {
 		t.Fatalf("ID does not match, model: %v, view: %v", b.ID, v.ID)
 	}
 
-	if b.UserID != v.UserID {
-		t.Fatalf("UserID does not match, model: %v, view: %v", b.UserID, v.UserID)
-	}
-
 	if b.Name != v.Name {
 		t.Fatalf("Name does not match, model: %v, view: %v", b.Name, v.Name)
 	}
@@ -78,9 +74,6 @@ func TestNewBoards(t *testing.T) {
 
 		if newBoard.ID != b.ID {
 			t.Fatalf("ID does not match, model: %v, view: %v", b.ID, newBoard.ID)
-		}
-		if newBoard.UserID != b.UserID {
-			t.Fatalf("UserID does not match, model: %v, view: %v", b.UserID, newBoard.UserID)
 		}
 		if newBoard.Name != b.Name {
 			t.Fatalf("Name does not match, model: %v, view: %v", b.Name, newBoard.Name)
