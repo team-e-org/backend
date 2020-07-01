@@ -159,6 +159,23 @@ func TestPin(t *testing.T) {
 		t.Fatalf("pins do not match error")
 	}
 
+	ps, err = pins.GetHomePins(0)
+	if err != nil {
+		t.Fatalf("An error occurred: %v\n", err)
+	}
+	if len(ps) != 3 {
+		t.Fatalf("len(ps) should be 3")
+	}
+	if !reflect.DeepEqual(pin2, ps[0]) {
+		t.Fatalf("pins do not match error")
+	}
+	if !reflect.DeepEqual(pin3, ps[1]) {
+		t.Fatalf("pins do not match error")
+	}
+	if !reflect.DeepEqual(pin4, ps[2]) {
+		t.Fatalf("pins do not match error")
+	}
+
 	err = pins.DeletePin(0)
 	if err != nil {
 		t.Fatalf("An error occurred: %v\n", err)
