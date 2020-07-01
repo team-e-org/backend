@@ -32,7 +32,7 @@ func dbHandlingWrapper(m *testing.M) int {
 	}
 
 	s3 = mocks.NewAWSS3Repository()
-	data = NewDataStorage(sqlDB, s3)
+	data = NewDataStorage(sqlDB, nil, s3)
 
 	return m.Run()
 }

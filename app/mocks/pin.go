@@ -90,6 +90,16 @@ func (m *PinMock) GetPins(page int) ([]*models.Pin, error) {
 	return pins, nil
 }
 
+func (m *PinMock) GetHomePins(userID int) ([]*models.Pin, error) {
+	pins := make([]*models.Pin, 0, len(m.BoardPinMapper))
+	for _, p := range m.ExpectedPins {
+		if !p.IsPrivate {
+			pins = append(pins, p)
+		}
+	}
+	return pins, nil
+}
+
 func noPinError() error {
 	return sql.ErrNoRows
 }

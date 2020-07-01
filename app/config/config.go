@@ -33,6 +33,7 @@ type RedisConfig struct {
 
 type AWS struct {
 	S3     S3
+	Dynamo Dynamo
 	Lambda Lambda
 }
 
@@ -43,6 +44,9 @@ type S3 struct {
 	PinFolder string
 }
 
+type Dynamo struct {
+	Region string
+}
 type Lambda struct {
 	Region         string
 	FunctionARN    string
@@ -92,6 +96,12 @@ func ReadS3Config() S3 {
 	}
 }
 
+func ReadDynamoConfig() Dynamo {
+	return Dynamo{
+		Region: "ap-northeast-1",
+	}
+}
+
 func ReadLambdaConfig() Lambda {
 	return Lambda{
 		Region:         "ap-northeast-1",
@@ -103,6 +113,7 @@ func ReadLambdaConfig() Lambda {
 func ReadAWSConfig() *AWS {
 	return &AWS{
 		ReadS3Config(),
+		ReadDynamoConfig(),
 		ReadLambdaConfig(),
 	}
 }
