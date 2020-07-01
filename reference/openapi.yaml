@@ -95,7 +95,7 @@ paths:
                   type: string
                   example: dynamo用のページングキー
     post:
-      summary: ''
+      summary: Get home pins with POST Method
       operationId: post-pins
       responses:
         '200':
@@ -127,6 +127,7 @@ paths:
                 pagingKey:
                   type: string
                   example: dynamo用のページングキー
+      description: 本当はGETにしたいけど、bodyを使いたいのでPOSTになってる。ホームのピン一覧を取得するAPI
   '/pins/{id}':
     parameters:
       - schema:
