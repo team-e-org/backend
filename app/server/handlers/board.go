@@ -138,16 +138,7 @@ func SavePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) f
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
-		vars := mux.Vars(r)
-		boardID, err := strconv.Atoi(vars["boardID"])
-		if err != nil {
-			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
-			err := helpers.NewBadRequest(err)
-			ResponseError(w, r, err)
-			return
-		}
-
-		pinID, err := strconv.Atoi(vars["pinID"])
+		boardID, pinID, err := getBoardIdAndPinId(r)
 		if err != nil {
 			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
 			err := helpers.NewBadRequest(err)
@@ -169,4 +160,42 @@ func SavePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) f
 			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
 		}
 	}
+}
+
+func UnsavePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logRequest(r)
+
+		boardID, pinID, err := getBoardIdAndPinId(r)
+		if err != nil {
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
+			err := helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		err = usecase.UnsavePin(data, boardID, pinID)
+		if err != nil {
+			logs.Error("Request: %s, failed to unsave pin: %v", requestSummary(r), err)
+			err := helpers.NewInternalServerError(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	}
+}
+
+func getBoardIdAndPinId(r *http.Request) (int, int, error) {
+	vars := mux.Vars(r)
+	boardID, err := strconv.Atoi(vars["boardID"])
+	if err != nil {
+		return 0, 0, fmt.Errorf("boardID is invalid: %v", err)
+	}
+	pinID, err := strconv.Atoi(vars["pinID"])
+	if err != nil {
+		return 0, 0, fmt.Errorf("pinID is invalid: %v", err)
+	}
+
+	return boardID, pinID, nil
 }

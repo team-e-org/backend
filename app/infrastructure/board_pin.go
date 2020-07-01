@@ -1,10 +1,10 @@
 package infrastructure
 
 import (
-	"app/helpers"
 	"app/logs"
 	"app/repository"
 	"database/sql"
+	"errors"
 )
 
 type BoardPin struct {
@@ -52,11 +52,19 @@ WHERE board_id = ? and pin_id = ?;
 	}
 
 	result, err := stmt.Exec(boardID, pinID)
-	if err = helpers.CheckDBExecError(result, err); err != nil {
+	if err != nil {
 		return err
 	}
 
-	logs.Info("boards pins deleted, boardID: %d, pinID: %d", boardID, pinID)
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return errors.New("no rows affected")
+	}
+
+	logs.Info("boards pins deleted, boardID: %d, pinID: %d, rowsAffected: %d", boardID, pinID, rowsAffected)
 
 	return nil
 }

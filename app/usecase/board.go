@@ -60,3 +60,7 @@ func SavePin(data db.DataStorageInterface, boardID int, pinID int) error {
 
 	return data.BoardsPins().CreateBoardPin(boardID, pinID)
 }
+
+func UnsavePin(data db.DataStorageInterface, boardID int, pinID int) error {
+	return data.BoardsPins().DeleteBoardPin(boardID, pinID)
+}
