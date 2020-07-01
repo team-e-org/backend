@@ -45,9 +45,9 @@ func TestUserBoards(t *testing.T) {
 			[]*models.Board{board1(), board2(), privateBoard()},
 		},
 		{
-			"not found user",
-			404,
-			2,
+			"user has no board",
+			200,
+			1,
 			[]*models.Board{},
 		},
 	}
