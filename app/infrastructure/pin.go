@@ -396,10 +396,9 @@ func (p *Pin) GetHomePins(userID int) ([]*models.Pin, error) {
 			Title:       dp.Title,
 			Description: &dp.Description,
 			URL:         &dp.URL,
-			ImageURL:    dp.ImageURL,
+			ImageURL:    fmt.Sprintf("%s/%s", p.S3URL, dp.ImageURL),
 			IsPrivate:   dp.IsPrivate,
 		}
-
 		pins = append(pins, p)
 	}
 
