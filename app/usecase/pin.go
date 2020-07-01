@@ -63,7 +63,6 @@ func GetPins(data db.DataStorageInterface, page int) ([]*models.Pin, helpers.App
 func uploadImageToS3(ctx context.Context, data db.DataStorageInterface, file multipart.File, fileName string, contentType string, userID int) error {
 	i := 0
 	err := fmt.Errorf("Uploading file to S3 failed")
-	fmt.Printf("ctx: %v\n", ctx)
 	for {
 		select {
 		case <-ctx.Done():
@@ -101,7 +100,19 @@ func createPin(ctx context.Context, data db.DataStorageInterface, pin *models.Pi
 	}
 }
 
-func CreatePin(data db.DataStorageInterface, pin *models.Pin, file multipart.File, fileName string, contentType string, boardID int) (*models.Pin, helpers.AppError) {
+func CreatePin(data db.DataStorageInterface, pin *models.Pin, file multipart.File, fileName string, fileExt string, boardID int) (*models.Pin, helpers.AppError) {
+	var contentType string
+	switch fileExt {
+	case ".jpg":
+		contentType = "image/jpeg"
+	case ".jpeg":
+		contentType = "image/jpeg"
+	case ".png":
+		contentType = "image/png"
+	default:
+		err := helpers.NewBadRequest(fmt.Errorf("Invalid file type given"))
+		return nil, err
+	}
 
 	eg, ctx := errgroup.WithContext(context.Background())
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)

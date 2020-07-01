@@ -247,23 +247,6 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 		defer file.Close()
 
 		fileExt := filepath.Ext(fileHeader.Filename)
-
-		var contentType string
-		switch fileExt {
-		case ".jpg":
-			contentType = "image/jpeg"
-		case ".jpeg":
-			contentType = "image/jpeg"
-		case ".png":
-			contentType = "image/png"
-		default:
-			err := fmt.Errorf("Invalid file type given")
-			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
-			err = helpers.NewBadRequest(err)
-			ResponseError(w, r, err)
-			return
-		}
-
 		fileName := data.AWSS3().CreateFileName(userID, fileExt)
 
 		pin := &models.Pin{
@@ -275,7 +258,7 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 			ImageURL:    fileName,
 		}
 
-		pin, err = usecase.CreatePin(data, pin, file, fileName, contentType, boardID)
+		pin, err = usecase.CreatePin(data, pin, file, fileName, fileExt, boardID)
 		if err != nil {
 			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
 			ResponseError(w, r, err)
