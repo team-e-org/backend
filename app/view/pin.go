@@ -6,6 +6,15 @@ import (
 	"time"
 )
 
+type HomePinsRequest struct {
+	PagingKey string `json:"pagingKey,omitempty"`
+}
+
+type HomePinsResponse struct {
+	Pins      []*Pin `json:"pins"`
+	PagingKey string `json:"pagingKey"`
+}
+
 type Pin struct {
 	ID          int     `json:"id"`
 	UserID      int     `json:"userId"`
