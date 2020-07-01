@@ -44,7 +44,7 @@ type BoardPinRepository interface {
 
 type FileRepository interface {
 	UploadImage(file multipart.File, fileHeader *multipart.FileHeader, userID int) (url string, err error)
-	GetURL() string
+	GetBaseURL() string
 }
 
 type LambdaRepository interface {

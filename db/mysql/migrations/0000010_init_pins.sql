@@ -6,96 +6,96 @@ VALUES
     1,
     "pin1",
     "pin1 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/009174cf-c4fe-4a49-a4b2-cb24a98887c9.png"
+    "pins/0/0f222fb3-2b81-407b-8e17-c1ec1e6dc5a4.jpg"
   ),
   (
     2,
     1,
     "pin2",
     "pin2 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/02b4ba8f-4917-41b7-93ba-357ae5eedb21.png"
+    "pins/0/10ceb43b-3ca1-4a04-91a7-1c3711781869.jpg"
   ),
   (
     3,
     1,
     "pin3",
     "pin3 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/7c11f134-7ce2-4617-8222-975996e79702.png"
+    "pins/0/1ae8f5a3-5b88-436f-be95-b8828e6bbf31.png"
   ),
   (
     4,
     1,
     "pin4",
     "pin4 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/585e8b79-5c5b-40d4-aaed-c7cc379191cc.png"
+    "pins/0/2c2355e7-3964-479c-970a-6d48ecb13bf3.jpg"
   ),
   (
     5,
     1,
     "pin5",
     "pin5 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/6a977236-0765-4de1-96cb-57ba6d449a1e.png"
+    "pins/0/4d291c33-a31c-4411-8268-d9effb2a6288.jpg"
   ),
   (
     6,
     1,
     "pin6",
     "pin6 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/d5d42ce0-5ac3-45fd-b462-3be5e65e6972.png"
+    "pins/0/54496849-1da2-492e-aa40-fb701649ce9d.png"
   ),
   (
     7,
     1,
     "pin7",
     "pin7 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/859a604a-72e5-45fa-9e12-b4ffbd9e2f33.png"
+    "pins/0/55560f6f-ef9c-4adc-890d-837032a2ae27.png"
   ),
   (
     8,
     1,
     "pin8",
     "pin8 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/e5126b56-e0e8-4fab-b6c7-ae8cf5cc02c4.png"
+    "pins/0/6d4a034f-0711-4f5e-a8be-52931054a8ee.png"
   ),
   (
     9,
     1,
     "pin9",
     "pin9 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/c446ea59-756f-4c13-a26e-04d92a4c963e.png"
+    "pins/0/6dcb8526-5c8b-4dab-9911-88157f24693b.png"
   ),
   (
     10,
     1,
     "pin10",
     "pin10 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/79f8c86f-4aa5-4d2f-8d79-283436a71036.png"
+    "pins/0/837d0ccc-2cd1-4362-9af3-dd6a8cf5ea1f.png"
   ),
   (
     11,
     1,
     "pin11",
     "pin11 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/17428619-0531-4831-af0d-1e296f3a7a75.png"
+    "pins/0/96928a86-54d1-4c0d-a424-7a27a9c16453.png"
   ),
   (
     12,
     1,
     "pin12",
     "pin12 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/5e50a994-1910-4192-a4f7-f3acf6931924.png"
+    "pins/0/9911be8c-739a-4d57-940b-e359e3b128e3.png"
   ),
   (
     13,
     1,
     "pin13",
     "pin13 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/3ee3cc21-229a-4f4c-a1c8-cce359e68807.png"
+    "pins/0/aabc279e-9c46-4336-9b77-d52645a9c32f.png"
   ),
   (
     14,
     1,
     "pin14",
     "pin14 description",
-    "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/e8d5da44-6f10-4278-b639-77580b135a4e.png"
+    "pins/0/bc7f9945-5271-4ce6-83f6-be6f597c5fd7.png"
   );
