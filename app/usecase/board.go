@@ -40,3 +40,23 @@ func UpdateBoard(data db.DataStorageInterface, board *models.Board) (*models.Boa
 
 	return board, nil
 }
+
+func SavePin(data db.DataStorageInterface, boardID int, pinID int) error {
+	// Check board and pin exist
+	_, err := data.Boards().GetBoard(boardID)
+	if err != nil {
+		logs.Error("An error occurred while checking board exists: %v", err)
+		return err
+	}
+
+	_, err = data.Pins().GetPin(pinID)
+	if err != nil {
+		logs.Error("An error occurred while checking pin exists: %v", err)
+		return err
+	}
+
+	// TODO: Check if board-pin row already exists
+	// See: https://github.com/team-e-org/backend/issues/242
+
+	return data.BoardsPins().CreateBoardPin(boardID, pinID)
+}

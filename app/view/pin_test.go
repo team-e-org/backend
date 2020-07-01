@@ -38,7 +38,7 @@ func TestPin(t *testing.T) {
 	}
 
 	if p.URL != v.URL {
-		t.Fatalf("URL does not match, model: %v, view: %v", p.URL, v.URL)
+		t.Fatalf("BaseURL does not match, model: %v, view: %v", p.URL, v.URL)
 	}
 
 	if p.ImageURL != v.ImageURL {
@@ -95,7 +95,7 @@ func TestNewPins(t *testing.T) {
 		}
 
 		if p.URL != newPin.URL {
-			t.Fatalf("URL does not match, model: %v, view: %v", p.URL, newPin.URL)
+			t.Fatalf("BaseURL does not match, model: %v, view: %v", p.URL, newPin.URL)
 		}
 
 		if p.ImageURL != newPin.ImageURL {
@@ -139,7 +139,7 @@ func TestNewLambdaPin(t *testing.T) {
 	}
 
 	if p.URL != v.URL {
-		t.Fatalf("URL does not match, model: %v, view: %v", p.URL, v.URL)
+		t.Fatalf("BaseURL does not match, model: %v, view: %v", p.URL, v.URL)
 	}
 
 	if p.ImageURL != v.ImageURL {

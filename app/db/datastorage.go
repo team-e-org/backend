@@ -42,7 +42,7 @@ func (d *DataStorage) AWSS3() repository.FileRepository          { return d.awss
 func NewDataStorage(db *sql.DB, dynamo *dynamo.DB, s3 S3) DataStorageInterface {
 	users := infrastructure.NewUserRepository(db)
 	boards := infrastructure.NewBoardRepository(db)
-	pins := infrastructure.NewPinRepository(db, dynamo, s3.GetURL())
+	pins := infrastructure.NewPinRepository(db, dynamo, s3.GetBaseURL())
 	tags := infrastructure.NewTagRepository(db)
 	boardsPins := infrastructure.NewBoardPinRepository(db)
 	return &DataStorage{
@@ -59,14 +59,16 @@ func NewDataStorage(db *sql.DB, dynamo *dynamo.DB, s3 S3) DataStorageInterface {
 func NewRepositoryMock() DataStorageInterface {
 	users := mocks.NewUserRepository()
 	boards := mocks.NewBoardRepository()
+	boardPins := mocks.NewBoardPinRepository()
 	pins := mocks.NewPinRepository()
 	tags := mocks.NewTagRepository()
 	awsS3 := mocks.NewAWSS3Repository()
 	return &DataStorage{
-		users:  users,
-		boards: boards,
-		pins:   pins,
-		tags:   tags,
-		awss3:  awsS3,
+		users:      users,
+		boards:     boards,
+		boardsPins: boardPins,
+		pins:       pins,
+		tags:       tags,
+		awss3:      awsS3,
 	}
 }

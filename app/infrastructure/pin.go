@@ -15,15 +15,14 @@ import (
 type Pin struct {
 	DB     *sql.DB
 	Dynamo *dynamo.DB
-	S3URL  string
+	BaseURL  string
 }
 
-func NewPinRepository(db *sql.DB, dynamo *dynamo.DB, s3URL string) repository.PinRepository {
+func NewPinRepository(db *sql.DB, dynamo *dynamo.DB, baseURL string) repository.PinRepository {
 	return &Pin{
 		DB:     db,
 		Dynamo: dynamo,
-		S3URL:  s3URL,
-	}
+		BaseURL:  baseURL,
 }
 
 func (p *Pin) CreatePin(pin *models.Pin, boardID int) (*models.Pin, error) {
@@ -73,7 +72,7 @@ INSERT INTO boards_pins (board_id, pin_id) VALUES (?, ?);
 
 	logs.Info("New pin created, id: %v", int(pinID))
 
-	pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+	pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 
 	return pin, nil
 }
@@ -95,7 +94,7 @@ UPDATE pins SET title = ?, description = ?, url = ?, image_url = ?, is_private =
 
 	logs.Info("Pin updated, id: %v", pin.ID)
 
-	pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+	pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 
 	return nil
 }
@@ -197,7 +196,7 @@ WHERE
 
 	logs.Info("Pin got, id: %v", pinID)
 
-	pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+	pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 
 	return pin, nil
 }
@@ -249,7 +248,7 @@ LIMIT ? OFFSET ?;
 		if err != nil {
 			return nil, err
 		}
-		pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+		pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 		pins = append(pins, pin)
 	}
 
@@ -308,7 +307,7 @@ LIMIT ? OFFSET ?;
 		if err != nil {
 			return nil, err
 		}
-		pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+		pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 		pins = append(pins, pin)
 	}
 
@@ -367,7 +366,7 @@ WHERE
 		if err != nil {
 			return nil, err
 		}
-		pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+		pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 		pins = append(pins, pin)
 	}
 

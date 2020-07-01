@@ -39,14 +39,13 @@ type AWS struct {
 
 type S3 struct {
 	Region    string
-	URL       string
+	BaseURL   string
 	Bucket    string
 	PinFolder string
 }
 
 type Dynamo struct {
 	Region string
-	Table  string
 }
 type Lambda struct {
 	Region         string
@@ -86,28 +85,37 @@ func ReadRedisConfig() (*RedisConfig, error) {
 	return redisConfig, nil
 }
 
-func ReadAWSConfig() *AWS {
-	url := os.Getenv("S3_URL")
+func ReadS3Config() S3 {
+	baseURL := os.Getenv("CLOUDFRONT_URL")
 	bucket := os.Getenv("S3_BUCKET")
-	awsConfig := &AWS{
-		S3{
-			Region:    "ap-northeast-1",
-			URL:       url,
-			Bucket:    bucket,
-			PinFolder: "pins",
-		},
-		Dynamo{
-			Region: "ap-northeast-1",
-			Table:  "home-pins",
-		},
-		Lambda{
-			Region:         "ap-northeast-1",
-			FunctionARN:    "arn:aws:lambda:ap-northeast-1:444207867088:function:attachTag",
-			InvocationType: "Event",
-		},
+	return S3{
+		Region:    "ap-northeast-1",
+		BaseURL:   baseURL,
+		Bucket:    bucket,
+		PinFolder: "pins",
 	}
+}
 
-	return awsConfig
+func ReadDynamoConfig() Dynamo {
+	return Dynamo{
+		Region: "ap-northeast-1",
+	}
+}
+
+func ReadLambdaConfig() Lambda {
+	return Lambda{
+		Region:         "ap-northeast-1",
+		FunctionARN:    "arn:aws:lambda:ap-northeast-1:444207867088:function:attachTag",
+		InvocationType: "Event",
+	}
+}
+
+func ReadAWSConfig() *AWS {
+	return &AWS{
+		ReadS3Config(),
+		ReadDynamoConfig(),
+		ReadLambdaConfig(),
+	}
 }
 
 func ReadConfig() (*Config, error) {

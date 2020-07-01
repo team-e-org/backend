@@ -65,8 +65,8 @@ func TestEmptyUserBoardError(t *testing.T) {
 	userID := 0
 	currentUserID := 0
 	_, err := UserBoards(data, authz, userID, currentUserID)
-	if err == nil {
-		t.Fatalf("Board is empty")
+	if err != nil {
+		t.Fatalf("Error should not occur when an user has no board")
 	}
 }
 

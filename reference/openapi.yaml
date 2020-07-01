@@ -339,6 +339,32 @@ paths:
                   type: boolean
       security:
         - X-Auth-Token: []
+  '/boards/{boardID}/pins/{pinID}':
+    parameters:
+      - schema:
+          type: string
+        name: boardID
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: pinID
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-boards-boardID-pins-pinID
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      parameters: []
+      security:
+        - X-Auth-Token: []
   /users/sign-up:
     post:
       summary: ''
