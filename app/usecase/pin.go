@@ -73,6 +73,8 @@ func GetHomePins(data db.DataStorageInterface, userID int, pagingKey string) ([]
 		return nil, "", err
 	}
 
+	pins = removePrivatePin(pins, userID)
+
 	nextPagingKeyBytes, err := json.Marshal(nextPagingKey)
 	if err != nil {
 		logs.Error("Marshaling nextPagingKey: %v", err)

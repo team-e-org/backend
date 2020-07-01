@@ -93,13 +93,7 @@ func (m *PinMock) GetPins(page int) ([]*models.Pin, error) {
 }
 
 func (m *PinMock) GetHomePins(userID int, pagingKey dynamo.PagingKey) ([]*models.Pin, dynamo.PagingKey, error) {
-	pins := make([]*models.Pin, 0, len(m.BoardPinMapper))
-	for _, p := range m.ExpectedPins {
-		if !p.IsPrivate {
-			pins = append(pins, p)
-		}
-	}
-	return pins, nil, nil
+	return m.ExpectedPins, nil, nil
 }
 
 func noPinError() error {
