@@ -280,8 +280,8 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 				if err != nil {
 					logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
 				}
+				cancel()
 			}
-			cancel()
 		}()
 
 		viewPin := view.NewPin(pin)

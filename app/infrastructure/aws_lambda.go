@@ -43,5 +43,8 @@ func (l *AWSLambda) AttachTagsWithContext(ctx context.Context, pin *models.Pin, 
 	}
 
 	_, err = l.svc.InvokeWithContext(ctx, input)
-	return err
+	if err != nil {
+		return err
+	}
+	return nil
 }
