@@ -3,6 +3,8 @@ package repository
 import (
 	"app/models"
 	"mime/multipart"
+
+	"github.com/guregu/dynamo"
 )
 
 type UserRepository interface {
@@ -29,7 +31,7 @@ type PinRepository interface {
 	GetPinsByBoardID(boardID int, page int) ([]*models.Pin, error)
 	GetPinsByUserID(userID int) ([]*models.Pin, error)
 	GetPins(page int) ([]*models.Pin, error)
-	GetHomePins(userID int) ([]*models.Pin, error) // TODO: receive last evaluated key and do pagenation
+	GetHomePins(userID int, pagingKey dynamo.PagingKey) ([]*models.Pin, dynamo.PagingKey, error)
 }
 
 type TagRepository interface {

@@ -4,6 +4,8 @@ import (
 	"app/models"
 	"app/repository"
 	"database/sql"
+
+	"github.com/guregu/dynamo"
 )
 
 type PinMock struct {
@@ -90,14 +92,14 @@ func (m *PinMock) GetPins(page int) ([]*models.Pin, error) {
 	return pins, nil
 }
 
-func (m *PinMock) GetHomePins(userID int) ([]*models.Pin, error) {
+func (m *PinMock) GetHomePins(userID int, pagingKey dynamo.PagingKey) ([]*models.Pin, dynamo.PagingKey, error) {
 	pins := make([]*models.Pin, 0, len(m.BoardPinMapper))
 	for _, p := range m.ExpectedPins {
 		if !p.IsPrivate {
 			pins = append(pins, p)
 		}
 	}
-	return pins, nil
+	return pins, nil, nil
 }
 
 func noPinError() error {
