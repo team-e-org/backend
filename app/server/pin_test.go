@@ -225,7 +225,7 @@ func buildMulitpartRequest(t *testing.T, imageFilePath string, fieldValues map[s
 	mw := multipart.NewWriter(body)
 	defer mw.Close()
 
-	fw, err := mw.CreateFormFile("image", "sample")
+	fw, err := mw.CreateFormFile("image", "sample.png")
 	if err != nil {
 		t.Error(err)
 	}

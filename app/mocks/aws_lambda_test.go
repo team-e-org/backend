@@ -1,10 +1,14 @@
 package mocks
 
-import "testing"
+import (
+	"context"
+	"testing"
+)
 
 func TestAWSLambdaMock_AttachTags(t *testing.T) {
 	mock := NewAWSLambda()
-	err := mock.AttachTags(nil, nil)
+	ctx := context.TODO()
+	err := mock.AttachTagsWithContext(ctx, nil, nil)
 	if err != nil {
 		t.Fatalf("An error occurred: %v", err)
 	}

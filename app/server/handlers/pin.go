@@ -10,9 +10,11 @@ import (
 	"app/repository"
 	"app/usecase"
 	"app/view"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -244,26 +246,43 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 		}
 		defer file.Close()
 
-		url, err := data.AWSS3().UploadImage(file, fileHeader, userID)
-		if err != nil {
-			logs.Error("Request: %s, uploading image: %v", requestSummary(r), err)
-			InternalServerError(w, r)
-			return
-		}
+		fileExt := filepath.Ext(fileHeader.Filename)
+		fileName := data.AWSS3().CreateFileName(userID, fileExt)
 
-		now := time.Now()
 		pin := &models.Pin{
 			UserID:      ptr.NewInt(userID),
 			Title:       r.FormValue("title"),
 			Description: ptr.NewString(r.FormValue("description")),
 			URL:         ptr.NewString(r.FormValue("url")),
 			IsPrivate:   b,
-			ImageURL:    url,
-			CreatedAt:   now,
-			UpdatedAt:   now,
+			ImageURL:    fileName,
 		}
 
-		pin, err = usecase.CreatePin(data, pin, boardID)
+		pin, err = usecase.CreatePin(data, pin, file, fileName, fileExt, boardID)
+		if err != nil {
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		ctx := context.Background()
+		ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+
+		go func() {
+			var tags []string
+			if r.FormValue("tags") != "" {
+				tags = strings.Split(r.FormValue("tags"), " ")
+			}
+
+			if len(tags) > 0 {
+				logs.Info("attaching tags, %+v to %+v", tags, pin)
+				err = lambda.AttachTagsWithContext(ctx, pin, tags)
+				if err != nil {
+					logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
+				}
+				cancel()
+			}
+		}()
 
 		viewPin := view.NewPin(pin)
 		bytes, err := json.Marshal(viewPin)
@@ -272,19 +291,6 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 			err := helpers.NewInternalServerError(err)
 			ResponseError(w, r, err)
 			return
-		}
-
-		var tags []string
-		if r.FormValue("tags") != "" {
-			tags = strings.Split(r.FormValue("tags"), " ")
-		}
-
-		if len(tags) > 0 {
-			logs.Info("attaching tags")
-			err = lambda.AttachTags(pin, tags)
-			if err != nil {
-				logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
-			}
 		}
 
 		w.Header().Set(contentType, jsonContent)
