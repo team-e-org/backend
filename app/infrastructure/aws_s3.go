@@ -22,7 +22,8 @@ type AWSS3 struct {
 func NewAWSS3(c config.S3) repository.FileRepository {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{
-			Region: aws.String(c.Region),
+			Region:                        aws.String(c.Region),
+			CredentialsChainVerboseErrors: aws.Bool(true),
 		},
 	}))
 
