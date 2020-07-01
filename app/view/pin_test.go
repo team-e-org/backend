@@ -158,3 +158,44 @@ func TestNewLambdaPin(t *testing.T) {
 		t.Fatalf("UpdatedAt does not match, model: %v, view: %v", p.UpdatedAt, v.UpdatedAt)
 	}
 }
+
+func TestDynamoToModelPin(t *testing.T) {
+	dp := &DynamoPin{
+		ID:          0,
+		UserID:      0,
+		Title:       "test title",
+		Description: "test description",
+		URL:         "test url",
+		ImageURL:    "test image url",
+		IsPrivate:   false,
+	}
+	mp := DynamoToModelPin(dp)
+
+	if dp.ID != mp.ID {
+		t.Fatalf("ID does not match, model: %v, view: %v", dp.ID, mp.ID)
+	}
+
+	if dp.UserID != *mp.UserID {
+		t.Fatalf("UserID does not match, model: %v, view: %v", dp.UserID, *mp.UserID)
+	}
+
+	if dp.Title != mp.Title {
+		t.Fatalf("Title does not match, model: %v, view: %v", dp.Title, mp.Title)
+	}
+
+	if dp.Description != *mp.Description {
+		t.Fatalf("Description does not match, model: %v, view: %v", dp.Description, *mp.Description)
+	}
+
+	if dp.URL != *mp.URL {
+		t.Fatalf("BaseURL does not match, model: %v, view: %v", dp.URL, *mp.URL)
+	}
+
+	if dp.ImageURL != mp.ImageURL {
+		t.Fatalf("ImageURL does not match, model: %v, view: %v", dp.ImageURL, mp.ImageURL)
+	}
+
+	if dp.IsPrivate != mp.IsPrivate {
+		t.Fatalf("IsPrivate does not match, model: %v, view: %v", dp.IsPrivate, mp.IsPrivate)
+	}
+}

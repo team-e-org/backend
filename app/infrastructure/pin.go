@@ -396,15 +396,7 @@ func (p *Pin) GetHomePins(userID int, pagingKey dynamo.PagingKey) ([]*models.Pin
 
 	pins := make([]*models.Pin, 0, len(dynamoPins))
 	for _, dp := range dynamoPins {
-		mp := &models.Pin{
-			ID:          dp.ID,
-			UserID:      &dp.UserID,
-			Title:       dp.Title,
-			Description: &dp.Description,
-			URL:         &dp.URL,
-			ImageURL:    dp.ImageURL,
-			IsPrivate:   dp.IsPrivate,
-		}
+		mp := view.DynamoToModelPin(dp)
 		mp.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, mp.ImageURL)
 
 		pins = append(pins, mp)
