@@ -19,7 +19,7 @@ func (m *AWSS3Mock) UploadImage(file multipart.File, fileName string, contentTyp
 }
 
 func (m *AWSS3Mock) GetBaseURL() string {
-	return m.BaseURL
+	return m.URL
 }
 
 func (m *AWSS3Mock) GetPinFolder() string {

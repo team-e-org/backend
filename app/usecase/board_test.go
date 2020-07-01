@@ -89,7 +89,7 @@ func TestSavePin(t *testing.T) {
 		UpdatedAt:   time.Now(),
 	}
 
-	_, err = CreatePin(data, pin, boardID)
+	_, err = CreatePin(data, pin, nil, "", ".png", boardID)
 	if err != nil {
 		t.Fatalf("An error occ")
 	}

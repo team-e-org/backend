@@ -46,7 +46,7 @@ type BoardPinRepository interface {
 
 type FileRepository interface {
 	UploadImage(file multipart.File, fileName string, contentType string, userID int) error
-	GetURL() string
+	GetBaseURL() string
 	GetPinFolder() string
 	CreateFileName(userID int, fileExt string) string
 }
