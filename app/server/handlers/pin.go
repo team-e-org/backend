@@ -10,11 +10,14 @@ import (
 	"app/repository"
 	"app/usecase"
 	"app/view"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"path/filepath"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/satori/uuid"
@@ -281,24 +284,24 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 			return
 		}
 
-		// ctx := context.Background()
-		// ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		ctx := context.Background()
+		ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 
-		// go func() {
-		// 	var tags []string
-		// 	if r.FormValue("tags") != "" {
-		// 		tags = strings.Split(r.FormValue("tags"), " ")
-		// 	}
+		go func() {
+			var tags []string
+			if r.FormValue("tags") != "" {
+				tags = strings.Split(r.FormValue("tags"), " ")
+			}
 
-		// 	if len(tags) > 0 {
-		// 		logs.Info("attaching tags, %+v to %+v", tags, pin)
-		// 		err = lambda.AttachTagsWithContext(ctx, pin, tags)
-		// 		if err != nil {
-		// 			logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
-		// 			cancel()
-		// 		}
-		// 	}
-		// }()
+			if len(tags) > 0 {
+				logs.Info("attaching tags, %+v to %+v", tags, pin)
+				err = lambda.AttachTagsWithContext(ctx, pin, tags)
+				if err != nil {
+					logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
+				}
+			}
+			cancel()
+		}()
 
 		viewPin := view.NewPin(pin)
 		bytes, err := json.Marshal(viewPin)
