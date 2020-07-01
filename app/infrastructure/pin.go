@@ -303,7 +303,7 @@ LIMIT ? OFFSET ?;
 		if err != nil {
 			return nil, err
 		}
-		pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+		pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 		pins = append(pins, pin)
 	}
 
@@ -362,7 +362,7 @@ WHERE
 		if err != nil {
 			return nil, err
 		}
-		pin.ImageURL = fmt.Sprintf("%s/%s", p.S3URL, pin.ImageURL)
+		pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
 		pins = append(pins, pin)
 	}
 
