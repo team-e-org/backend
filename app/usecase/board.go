@@ -55,5 +55,8 @@ func SavePin(data db.DataStorageInterface, boardID int, pinID int) error {
 		return err
 	}
 
+	// TODO: Check if board-pin row already exists
+	// See: https://github.com/team-e-org/backend/issues/242
+
 	return data.BoardsPins().CreateBoardPin(boardID, pinID)
 }
