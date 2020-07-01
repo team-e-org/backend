@@ -21,7 +21,8 @@ type AWSS3 struct {
 func NewAWSS3(c config.S3) repository.FileRepository {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		Config: aws.Config{
-			Region: aws.String(c.Region),
+			Region:                        aws.String(c.Region),
+			CredentialsChainVerboseErrors: aws.Bool(true),
 		},
 	}))
 
@@ -36,7 +37,7 @@ func (a *AWSS3) UploadImage(file multipart.File, fileName string, contentType st
 	logs.Info("File uploaded to %s", fileName)
 
 	result, err := a.Uploader.Upload(&s3manager.UploadInput{
-		ACL:         aws.String("public-read"),
+		ACL:         aws.String("private"),
 		Body:        file,
 		Bucket:      aws.String(a.Config.Bucket),
 		ContentType: aws.String(contentType),

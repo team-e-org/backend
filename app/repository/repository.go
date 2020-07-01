@@ -44,6 +44,7 @@ type TagRepository interface {
 
 type BoardPinRepository interface {
 	CreateBoardPin(boardID int, pinID int) error
+	DeleteBoardPin(boardID int, pinID int) error
 }
 
 type FileRepository interface {
