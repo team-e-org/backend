@@ -35,7 +35,7 @@ func CreateBoard(data db.DataStorageInterface, authLayer authz.AuthLayerInterfac
 			return
 		}
 
-		board := view.NewBoardModel(requestBoard)
+		board := view.NewBoardModel(requestBoard, userID)
 		storedBoard, err := usecase.CreateBoard(data, board)
 		if err != nil {
 			logs.Error("Request: %s, %v", requestSummary(r), err)
@@ -86,13 +86,6 @@ func UpdateBoard(data db.DataStorageInterface, authLayer authz.AuthLayerInterfac
 			return
 		}
 
-		if userID != requestBoard.UserID {
-			logs.Error("Request: %s, forbidden: %v", requestSummary(r), err)
-			err := helpers.NewUnauthorized(err)
-			ResponseError(w, r, err)
-			return
-		}
-
 		if boardID != requestBoard.ID {
 			err := fmt.Errorf("BoardIDs do not match error")
 			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
@@ -101,7 +94,7 @@ func UpdateBoard(data db.DataStorageInterface, authLayer authz.AuthLayerInterfac
 			return
 		}
 
-		newBoard := view.NewBoardModel(requestBoard)
+		newBoard := view.NewBoardModel(requestBoard, userID)
 
 		storedBoard, err := usecase.UpdateBoard(data, newBoard)
 		if err != nil {
