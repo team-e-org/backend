@@ -16,16 +16,6 @@ type Pin struct {
 	IsPrivate   bool    `json:"isPrivate"`
 }
 
-type DynamoPin struct {
-	ID          int    `dynamo:"pin_id"`
-	UserID      int    `dynamo:"post_user_id"`
-	Title       string `dynamo:"title,omitempty"`
-	Description string `dynamo:"description,omitempty"`
-	URL         string `dynamo:"url,omitempty"`
-	ImageURL    string `dynamo:"image_url"`
-	IsPrivate   bool   `dynamo:"is_private"`
-}
-
 func NewPin(pin *models.Pin) *Pin {
 	p := &Pin{
 		ID:          pin.ID,
@@ -90,4 +80,28 @@ func NewLambdaPin(pin *models.Pin) *AttachTagsLambdaPayloadPin {
 	}
 
 	return p
+}
+
+type DynamoPin struct {
+	ID          int    `dynamo:"pin_id"`
+	UserID      int    `dynamo:"post_user_id"`
+	Title       string `dynamo:"title,omitempty"`
+	Description string `dynamo:"description,omitempty"`
+	URL         string `dynamo:"url,omitempty"`
+	ImageURL    string `dynamo:"image_url"`
+	IsPrivate   bool   `dynamo:"is_private"`
+}
+
+func DynamoToModelPin(dp *DynamoPin) *models.Pin {
+	mp := &models.Pin{
+		ID:          dp.ID,
+		UserID:      &dp.UserID,
+		Title:       dp.Title,
+		Description: &dp.Description,
+		URL:         &dp.URL,
+		ImageURL:    dp.ImageURL,
+		IsPrivate:   dp.IsPrivate,
+	}
+
+	return mp
 }
