@@ -98,7 +98,7 @@ INSERT INTO pins_tags (pin_id, tag_id) VALUES (?, ?);
 
 func (t *Tag) GetTagsByPinID(pinID int) ([]*models.Tag, error) {
 	const query = `
-SELECT t.id, t.tag, t.created_at, t.updated_at FROM tags t JOIN pins_tags pt JOIN pins p WHERE t.id = pt.tag_id AND pt.pin_id = p.id AND p.id = ?;
+SELECT t.id, t.tag, t.created_at, t.updated_at FROM tags t JOIN pins_tags pt JOIN pins p ON t.id = pt.tag_id AND pt.pin_id = p.id WHERE p.id = ?;
 `
 
 	stmt, err := t.DB.Prepare(query)

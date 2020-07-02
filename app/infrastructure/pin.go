@@ -380,6 +380,52 @@ WHERE
 	return pins, nil
 }
 
+func (p *Pin) GetPinsByTag(tag string, page int) ([]*models.Pin, error) {
+	const query = `
+SELECT p.id, p.title, p.description, p.url, p.user_id, p.image_url, p.is_private, p.created_at, p.updated_at FROM pins p JOIN pins_tags pt JOIN tags t ON p.ID = pt.pin_id AND pt.tag_id = t.id WHERE t.tag = ?;
+`
+
+	stmt, err := p.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := stmt.Query(tag)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var pins []*models.Pin
+	for rows.Next() {
+		pin := &models.Pin{}
+		err := rows.Scan(
+			&pin.ID,
+			&pin.UserID,
+			&pin.Title,
+			&pin.Description,
+			&pin.URL,
+			&pin.ImageURL,
+			&pin.IsPrivate,
+			&pin.CreatedAt,
+			&pin.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
+		pins = append(pins, pin)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	logs.Info("Pins got by tag: %s", tag)
+
+	return pins, nil
+}
+
 func (p *Pin) GetHomePins(userID int, pagingKey dynamo.PagingKey) ([]*models.Pin, dynamo.PagingKey, error) {
 	table := p.Dynamo.Table("home-pins")
 	dynamoPins := []*view.DynamoPin{}
