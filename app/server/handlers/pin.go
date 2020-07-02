@@ -77,19 +77,11 @@ func ServePinsByTag(data db.DataStorageInterface, authLayer authz.AuthLayerInter
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
-		_, err := getUserIDIfAvailable(r, authLayer)
-		if err != nil {
-			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
-			err := helpers.NewUnauthorized(err)
-			ResponseError(w, r, err)
-			return
-		}
-
-		vars := mux.Vars(r)
-		tag, ok := vars["tag"]
-		if !ok {
+		tag := r.FormValue("tag")
+		if tag == "" {
+			err := fmt.Errorf("No tag given")
 			logs.Error("Request: %s, parse path parameter tag: %v", requestSummary(r), err)
-			err := helpers.NewBadRequest(err)
+			err = helpers.NewBadRequest(err)
 			ResponseError(w, r, err)
 			return
 		}
