@@ -33,6 +33,7 @@ type PinRepository interface {
 	GetPinsByUserID(userID int) ([]*models.Pin, error)
 	GetPins(page int) ([]*models.Pin, error)
 	GetHomePins(userID int, pagingKey dynamo.PagingKey) ([]*models.Pin, dynamo.PagingKey, error)
+	GetPinsByTag(tag string, page int) ([]*models.Pin, error)
 }
 
 type TagRepository interface {
