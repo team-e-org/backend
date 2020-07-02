@@ -85,14 +85,7 @@ func UpdateBoard(data db.DataStorageInterface, authLayer authz.AuthLayerInterfac
 			ResponseError(w, r, err)
 			return
 		}
-
-		if boardID != requestBoard.ID {
-			err := fmt.Errorf("BoardIDs do not match error")
-			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
-			err = helpers.NewBadRequest(err)
-			ResponseError(w, r, err)
-			return
-		}
+		requestBoard.ID = boardID
 
 		newBoard := view.NewBoardModel(requestBoard, userID)
 
