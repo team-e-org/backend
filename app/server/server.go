@@ -45,7 +45,7 @@ func attachHandlers(mux *mux.Router, data db.DataStorageInterface, al authz.Auth
 	mux.HandleFunc("/users/sign-up", handlers.SignUp(data, al)).Methods(http.MethodPost)
 	mux.HandleFunc("/users/{id}", handlers.ServeUser(data, al)).Methods(http.MethodGet)
 	mux.HandleFunc("/pins/{id}", handlers.ServePin(data, al)).Methods(http.MethodGet)
-	mux.HandleFunc("/pins", handlers.ServePins(data, al)).Methods(http.MethodGet)
+	mux.HandleFunc("/pins", handlers.ServePinsByTag(data, al)).Methods(http.MethodGet).Queries("tag", "{tag}")
 	mux.HandleFunc("/boards/{id}/pins", handlers.ServePinsInBoard(data, al)).Methods(http.MethodGet).Queries("page", "{page}")
 	mux.HandleFunc("/users/{id}/boards", handlers.UserBoards(data, al)).Methods(http.MethodGet)
 	mux.HandleFunc("/tags", handlers.ServeTags(data, al)).Methods(http.MethodGet).Queries("pin_id", "{pin_id}")
