@@ -41,3 +41,7 @@ masterにpushするとstaging環境へ自動デプロイ
 ### タグに関連する設計
 
 ![マイクロ〜サービス](https://user-images.githubusercontent.com/24651683/85977118-e8712f00-ba16-11ea-9924-b5a5bf97d36e.png)
+
+### AWS構成
+![pinko (1)](https://user-images.githubusercontent.com/7694377/86318388-c1ac3600-bc6c-11ea-8da9-aa785c46cd1f.png)
+
