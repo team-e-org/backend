@@ -86,12 +86,10 @@ func ServePinsByTag(data db.DataStorageInterface, authLayer authz.AuthLayerInter
 			return
 		}
 
+		var page int
 		page, err := strconv.Atoi(r.FormValue("page"))
 		if err != nil {
-			logs.Error("Request: %s, parse path parameter page: %v", requestSummary(r), err)
-			err := helpers.NewBadRequest(err)
-			ResponseError(w, r, err)
-			return
+			page = 1
 		}
 
 		pins, err := usecase.GetPinsByTag(data, tag, page)
