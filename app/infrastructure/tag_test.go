@@ -137,7 +137,7 @@ func TestAttachTagToPinError(t *testing.T) {
 func TestGetTagsByPinID(t *testing.T) {
 	pinID := 1
 
-	prepare := mock.ExpectPrepare("SELECT t.id, t.tag, t.created_at, t.updated_at FROM tags t JOIN pins_tags pt JOIN pins p WHERE t.id = pt.tag_id AND pt.pin_id = p.id AND p.id = ?")
+	prepare := mock.ExpectPrepare("SELECT t.id, t.tag, t.created_at, t.updated_at FROM tags t JOIN pins_tags pt JOIN pins p ON t.id = pt.tag_id AND pt.pin_id = p.id WHERE p.id = ?")
 	prepare.ExpectQuery().
 		WithArgs(pinID).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "tag", "created_at", "updated_at"}).
@@ -158,7 +158,7 @@ func TestGetTagsByPinID(t *testing.T) {
 func TestGetTagsByPinIDError(t *testing.T) {
 	pinID := 1
 
-	prepare := mock.ExpectPrepare("SELECT t.id, t.tag, t.created_at, t.updated_at FROM tags t JOIN pins_tags pt JOIN pins p WHERE t.id = pt.tag_id AND pt.pin_id = p.id AND p.id = ?")
+	prepare := mock.ExpectPrepare("SELECT t.id, t.tag, t.created_at, t.updated_at FROM tags t JOIN pins_tags pt JOIN pins p ON t.id = pt.tag_id AND pt.pin_id = p.id WHERE p.id = ?")
 	prepare.ExpectQuery().
 		WithArgs(pinID).
 		WillReturnError(fmt.Errorf("some error"))

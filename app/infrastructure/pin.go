@@ -382,15 +382,17 @@ WHERE
 
 func (p *Pin) GetPinsByTag(tag string, page int) ([]*models.Pin, error) {
 	const query = `
-SELECT p.id, p.title, p.description, p.url, p.user_id, p.image_url, p.is_private, p.created_at, p.updated_at FROM pins p JOIN pins_tags pt JOIN tags t ON p.ID = pt.pin_id AND pt.tag_id = t.id WHERE t.tag = ?;
+SELECT p.id, p.title, p.description, p.url, p.user_id, p.image_url, p.is_private, p.created_at, p.updated_at FROM pins p JOIN pins_tags pt JOIN tags t ON p.ID = pt.pin_id AND pt.tag_id = t.id WHERE t.tag = ? ORDER BY created_at DESC LIMIT ? OFFSET ?;
 `
+	limit := 10
+	offset := (page - 1) * limit
 
 	stmt, err := p.DB.Prepare(query)
 	if err != nil {
 		return nil, err
 	}
 
-	rows, err := stmt.Query(tag)
+	rows, err := stmt.Query(tag, limit, offset)
 	if err != nil {
 		return nil, err
 	}
