@@ -15,3 +15,13 @@ func NewTag(tag *models.Tag) *Tag {
 
 	return t
 }
+
+func NewTags(tags []*models.Tag) []*Tag {
+	t := make([]*Tag, 0, len(tags))
+
+	for _, tag := range tags {
+		t = append(t, NewTag(tag))
+	}
+
+	return t
+}
