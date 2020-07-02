@@ -73,6 +73,49 @@ func ServePinsInBoard(data db.DataStorageInterface, authLayer authz.AuthLayerInt
 	}
 }
 
+func ServePinsByTag(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logRequest(r)
+
+		tag := r.FormValue("tag")
+		if tag == "" {
+			err := fmt.Errorf("No tag given")
+			logs.Error("Request: %s, parse path parameter tag: %v", requestSummary(r), err)
+			err = helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		page, err := strconv.Atoi(r.FormValue("page"))
+		if err != nil {
+			logs.Error("Request: %s, parse path parameter page: %v", requestSummary(r), err)
+			err := helpers.NewBadRequest(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		pins, err := usecase.GetPinsByTag(data, tag, page)
+		if err != nil {
+			logs.Error("Request: %s, %v", requestSummary(r), err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		bytes, err := json.Marshal(view.NewPins(pins))
+		if err != nil {
+			logs.Error("Request: %s, serializing pins: %v", requestSummary(r), err)
+			err := helpers.NewInternalServerError(err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		w.Header().Set(contentType, jsonContent)
+		if _, err = w.Write(bytes); err != nil {
+			logs.Error("Request: %s, writing response: %v", requestSummary(r), err)
+		}
+	}
+}
+
 func ServePins(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)

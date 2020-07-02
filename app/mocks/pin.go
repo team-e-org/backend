@@ -92,6 +92,10 @@ func (m *PinMock) GetPins(page int) ([]*models.Pin, error) {
 	return pins, nil
 }
 
+func (m *PinMock) GetPinsByTag(tag string, page int) ([]*models.Pin, error) {
+	return nil, nil
+}
+
 func (m *PinMock) GetHomePins(userID int, pagingKey dynamo.PagingKey) ([]*models.Pin, dynamo.PagingKey, error) {
 	return m.ExpectedPins, nil, nil
 }

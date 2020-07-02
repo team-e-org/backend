@@ -30,6 +30,21 @@ func GetPinsByBoardID(data db.DataStorageInterface, userID int, boardID int, pag
 	return pins, nil
 }
 
+func GetPinsByTag(data db.DataStorageInterface, tag string, page int) ([]*models.Pin, helpers.AppError) {
+	pins, err := data.Pins().GetPinsByTag(tag, page)
+	if err == sql.ErrNoRows {
+		logs.Info("No pins found with tag: %s", tag)
+		return []*models.Pin{}, nil
+	}
+	if err != nil {
+		logs.Error("An error occurred while getting pin from database: %v", err)
+		err := helpers.NewInternalServerError(err)
+		return nil, err
+	}
+
+	return pins, nil
+}
+
 func ServePin(data db.DataStorageInterface, pinID int, userID int) (*models.Pin, helpers.AppError) {
 	data.AWSS3()
 	pin, err := data.Pins().GetPin(pinID)
