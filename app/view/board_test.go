@@ -89,3 +89,34 @@ func TestNewBoards(t *testing.T) {
 		}
 	}
 }
+
+func TestNewBoardModel(t *testing.T) {
+	vb := &Board{
+		ID:          0,
+		Name:        "test name",
+		Description: "test description",
+		IsPrivate:   false,
+		IsArchive:   false,
+	}
+
+	mb := NewBoardModel(vb, 0)
+	if vb.ID != mb.ID {
+		t.Fatalf("ID does not match, view: %v, model: %v", mb.ID, vb.ID)
+	}
+
+	if vb.Name != mb.Name {
+		t.Fatalf("Name does not match, view: %v, model: %v", vb.Name, mb.Name)
+	}
+
+	if vb.Description != *mb.Description {
+		t.Fatalf("Description does not match, view: %v, model: %v", vb.Description, mb.Description)
+	}
+
+	if vb.IsPrivate != mb.IsPrivate {
+		t.Fatalf("IsPrivate does not match, view: %v, model: %v", vb.IsPrivate, mb.IsPrivate)
+	}
+
+	if vb.IsArchive != mb.IsArchive {
+		t.Fatalf("IsArchive does not match, view: %v, model: %v", vb.IsArchive, mb.IsArchive)
+	}
+}
