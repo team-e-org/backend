@@ -350,7 +350,7 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 	}
 }
 
-func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) func(http.ResponseWriter, *http.Request) {
+func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface, lambda repository.LambdaRepository) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -387,6 +387,25 @@ func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 		}
 
 		pin, err = usecase.UpdatePin(data, pin, userID)
+
+		ctx := context.Background()
+		ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+
+		go func() {
+			var tags []string
+			if r.FormValue("tags") != "" {
+				tags = strings.Split(r.FormValue("tags"), " ")
+			}
+
+			if len(tags) > 0 {
+				logs.Info("attaching tags, %+v to %+v", tags, pin)
+				err = lambda.AttachTagsWithContext(ctx, pin, tags)
+				if err != nil {
+					logs.Error("Request: %s, invoke attachTags lambda failed : %v", requestSummary(r), err)
+				}
+				cancel()
+			}
+		}()
 
 		response := view.NewPin(pin)
 		bytes, err := json.Marshal(response)
