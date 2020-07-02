@@ -108,6 +108,46 @@ func TestNewPins(t *testing.T) {
 	}
 }
 
+func TestNewPinModel(t *testing.T) {
+	vp := &Pin{
+		ID:          0,
+		UserID:      0,
+		Title:       "test title",
+		Description: ptr.NewString("test description"),
+		URL:         ptr.NewString("test url"),
+		ImageURL:    "test image url",
+		IsPrivate:   false,
+	}
+
+	mp := NewPinModel(vp)
+	if vp.ID != mp.ID {
+		t.Fatalf("ID does not match, view: %v, model: %v", mp.ID, vp.ID)
+	}
+
+	if vp.UserID != *mp.UserID {
+		t.Fatalf("UserID does not match, view: %v, model: %v", vp.UserID, mp.UserID)
+	}
+
+	if vp.Title != mp.Title {
+		t.Fatalf("Title does not match, view: %v, model: %v", vp.Title, mp.Title)
+	}
+
+	if vp.Description != mp.Description {
+		t.Fatalf("Description does not match, view: %v, model: %v", vp.Description, mp.Description)
+	}
+
+	if vp.URL != mp.URL {
+		t.Fatalf("URL does not match, view: %v, model: %v", vp.URL, mp.URL)
+	}
+
+	if vp.ImageURL != mp.ImageURL {
+		t.Fatalf("ImageURL does not match, view: %v, model: %v", vp.ImageURL, mp.ImageURL)
+	}
+	if vp.IsPrivate != mp.IsPrivate {
+		t.Fatalf("IsPrivate does not match, view: %v, model: %v", vp.IsPrivate, mp.IsPrivate)
+	}
+}
+
 func TestNewLambdaPin(t *testing.T) {
 	p := &models.Pin{
 		ID:          0,
