@@ -49,9 +49,6 @@ func ServePin(data db.DataStorageInterface, pinID int, userID int) (*models.Pin,
 	data.AWSS3()
 	pin, err := data.Pins().GetPin(pinID)
 
-	baseURL := data.AWSS3().GetBaseURL()
-	pin.ImageURL = fmt.Sprintf("%s/%s", baseURL, pin.ImageURL)
-
 	if err == sql.ErrNoRows {
 		logs.Error("Pin not found in database: %v", pinID)
 		err := helpers.NewNotFound(err)
@@ -68,6 +65,9 @@ func ServePin(data db.DataStorageInterface, pinID int, userID int) (*models.Pin,
 		err := helpers.NewNotFound(err)
 		return nil, err
 	}
+
+	baseURL := data.AWSS3().GetBaseURL()
+	pin.ImageURL = fmt.Sprintf("%s/%s", baseURL, pin.ImageURL)
 
 	return pin, nil
 }

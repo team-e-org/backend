@@ -211,7 +211,9 @@ func ServePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) 
 			return
 		}
 
+		fmt.Printf("pinID: %d, userID: %d\n", pinID, userID)
 		pin, err := usecase.ServePin(data, pinID, userID)
+		fmt.Printf("pin: %+v\n", pin)
 		if err != nil {
 			logs.Error("Request: %s, %v", requestSummary(r), err)
 			ResponseError(w, r, err)
