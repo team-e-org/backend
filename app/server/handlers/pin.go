@@ -86,17 +86,17 @@ func ServePinsByTag(data db.DataStorageInterface, authLayer authz.AuthLayerInter
 			return
 		}
 
-		page, err := strconv.Atoi(r.FormValue("page"))
+		var page int
+		var err error
+		page, err = strconv.Atoi(r.FormValue("page"))
 		if err != nil {
-			logs.Error("Request: %s, parse path parameter page: %v", requestSummary(r), err)
-			err := helpers.NewBadRequest(err)
-			ResponseError(w, r, err)
-			return
+			page = 1
 		}
 
 		pins, err := usecase.GetPinsByTag(data, tag, page)
 		if err != nil {
 			logs.Error("Request: %s, %v", requestSummary(r), err)
+			err := helpers.NewInternalServerError(err)
 			ResponseError(w, r, err)
 			return
 		}
@@ -120,20 +120,11 @@ func ServePins(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
-		_, err := getUserIDIfAvailable(r, authLayer)
+		var page int
+		var err error
+		page, err = strconv.Atoi(r.FormValue("page"))
 		if err != nil {
-			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
-			err := helpers.NewUnauthorized(err)
-			ResponseError(w, r, err)
-			return
-		}
-
-		page, err := strconv.Atoi(r.FormValue("page"))
-		if err != nil {
-			logs.Error("Request: %s, parse path parameter page: %v", requestSummary(r), err)
-			err := helpers.NewBadRequest(err)
-			ResponseError(w, r, err)
-			return
+			page = 1
 		}
 
 		pins, err := usecase.GetPins(data, page)
@@ -367,14 +358,6 @@ func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 		if err != nil {
 			logs.Error("Request: %s, parse path parameter board id: %v", requestSummary(r), err)
 			err := helpers.NewBadRequest(err)
-			ResponseError(w, r, err)
-			return
-		}
-
-		if string(pinID) != r.FormValue("id") {
-			err := fmt.Errorf("PinIDs do not match error")
-			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
-			err = helpers.NewBadRequest(err)
 			ResponseError(w, r, err)
 			return
 		}
