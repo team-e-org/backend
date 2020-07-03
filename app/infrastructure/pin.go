@@ -197,8 +197,6 @@ WHERE
 
 	logs.Info("Pin got, id: %v", pinID)
 
-	pin.ImageURL = fmt.Sprintf("%s/%s", p.BaseURL, pin.ImageURL)
-
 	return pin, nil
 }
 

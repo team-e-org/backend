@@ -48,6 +48,10 @@ func GetPinsByTag(data db.DataStorageInterface, tag string, page int) ([]*models
 func ServePin(data db.DataStorageInterface, pinID int, userID int) (*models.Pin, helpers.AppError) {
 	data.AWSS3()
 	pin, err := data.Pins().GetPin(pinID)
+
+	baseURL := data.AWSS3()
+	pin.ImageURL = fmt.Sprintf("%s/%s", baseURL, pin.ImageURL)
+
 	if err == sql.ErrNoRows {
 		logs.Error("Pin not found in database: %v", pinID)
 		err := helpers.NewNotFound(err)
