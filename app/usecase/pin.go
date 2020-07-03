@@ -218,8 +218,6 @@ func UpdatePin(data db.DataStorageInterface, newPin *models.Pin, userID int) (*m
 	pin.URL = newPin.URL
 
 	err = data.Pins().UpdatePin(pin)
-	baseURL := data.AWSS3().GetBaseURL()
-	pin.ImageURL = fmt.Sprintf("%s/%s", baseURL, pin.ImageURL)
 
 	return pin, nil
 }
