@@ -211,7 +211,9 @@ func ServePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface) 
 			return
 		}
 
+		fmt.Printf("pinID: %d, userID: %d\n", pinID, userID)
 		pin, err := usecase.ServePin(data, pinID, userID)
+		fmt.Printf("pin: %+v\n", pin)
 		if err != nil {
 			logs.Error("Request: %s, %v", requestSummary(r), err)
 			ResponseError(w, r, err)
@@ -305,6 +307,10 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 			return
 		}
 
+		baseURL := data.AWSS3().GetBaseURL()
+		imageURL := fmt.Sprintf("%s/%s", baseURL, pin.ImageURL)
+		pin.ImageURL = imageURL
+
 		ctx := context.Background()
 		ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 
@@ -370,6 +376,15 @@ func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 		}
 
 		pin, err = usecase.UpdatePin(data, pin, userID)
+		if err != nil {
+			logs.Error("Request: %s, an error occurred: %v", requestSummary(r), err)
+			ResponseError(w, r, err)
+			return
+		}
+
+		baseURL := data.AWSS3().GetBaseURL()
+		imageURL := fmt.Sprintf("%s/%s", baseURL, pin.ImageURL)
+		pin.ImageURL = imageURL
 
 		ctx := context.Background()
 		ctx, cancel := context.WithTimeout(ctx, 30*time.Second)

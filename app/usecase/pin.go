@@ -48,6 +48,7 @@ func GetPinsByTag(data db.DataStorageInterface, tag string, page int) ([]*models
 func ServePin(data db.DataStorageInterface, pinID int, userID int) (*models.Pin, helpers.AppError) {
 	data.AWSS3()
 	pin, err := data.Pins().GetPin(pinID)
+
 	if err == sql.ErrNoRows {
 		logs.Error("Pin not found in database: %v", pinID)
 		err := helpers.NewNotFound(err)
@@ -64,6 +65,9 @@ func ServePin(data db.DataStorageInterface, pinID int, userID int) (*models.Pin,
 		err := helpers.NewNotFound(err)
 		return nil, err
 	}
+
+	baseURL := data.AWSS3().GetBaseURL()
+	pin.ImageURL = fmt.Sprintf("%s/%s", baseURL, pin.ImageURL)
 
 	return pin, nil
 }
@@ -177,6 +181,11 @@ func CreatePin(data db.DataStorageInterface, pin *models.Pin, file multipart.Fil
 	if err := eg.Wait(); err != nil {
 		logs.Error("CreatePin failed: %v", err)
 		err := helpers.NewInternalServerError(err)
+		select {
+		case pinID := <-pinIDCh:
+			data.Pins().DeletePin(pinID)
+		default:
+		}
 		return nil, err
 	}
 
@@ -191,6 +200,7 @@ func CreatePin(data db.DataStorageInterface, pin *models.Pin, file multipart.Fil
 func UpdatePin(data db.DataStorageInterface, newPin *models.Pin, userID int) (*models.Pin, helpers.AppError) {
 
 	pin, err := data.Pins().GetPin(newPin.ID)
+
 	if err == sql.ErrNoRows {
 		logs.Error("Pin not found in database: %v", newPin.ID)
 		err := helpers.NewNotFound(err)
