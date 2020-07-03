@@ -181,6 +181,11 @@ func CreatePin(data db.DataStorageInterface, pin *models.Pin, file multipart.Fil
 	if err := eg.Wait(); err != nil {
 		logs.Error("CreatePin failed: %v", err)
 		err := helpers.NewInternalServerError(err)
+		select {
+		case pinID := <-pinIDCh:
+			data.Pins().DeletePin(pinID)
+		default:
+		}
 		return nil, err
 	}
 
