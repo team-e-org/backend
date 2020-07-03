@@ -306,7 +306,7 @@ func CreatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 		}
 
 		ctx := context.Background()
-		ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 
 		go func() {
 			var tags []string
@@ -372,7 +372,7 @@ func UpdatePin(data db.DataStorageInterface, authLayer authz.AuthLayerInterface,
 		pin, err = usecase.UpdatePin(data, pin, userID)
 
 		ctx := context.Background()
-		ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 
 		go func() {
 			var tags []string
