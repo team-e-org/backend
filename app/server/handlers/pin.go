@@ -120,20 +120,11 @@ func ServePins(data db.DataStorageInterface, authLayer authz.AuthLayerInterface)
 	return func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
-		_, err := getUserIDIfAvailable(r, authLayer)
+		var page int
+		var err error
+		page, err = strconv.Atoi(r.FormValue("page"))
 		if err != nil {
-			logs.Error("Request: %s, checking if user identifiable: %v", requestSummary(r), err)
-			err := helpers.NewUnauthorized(err)
-			ResponseError(w, r, err)
-			return
-		}
-
-		page, err := strconv.Atoi(r.FormValue("page"))
-		if err != nil {
-			logs.Error("Request: %s, parse path parameter page: %v", requestSummary(r), err)
-			err := helpers.NewBadRequest(err)
-			ResponseError(w, r, err)
-			return
+			page = 1
 		}
 
 		pins, err := usecase.GetPins(data, page)
